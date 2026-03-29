@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const IMAGES = [
   '/slide-1.jpg',
@@ -28,11 +29,17 @@ export default function HeroSlider() {
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {IMAGES.map((src, idx) => (
-          <div
-            key={`${src}-${idx}`}
-            className="h-full w-full flex-shrink-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('${src}')` }}
-          />
+          <div key={`${src}-${idx}`} className="h-full w-full flex-shrink-0 relative overflow-hidden bg-gray-900">
+            {/* 고화질 유지 및 원본 비율 꽉 채우기 (object-cover) */}
+            <Image
+              src={src}
+              alt={`Seoul Slide ${idx + 1}`}
+              fill
+              quality={100}
+              priority={idx === 0}
+              className="object-cover object-center"
+            />
+          </div>
         ))}
       </div>
     </div>
