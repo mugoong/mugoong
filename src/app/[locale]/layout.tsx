@@ -6,10 +6,6 @@ import { routing } from '@/i18n/routing';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import '../globals.css';
-import { Montserrat, Playfair_Display } from 'next/font/google';
-
-const montserrat = Montserrat({ subsets: ['latin'], display: 'swap', variable: '--font-montserrat' });
-const playfair = Playfair_Display({ subsets: ['latin'], display: 'swap', variable: '--font-playfair' });
 
 type Props = {
   children: React.ReactNode;
@@ -84,7 +80,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`flex min-h-full flex-col bg-white text-[#111111] ${montserrat.variable} ${playfair.variable} font-sans`}>
+      <body className="flex min-h-full flex-col bg-white text-[#111111] font-sans">
         <NextIntlClientProvider messages={messages}>
           <Header />
           <main className="flex-1">{children}</main>

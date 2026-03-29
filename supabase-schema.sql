@@ -1,6 +1,7 @@
 -- ============================================
 -- MUGOONG Database Schema
--- Run this in Supabase SQL Editor
+-- Reference snapshot only.
+-- The automated deployment source of truth lives in supabase/migrations/.
 -- ============================================
 
 -- Enable UUID extension

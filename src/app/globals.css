@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 @layer base {
+  :root {
+    --font-montserrat: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-playfair: Georgia, "Times New Roman", Times, serif;
+  }
+
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply text-gray-800 antialiased;
   }
