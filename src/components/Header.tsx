@@ -29,7 +29,7 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between lg:h-24">
           {/* Mobile Logo */}
           <Link href="/" className="flex items-center gap-2 lg:hidden">
-            <img src="/logo.png" alt="MUGOONG" className="h-[36px] w-auto" />
+            <img src="/logo.png" alt="MUGOONG" className="h-[72px] w-auto py-2" />
           </Link>
 
           {/* Desktop Navigation Structure */}
@@ -69,8 +69,8 @@ export default function Header() {
             </nav>
 
             {/* Center Logo */}
-            <Link href="/" className="flex flex-shrink-0 items-center justify-center">
-              <img src="/logo.png" alt="MUGOONG" className="h-[56px] w-auto" />
+            <Link href="/" className="flex flex-shrink-0 items-center justify-center px-4">
+              <img src="/logo.png" alt="MUGOONG" className="h-[110px] w-auto py-2" />
             </Link>
 
             {/* Right Nav & Utilities */}

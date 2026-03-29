@@ -35,9 +35,17 @@ const config: Config = {
         },
         dark: '#1a1a2e',
         light: '#fafbfc',
+        gray: {
+          900: '#111111',
+          800: '#222222',
+          700: '#444444',
+          600: '#666666',
+          500: '#888888',
+        },
       },
       fontFamily: {
-        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+        sans: ['var(--font-montserrat)', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'serif'],
       },
     },
   },
