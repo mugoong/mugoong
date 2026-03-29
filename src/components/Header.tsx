@@ -26,116 +26,158 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       {/* Top bar */}
       <div className="container-main">
-        <div className="flex h-16 items-center justify-between lg:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl font-extrabold tracking-tight text-primary-600 lg:text-3xl">
-              MUGOONG
-            </span>
+        <div className="flex h-16 items-center justify-between lg:h-24">
+          {/* Mobile Logo */}
+          <Link href="/" className="flex items-center gap-2 lg:hidden">
+            <img src="/logo.png" alt="MUGOONG" className="h-[36px] w-auto" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1 lg:flex">
-            {categories.map((cat) => (
-              <div
-                key={cat.slug}
-                className="relative"
-                onMouseEnter={() => setActiveDropdown(cat.slug)}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <Link
-                  href={`/${cat.slug}`}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
+          {/* Desktop Navigation Structure */}
+          <div className="hidden w-full items-center justify-between lg:flex">
+            
+            {/* Left Nav */}
+            <nav className="flex flex-1 items-center justify-end gap-2 pr-10">
+              {categories.slice(0, 2).map((cat) => (
+                <div
+                  key={cat.slug}
+                  className="relative"
+                  onMouseEnter={() => setActiveDropdown(cat.slug)}
+                  onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  {t(cat.labelKey)}
-                </Link>
-                {/* Dropdown */}
-                {activeDropdown === cat.slug && (
-                  <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
-                    {cat.subcategories.map((sub) => (
-                      <Link
-                        key={sub.slug}
-                        href={`/${cat.slug}/${sub.slug}`}
-                        className="block rounded-lg px-4 py-2.5 text-sm text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600"
-                      >
-                        {t(sub.labelKey)}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
-
-          {/* Right side: City selector + Language + CTA */}
-          <div className="hidden items-center gap-3 lg:flex">
-            {/* City selector */}
-            <div className="relative">
-              <button
-                onClick={() => setCityMenuOpen(!cityMenuOpen)}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
-              >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {t('nav.allCities')}
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {cityMenuOpen && (
-                <div className="absolute right-0 top-full z-50 mt-1 min-w-[180px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
                   <Link
-                    href="/"
-                    onClick={() => setCityMenuOpen(false)}
-                    className="block rounded-lg px-4 py-2.5 text-sm font-medium text-primary-600 transition-colors hover:bg-primary-50"
+                    href={`/${cat.slug}`}
+                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
                   >
-                    {t('nav.allCities')}
+                    {t(cat.labelKey)}
                   </Link>
-                  {cities.map((city) => (
-                    <Link
-                      key={city.slug}
-                      href={`/?city=${city.slug}`}
-                      onClick={() => setCityMenuOpen(false)}
-                      className="block rounded-lg px-4 py-2.5 text-sm text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600"
-                    >
-                      {t(city.labelKey)}
-                    </Link>
-                  ))}
+                  {/* Dropdown */}
+                  {activeDropdown === cat.slug && (
+                    <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
+                      {cat.subcategories.map((sub) => (
+                        <Link
+                          key={sub.slug}
+                          href={`/${cat.slug}/${sub.slug}`}
+                          className="block rounded-lg px-4 py-2.5 text-sm text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600"
+                        >
+                          {t(sub.labelKey)}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              ))}
+            </nav>
 
-            {/* Language selector */}
-            <div className="relative">
-              <button
-                onClick={() => setLangMenuOpen(!langMenuOpen)}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
-              >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                </svg>
-                {localeNames[locale]}
-                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {langMenuOpen && (
-                <div className="absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
-                  {locales.map((loc) => (
-                    <button
-                      key={loc}
-                      onClick={() => switchLocale(loc)}
-                      className={`block w-full rounded-lg px-4 py-2.5 text-left text-sm transition-colors hover:bg-primary-50 hover:text-primary-600 ${
-                        loc === locale ? 'font-medium text-primary-600' : 'text-gray-600'
-                      }`}
+            {/* Center Logo */}
+            <Link href="/" className="flex flex-shrink-0 items-center justify-center">
+              <img src="/logo.png" alt="MUGOONG" className="h-[56px] w-auto" />
+            </Link>
+
+            {/* Right Nav & Utilities */}
+            <div className="flex flex-1 items-center justify-between pl-10">
+              <nav className="flex items-center gap-2">
+                {categories.slice(2).map((cat) => (
+                  <div
+                    key={cat.slug}
+                    className="relative"
+                    onMouseEnter={() => setActiveDropdown(cat.slug)}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                  >
+                    <Link
+                      href={`/${cat.slug}`}
+                      className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
                     >
-                      {localeNames[loc]}
-                    </button>
-                  ))}
+                      {t(cat.labelKey)}
+                    </Link>
+                    {/* Dropdown */}
+                    {activeDropdown === cat.slug && (
+                      <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
+                        {cat.subcategories.map((sub) => (
+                          <Link
+                            key={sub.slug}
+                            href={`/${cat.slug}/${sub.slug}`}
+                            className="block rounded-lg px-4 py-2.5 text-sm text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600"
+                          >
+                            {t(sub.labelKey)}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </nav>
+
+              {/* City & Language Selectors */}
+              <div className="flex items-center gap-3">
+                {/* City selector */}
+                <div className="relative">
+                  <button
+                    onClick={() => setCityMenuOpen(!cityMenuOpen)}
+                    className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {t('nav.allCities')}
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {cityMenuOpen && (
+                    <div className="absolute right-0 top-full z-50 mt-1 min-w-[180px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
+                      <Link
+                        href="/"
+                        onClick={() => setCityMenuOpen(false)}
+                        className="block rounded-lg px-4 py-2.5 text-sm font-medium text-primary-600 transition-colors hover:bg-primary-50"
+                      >
+                        {t('nav.allCities')}
+                      </Link>
+                      {cities.map((city) => (
+                        <Link
+                          key={city.slug}
+                          href={`/?city=${city.slug}`}
+                          onClick={() => setCityMenuOpen(false)}
+                          className="block rounded-lg px-4 py-2.5 text-sm text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600"
+                        >
+                          {t(city.labelKey)}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* Language selector */}
+                <div className="relative">
+                  <button
+                    onClick={() => setLangMenuOpen(!langMenuOpen)}
+                    className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    {localeNames[locale]}
+                    <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {langMenuOpen && (
+                    <div className="absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
+                      {locales.map((loc) => (
+                        <button
+                          key={loc}
+                          onClick={() => switchLocale(loc)}
+                          className={`block w-full rounded-lg px-4 py-2.5 text-left text-sm transition-colors hover:bg-primary-50 hover:text-primary-600 ${
+                            loc === locale ? 'font-medium text-primary-600' : 'text-gray-600'
+                          }`}
+                        >
+                          {localeNames[loc]}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 

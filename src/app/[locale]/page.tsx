@@ -11,12 +11,12 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-dark">
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-primary-300/20 blur-3xl" />
-        </div>
+      <section 
+        className="relative overflow-hidden bg-gray-900 bg-cover bg-center"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=1920&auto=format&fit=crop')" }}
+      >
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/60" />
 
         <div className="container-main relative py-16 sm:py-20 lg:py-28">
           <div className="mx-auto max-w-3xl text-center">
@@ -156,8 +156,8 @@ export default function HomePage() {
                 }`}
               >
                 <div className={`relative ${index === 0 ? 'aspect-[4/3] lg:aspect-auto lg:h-full' : 'aspect-[4/3]'}`}>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute inset-0 bg-primary-900/30" />
+                  <img src={city.image} alt={t(city.labelKey)} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-4 left-4">
                     <h3 className={`font-bold text-white ${index === 0 ? 'text-2xl lg:text-3xl' : 'text-lg'}`}>
                       {t(city.labelKey)}
