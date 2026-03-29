@@ -15,27 +15,27 @@ export default async function HomePage({ params }: { params: { locale: string } 
       {/* Hero Section */}
       <section 
         className="relative overflow-hidden bg-gray-900 bg-cover bg-center"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1614051052679-dbe45c11bc32?w=1920&q=80')" }}
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1584931441315-bbbc246ee384?q=80&w=1920&auto=format&fit=crop')" }}
       >
         {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/40" />
 
-        <div className="container-main relative py-16 sm:py-20 lg:py-28">
+        <div className="container-main relative py-10 sm:py-14 lg:py-20">
           <div className="mx-auto max-w-3xl text-center">
-            {/* Reduced font size for title */}
-            <h1 className="mb-6 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
+            {/* Reduced font size for title to allow bottom icons to peak over the fold */}
+            <h1 className="mb-4 text-2xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
               {t('hero.title')}{' '}
               <span className="bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent">
                 {t('hero.titleHighlight')}
               </span>
             </h1>
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-primary-100 sm:text-xl">
+            <p className="mx-auto mb-6 max-w-2xl text-base text-primary-50 sm:text-lg">
               {t('hero.subtitle')}
             </p>
 
             {/* Search bar */}
             <div className="mx-auto flex max-w-xl items-center overflow-hidden rounded-full bg-white shadow-2xl">
-              <div className="flex flex-1 items-center gap-3 px-5 py-4">
+              <div className="flex flex-1 items-center gap-3 px-4 py-3 sm:px-5 sm:py-4">
                 <svg className="h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -45,18 +45,18 @@ export default async function HomePage({ params }: { params: { locale: string } 
                   className="w-full text-sm text-gray-700 placeholder-gray-400 outline-none"
                 />
               </div>
-              <button className="mr-2 rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-black">
+              <button className="mr-2 rounded-full bg-gray-900 px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-semibold text-white transition-colors hover:bg-black">
                 {t('hero.exploreAll')}
               </button>
             </div>
 
             {/* City quick links */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               {cities.map((city) => (
                 <Link
                   key={city.slug}
                   href={`/?city=${city.slug}`}
-                  className="rounded-full border border-white/30 px-5 py-2 text-sm font-medium text-white/90 backdrop-blur-sm transition-all hover:border-white hover:bg-white/10 hover:text-white"
+                  className="rounded-full border border-white/30 px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-sm transition-all hover:border-white hover:bg-white/10 hover:text-white"
                 >
                   {t(city.labelKey)}
                 </Link>
@@ -67,9 +67,10 @@ export default async function HomePage({ params }: { params: { locale: string } 
       </section>
 
       {/* 12 Subcategories Icon Grid */}
-      <section className="bg-white py-10 lg:py-14 border-b border-gray-100">
+      <section className="bg-white py-6 sm:py-10 border-b border-gray-100">
         <div className="container-main">
-          <div className="grid grid-cols-4 gap-x-2 gap-y-6 sm:grid-cols-6 lg:grid-cols-12">
+          {/* Strictly 6 columns on ALL breakpoints so it stacks into 2 rows of 6 */}
+          <div className="grid grid-cols-6 gap-x-2 gap-y-4 sm:gap-x-4 sm:gap-y-6">
             {[
               { main: 'restaurants', slug: 'korean-food', icon: '🍲', color: 'bg-orange-50 text-orange-600 border-orange-100' },
               { main: 'restaurants', slug: 'korean-bbq', icon: '🥩', color: 'bg-red-50 text-red-600 border-red-100' },
