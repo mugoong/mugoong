@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation';
 import { categories, cities } from '@/lib/categories';
 import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
+import HeroSlider from '@/components/HeroSlider';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -12,20 +13,16 @@ export default async function HomePage({ params }: { params: { locale: string } 
   return (
     <>
       {/* Hero Section */}
-      {/* Hero Section */}
-      {/* Hero Section */}
-      {/* Hero Section */}
-      <section 
-        className="relative overflow-hidden bg-gray-900 bg-cover bg-center"
-        // 사용자 지정 로컬 이미지로 고정 (절대 깨지지 않음)
-        style={{ backgroundImage: "url('/hero-bg.jpg')" }}
-      >
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/40" />
+      <section className="relative overflow-hidden bg-gray-900 border-none">
+        {/* 무제한 2초 슬라이더 배경 */}
+        <HeroSlider />
+        
+        {/* Dark overlay for text readability (z-10 to stay above slider) */}
+        <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
 
-        <div className="container-main relative pt-12 pb-24 sm:pt-16 sm:pb-32 lg:pt-24 lg:pb-40">
+        {/* Content goes above the overlay with z-20 */}
+        <div className="container-main relative z-20 pt-12 pb-24 sm:pt-16 sm:pb-32 lg:pt-24 lg:pb-40">
           <div className="mx-auto max-w-3xl text-center">
-            {/* Reduced font size to give more visual room to the background */}
             <h1 className="mb-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl lg:text-4xl">
               {t('hero.title')}{' '}
               <span className="bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent">
@@ -56,12 +53,13 @@ export default async function HomePage({ params }: { params: { locale: string } 
         </div>
       </section>
 
-      {/* Floating 8-Item Menu Card (Creatrip Style) */}
-      <section className="bg-white pb-6 lg:pb-14 relative z-10 px-4">
-        {/* Adjusted overlap and softer, cleaner Creatrip-style box */}
-        <div className="mx-auto max-w-4xl bg-white rounded-3xl shadow-[0_4px_24px_rgb(0,0,0,0.06)] border border-gray-100 p-6 sm:p-8 lg:p-10 -mt-10 sm:-mt-14 lg:-mt-16">
-          {/* 4 columns across 2 rows (4x2) for ALL screen sizes tightly packed */}
-          <div className="grid grid-cols-4 gap-x-2 gap-y-6 sm:gap-x-4 sm:gap-y-8">
+      {/* Floating 8-Item Menu Card: 1-line horizontal scroll */}
+      <section className="bg-white pb-6 lg:pb-14 relative z-30 px-4">
+        {/* Adjusted overlap (-mt-4) to distance from the main slider, and reduced internal padding */}
+        <div className="mx-auto max-w-4xl bg-white rounded-3xl shadow-[0_4px_24px_rgb(0,0,0,0.06)] border border-gray-100 px-4 py-5 sm:px-8 sm:py-6 lg:px-10 lg:py-8 -mt-6 sm:-mt-8 lg:-mt-10">
+          
+          {/* 1 Horizontal Row, evenly spaced on desktop, horiz scroll on mobile */}
+          <div className="flex flex-row flex-nowrap items-start justify-start sm:justify-between overflow-x-auto gap-2 sm:gap-4 pb-2 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
             {[
               { label: 'Restaurants', icon: '🍽️', color: 'text-orange-600', href: '/restaurants' },
               { label: 'Wellness', icon: '✨', color: 'text-pink-600', href: '/wellness' },
@@ -75,13 +73,11 @@ export default async function HomePage({ params }: { params: { locale: string } 
               <Link
                 key={sub.label}
                 href={sub.href}
-                className="group flex flex-col items-center justify-start text-center cursor-pointer"
+                className="group flex flex-col items-center justify-start text-center cursor-pointer flex-shrink-0 w-16 sm:w-auto"
               >
-                {/* Creatrip style: very small, clean soft-background icons */}
-                <div className={`mb-2.5 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-[14px] bg-gray-50 border border-transparent group-hover:bg-white group-hover:border-gray-100 text-lg sm:text-xl shadow-sm transition-all group-hover:shadow-md group-hover:-translate-y-1 ${sub.color}`}>
+                <div className={`mb-2.5 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-[14px] bg-gray-50 border border-transparent group-hover:bg-white group-hover:border-gray-100 text-lg sm:text-xl shadow-sm transition-all group-hover:shadow-md group-hover:-translate-y-1 ${sub.color}`}>
                   {sub.icon}
                 </div>
-                {/* Creatrip style: delicate and precise font */}
                 <span className="text-[10px] sm:text-[11px] lg:text-xs font-medium tracking-tight text-gray-600 whitespace-nowrap group-hover:text-black">
                   {sub.label}
                 </span>
