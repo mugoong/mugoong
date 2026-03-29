@@ -13,13 +13,10 @@ export default async function HomePage({ params }: { params: { locale: string } 
   return (
     <>
       <section className="relative overflow-hidden bg-gray-900 border-none">
-        {/* 무제한 2초 슬라이더 배경 */}
         <HeroSlider />
         
-        {/* Dark overlay for text readability (z-10 to stay above slider) */}
         <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
 
-        {/* Content goes above the overlay with z-20 */}
         <div className="container-main relative z-20 pt-12 pb-24 sm:pt-16 sm:pb-32 lg:pt-24 lg:pb-40">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="mb-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl lg:text-4xl">
@@ -32,7 +29,6 @@ export default async function HomePage({ params }: { params: { locale: string } 
               {t('hero.subtitle')}
             </p>
 
-            {/* Search bar */}
             <div className="mx-auto flex max-w-xl items-center overflow-hidden rounded-full bg-white shadow-2xl">
               <div className="flex flex-1 items-center gap-2 px-4 py-2 sm:px-5 sm:py-3.5">
                 <svg className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,14 +48,13 @@ export default async function HomePage({ params }: { params: { locale: string } 
         </div>
       </section>
 
-      {/* Floating 8-Item Menu Card: 1-line horizontal scroll */}
-      <section className="bg-white py-12 lg:py-20 relative z-30 px-4 flex flex-col justify-center">
-        {/* 내부 패딩 대폭 축소 (py-4 sm:py-6) */}
-        <div className="mx-auto w-full max-w-5xl bg-white rounded-3xl shadow-[0_4px_30px_rgb(0,0,0,0.08)] border border-gray-100 px-4 py-4 sm:px-8 sm:py-6">
+      {/* Floating 8-Item Menu Card: Compressed Vertical Spacing */}
+      <section className="bg-white py-3 lg:py-5 relative z-30 px-4 flex flex-col justify-center">
+        {/* 외부 및 내부 패딩 1/4 체감되도록 극단적 축소 (py-2 sm:py-3) */}
+        <div className="mx-auto w-full max-w-5xl bg-white rounded-3xl shadow-[0_4px_30px_rgb(0,0,0,0.08)] border border-gray-100 px-4 py-3 sm:px-8 sm:py-4">
           
-          {/* Mobile: 4개씩 2줄 (grid-cols-4), Desktop: 8개 1줄 (lg:grid-cols-8) */}
-          {/* 위아래 간격도 대폭 축소 (gap-y-4) */}
-          <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-5 gap-x-2 sm:gap-x-4">
+          {/* Mobile: 4개씩 2줄 (grid-cols-4), Desktop: 8개 1줄 (lg:grid-cols-8). 상하 간격 최대로 좁힘 (gap-y-3) */}
+          <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-3 gap-x-2 sm:gap-x-4">
             {[
               { label: 'Restaurants', icon: '🍽️', color: 'text-orange-600', href: '/restaurants' },
               { label: 'Wellness', icon: '✨', color: 'text-pink-600', href: '/wellness' },

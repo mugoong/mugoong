@@ -2,21 +2,21 @@
 import { useState, useEffect } from 'react';
 
 const IMAGES = [
-  'https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=100&w=2560&auto=format&fit=crop', // Namsan Tower Pink Sunset
-  'https://images.unsplash.com/photo-1538485399081-7191377e8220?q=100&w=2560&auto=format&fit=crop', // Seoul Modern Night Skyline
-  'https://images.unsplash.com/photo-1588665064560-ce1e2ea3c4ba?q=100&w=2560&auto=format&fit=crop', // Han River Bridge at Sunset
-  'https://images.unsplash.com/photo-1582236315809-5a1ac2cfbf50?q=100&w=2560&auto=format&fit=crop', // Gwanghwamun/Bukchon style
-  'https://images.unsplash.com/photo-1620023419088-751bdccc7fd8?q=100&w=2560&auto=format&fit=crop', // Seoul Urban lights
+  '/slide-1.jpg',
+  '/slide-2.jpg',
+  '/slide-3.jpg',
+  '/slide-4.jpg',
+  '/slide-5.jpg',
 ];
 
 export default function HeroSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    // 2초 간격 자동 슬라이드
+    // 2.5초 간격무제한 슬라이드 (대표님 요청)
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % IMAGES.length);
-    }, 2000);
+    }, 2500);
     return () => clearInterval(timer);
   }, []);
 
