@@ -50,11 +50,11 @@ export const categories: CategoryConfig[] = [
 ];
 
 export const cities: CityConfig[] = [
-  { slug: 'seoul', labelKey: 'cities.seoul', image: 'https://images.unsplash.com/photo-1581289136611-9c869150041d?w=800&q=80' },
-  { slug: 'busan', labelKey: 'cities.busan', image: 'https://images.unsplash.com/photo-1620612480678-01d78278f244?w=800&q=80' },
-  { slug: 'jeju', labelKey: 'cities.jeju', image: 'https://images.unsplash.com/photo-1596489345711-4148acfb9fc4?w=800&q=80' },
-  { slug: 'gyeongju', labelKey: 'cities.gyeongju', image: 'https://images.unsplash.com/photo-1596707328659-dc3480ccb8cd?w=800&q=80' },
-  { slug: 'jeonju', labelKey: 'cities.jeonju', image: 'https://images.unsplash.com/photo-1619445105260-1e9671d1fedd?w=800&q=80' },
+  { slug: 'seoul', labelKey: 'cities.seoul', image: '/images/cities/seoul.jpg' },
+  { slug: 'busan', labelKey: 'cities.busan', image: '/images/cities/busan.jpg' },
+  { slug: 'jeju', labelKey: 'cities.jeju', image: '/images/cities/jeju.jpg' },
+  { slug: 'gyeongju', labelKey: 'cities.gyeongju', image: '/images/cities/gyeongju.jpg' },
+  { slug: 'jeonju', labelKey: 'cities.jeonju', image: '/images/cities/jeonju.jpg' },
 ];
 
 export function getCategoryBySlug(slug: string) {

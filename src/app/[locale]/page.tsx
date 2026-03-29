@@ -4,6 +4,10 @@ import { categories, cities } from '@/lib/categories';
 import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import HeroSlider from '@/components/HeroSlider';
+import {
+  RestaurantIcon, WellnessIcon, ActivitiesIcon, TipsIcon,
+  VegetarianIcon, HalalIcon, BarsIcon, TransportIcon,
+} from '@/components/CategoryIcons';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const t = await getTranslations({ locale: (await params).locale });
@@ -56,24 +60,24 @@ export default async function HomePage({ params }: { params: { locale: string } 
           {/* Mobile: 4개씩 2줄 (grid-cols-4), Desktop: 8개 1줄 (lg:grid-cols-8). 상하 간격 최대로 좁힘 (gap-y-3) */}
           <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-3 gap-x-2 sm:gap-x-4">
             {[
-              { label: 'Restaurants', icon: '🍽️', color: 'text-orange-600', href: '/restaurants' },
-              { label: 'Wellness', icon: '✨', color: 'text-pink-600', href: '/wellness' },
-              { label: 'Activities', icon: '🎯', color: 'text-indigo-600', href: '/activities' },
-              { label: 'Tips', icon: '💡', color: 'text-amber-600', href: '/tips-and-trend' },
-              { label: 'Vegetarian', icon: '🥬', color: 'text-emerald-600', href: '/tips-and-trend/vegetarian' },
-              { label: 'Halal', icon: '🌙', color: 'text-teal-600', href: '/tips-and-trend/halal' },
-              { label: 'Bars', icon: '🍻', color: 'text-yellow-600', href: '/restaurants/bars' },
-              { label: 'Transportation', icon: '🚆', color: 'text-blue-600', href: '/tips-and-trend/public-transportation' },
+              { label: 'Restaurants', Icon: RestaurantIcon, color: 'text-stone-700', href: '/restaurants' },
+              { label: 'Wellness', Icon: WellnessIcon, color: 'text-rose-400', href: '/wellness' },
+              { label: 'Activities', Icon: ActivitiesIcon, color: 'text-amber-700', href: '/activities' },
+              { label: 'Tips', Icon: TipsIcon, color: 'text-slate-600', href: '/tips-and-trend' },
+              { label: 'Vegetarian', Icon: VegetarianIcon, color: 'text-emerald-600', href: '/tips-and-trend/vegetarian' },
+              { label: 'Halal', Icon: HalalIcon, color: 'text-indigo-500', href: '/tips-and-trend/halal' },
+              { label: 'Bars', Icon: BarsIcon, color: 'text-amber-500', href: '/restaurants/bars' },
+              { label: 'Transport', Icon: TransportIcon, color: 'text-blue-500', href: '/tips-and-trend/public-transportation' },
             ].map((sub) => (
               <Link
                 key={sub.label}
                 href={sub.href}
                 className="group flex flex-col items-center justify-start text-center cursor-pointer"
               >
-                <div className={`mb-3 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-[16px] bg-gray-50 border border-transparent group-hover:bg-white group-hover:border-gray-100 text-xl sm:text-2xl shadow-sm transition-all group-hover:shadow-md group-hover:-translate-y-1 ${sub.color}`}>
-                  {sub.icon}
+                <div className={`mb-3 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-gray-50/80 border border-gray-100 shadow-sm transition-all group-hover:shadow-md group-hover:-translate-y-1 group-hover:bg-white ${sub.color}`}>
+                  <sub.Icon className="w-6 h-6 sm:w-7 sm:h-7" />
                 </div>
-                <span className="text-[11px] sm:text-xs font-bold tracking-tight text-gray-700 whitespace-nowrap group-hover:text-black">
+                <span className="text-[11px] sm:text-xs font-semibold tracking-tight text-gray-600 whitespace-nowrap group-hover:text-gray-900">
                   {sub.label}
                 </span>
               </Link>
