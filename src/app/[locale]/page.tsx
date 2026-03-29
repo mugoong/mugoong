@@ -1,12 +1,13 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { categories, cities } from '@/lib/categories';
-import { sampleListings } from '@/lib/sample-data';
+import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 
-export default function HomePage() {
-  const t = useTranslations();
-  const featured = sampleListings.filter((l) => l.featured);
+export default async function HomePage({ params }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale: (await params).locale });
+  const allListings = await getSupabaseListings();
+  const featured = allListings.filter((l) => l.featured);
 
   return (
     <>
@@ -163,7 +164,7 @@ export default function HomePage() {
                       {t(city.labelKey)}
                     </h3>
                     <p className="mt-1 text-sm text-white/70">
-                      {sampleListings.filter((l) => l.city === city.slug).length}+ experiences
+                      {allListings.filter((l) => l.city === city.slug).length}+ experiences
                     </p>
                   </div>
                 </div>

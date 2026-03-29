@@ -26,7 +26,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       {/* Top bar */}
       <div className="container-main">
-        <div className="relative flex items-center justify-between py-2 lg:py-4">
+        <div className="relative flex items-center justify-between py-3 lg:py-4">
           {/* Mobile Spacer (for flex balance) */}
           <div className="w-10 lg:hidden" />
 
@@ -73,7 +73,7 @@ export default function Header() {
 
             {/* Center Logo */}
             <Link href="/" className="flex flex-shrink-0 items-center justify-center px-4">
-              <img src="/logo.png" alt="MUGOONG" className="h-[80px] w-auto py-1" />
+              <img src="/logo.png" alt="MUGOONG" className="h-[96px] w-auto py-1" />
             </Link>
 
             {/* Right Nav & Utilities */}

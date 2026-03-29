@@ -1,9 +1,9 @@
 import { MetadataRoute } from 'next';
 import { locales } from '@/i18n/routing';
 import { categories } from '@/lib/categories';
-import { sampleListings } from '@/lib/sample-data';
+import { getSupabaseListings } from '@/lib/api';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://mugoong.com';
   const entries: MetadataRoute.Sitemap = [];
 
@@ -41,7 +41,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Listing pages
   for (const locale of locales) {
-    for (const listing of sampleListings) {
+    const allListings = await getSupabaseListings();
+  for (const listing of allListings) {
       entries.push({
         url: `${baseUrl}/${locale}/${listing.category}/${listing.subcategory}/${listing.slug}`,
         lastModified: new Date(),

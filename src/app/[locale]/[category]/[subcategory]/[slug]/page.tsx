@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { getCategoryBySlug, getSubcategoryBySlug } from '@/lib/categories';
-import { sampleListings } from '@/lib/sample-data';
+import { getSupabaseListings } from '@/lib/api';
 import ListingDetail from '@/components/ListingDetail';
 import type { Metadata } from 'next';
 
@@ -11,7 +11,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const listing = sampleListings.find((l) => l.slug === slug);
+  const allListings = await getSupabaseListings();
+  const listing = allListings.find((l) => l.slug === slug);
   if (!listing) return {};
 
   return {
@@ -31,7 +32,8 @@ export default async function ListingPage({ params }: Props) {
 
   const cat = getCategoryBySlug(category);
   const sub = getSubcategoryBySlug(category, subcategory);
-  const listing = sampleListings.find((l) => l.slug === slug);
+  const allListings = await getSupabaseListings();
+  const listing = allListings.find((l) => l.slug === slug);
 
   if (!cat || !sub || !listing) notFound();
 

@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
 import { getCategoryBySlug, getSubcategoryBySlug } from '@/lib/categories';
-import { sampleListings } from '@/lib/sample-data';
+import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import CityFilter from '@/components/CityFilter';
 import type { Metadata } from 'next';
@@ -18,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const sub = getSubcategoryBySlug(category, subcategory);
   if (!sub) return {};
 
+  const allListings = await getSupabaseListings();
   const t = await getTranslations({ locale });
   const title = t(sub.labelKey);
 
@@ -36,8 +37,9 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
   if (!cat || !sub) notFound();
 
   const t = await getTranslations({ locale });
+  const allListings = await getSupabaseListings();
 
-  const listings = sampleListings.filter(
+  const listings = allListings.filter(
     (l) =>
       l.category === (category as MainCategory) &&
       l.subcategory === subcategory &&

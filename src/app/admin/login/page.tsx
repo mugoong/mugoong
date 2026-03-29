@@ -31,9 +31,9 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-extrabold text-primary-600">MUGOONG</h1>
-          <p className="mt-2 text-gray-500">Admin Dashboard</p>
+        <div className="mb-8 flex flex-col items-center text-center">
+          <img src="/logo.png" alt="MUGOONG" className="mb-2 h-[80px] w-auto" />
+          <p className="text-gray-500">Admin Dashboard</p>
         </div>
 
         <form onSubmit={handleLogin} className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
