@@ -35,8 +35,10 @@ export default function HeroSlider() {
               src={src}
               alt={`Seoul Slide ${idx + 1}`}
               fill
+              sizes="100vw"
               quality={100}
               priority={idx === 0}
+              unoptimized
               className="object-cover object-center"
             />
           </div>
