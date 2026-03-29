@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "title": "MUGOONG - 韩国生活与旅行指南",
+    "description": "预订正宗的韩国体验：餐厅、养生、活动等。深受全球旅行者和留学生的信赖。"
+  },
+  "nav": {
+    "home": "首页",
+    "restaurants": "餐厅",
+    "wellness": "养生",
+    "activities": "活动",
+    "tipsAndTrend": "攻略&趋势",
+    "allCities": "所有城市",
+    "selectCity": "选择城市",
+    "language": "语言",
+    "bookNow": "立即预订"
+  },
+  "hero": {
+    "title": "发现韩国，",
+    "titleHighlight": "随心而行",
+    "subtitle": "预订正宗的本地体验 — 餐厅、养生、活动等。由当地人打造，为旅行者服务。",
+    "searchPlaceholder": "搜索韩国烤肉、皮肤科、烹饪课程...",
+    "exploreAll": "浏览全部"
+  },
+  "categories": {
+    "restaurants": "餐厅",
+    "wellness": "养生",
+    "activities": "活动",
+    "tipsAndTrend": "攻略&趋势"
+  },
+  "subcategories": {
+    "koreanFood": "韩国美食",
+    "koreanBBQ": "韩国烤肉",
+    "koreanFriedChicken": "韩式炸鸡",
+    "bars": "酒吧",
+    "skinClinic": "皮肤科诊所",
+    "hairSalon": "美发沙龙",
+    "sauna": "桑拿・汗蒸房",
+    "massage": "按摩",
+    "localExperience": "本地体验",
+    "cookingClasses": "烹饪课程",
+    "traditionalCulturalTours": "传统文化之旅",
+    "sports": "体育运动",
+    "travelTips": "旅行贴士",
+    "trendNow": "韩国最新潮流",
+    "vegetarian": "素食",
+    "halal": "清真",
+    "smokingSpots": "吸烟区",
+    "publicTransportation": "公共交通"
+  },
+  "cities": {
+    "seoul": "首尔",
+    "busan": "釜山",
+    "jeju": "济州",
+    "gyeongju": "庆州",
+    "jeonju": "全州"
+  },
+  "home": {
+    "featuredTitle": "精选体验",
+    "featuredSubtitle": "当地人精选，旅行者喜爱",
+    "exploreCities": "按城市探索",
+    "exploreCitiesSubtitle": "在韩国最受欢迎的城市发现独特体验",
+    "categoryTitle": "您在找什么？",
+    "categorySubtitle": "从美食到养生，一站搞定",
+    "viewAll": "查看全部",
+    "startingFrom": "起"
+  },
+  "listing": {
+    "reviews": "条评价",
+    "aboutThis": "关于此体验",
+    "highlights": "亮点",
+    "location": "位置",
+    "priceFrom": "起",
+    "perPerson": "/ 人"
+  },
+  "booking": {
+    "title": "预订此体验",
+    "selectDate": "选择日期",
+    "selectTime": "选择时间",
+    "guests": "人数",
+    "guest": "位",
+    "guestsPlural": "位",
+    "total": "合计",
+    "bookAndPay": "预订并支付",
+    "securePayment": "通过Stripe安全支付",
+    "instantConfirmation": "24小时内发送确认"
+  },
+  "footer": {
+    "about": "关于MUGOONG",
+    "aboutText": "我们将海外旅行者与正宗韩国体验相连接。从隐藏的本地餐厅到高级养生服务 — 像当地人一样发现韩国。",
+    "quickLinks": "快速链接",
+    "support": "支持",
+    "contactUs": "联系我们",
+    "faq": "常见问题",
+    "termsOfService": "服务条款",
+    "privacyPolicy": "隐私政策",
+    "followUs": "关注我们",
+    "copyright": "© 2026 MUGOONG. 保留所有权利。",
+    "builtWith": "用♥为韩国旅行者打造"
+  }
+}

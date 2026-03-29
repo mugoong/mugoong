@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude config:*)",
+      "Bash(claude whoami:*)",
+      "Bash(claude account:*)",
+      "WebFetch(domain:creatrip.com)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(find /c/Users/User/Desktop -maxdepth 3 -iname *mugoong* -o -iname *logo*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\User\\Desktop\\블라썸무궁\\mugoong",
+      "C:\\Users\\User\\Desktop\\블라썸무궁\\mugoong\\src\\app",
+      "C:\\Users\\User\\Desktop\\블라썸무궁\\mugoong\\src\\app\\admin\\listings\\edit"
+    ]
+  }
+}

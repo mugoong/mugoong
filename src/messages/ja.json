@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "title": "MUGOONG - 韓国での生活＆旅行ガイド",
+    "description": "本場の韓国体験を予約：レストラン、ウェルネス、アクティビティなど。世界中の旅行者・留学生に信頼されています。"
+  },
+  "nav": {
+    "home": "ホーム",
+    "restaurants": "レストラン",
+    "wellness": "ウェルネス",
+    "activities": "アクティビティ",
+    "tipsAndTrend": "Tips & Trend",
+    "allCities": "全都市",
+    "selectCity": "都市を選択",
+    "language": "言語",
+    "bookNow": "予約する"
+  },
+  "hero": {
+    "title": "韓国を発見、",
+    "titleHighlight": "あなたらしく",
+    "subtitle": "本場のローカル体験を予約 — レストラン、ウェルネス、アクティビティなど。地元の人が作った旅行者のためのサービス。",
+    "searchPlaceholder": "韓国BBQ、皮膚科、料理教室を検索...",
+    "exploreAll": "すべて見る"
+  },
+  "categories": {
+    "restaurants": "レストラン",
+    "wellness": "ウェルネス",
+    "activities": "アクティビティ",
+    "tipsAndTrend": "Tips & Trend"
+  },
+  "subcategories": {
+    "koreanFood": "韓国料理",
+    "koreanBBQ": "韓国焼肉",
+    "koreanFriedChicken": "韓国フライドチキン",
+    "bars": "バー",
+    "skinClinic": "皮膚科クリニック",
+    "hairSalon": "ヘアサロン",
+    "sauna": "サウナ・チムジルバン",
+    "massage": "マッサージ",
+    "localExperience": "ローカル体験",
+    "cookingClasses": "料理教室",
+    "traditionalCulturalTours": "伝統文化ツアー",
+    "sports": "スポーツ",
+    "travelTips": "旅行のヒント",
+    "trendNow": "韓国の最新トレンド",
+    "vegetarian": "ベジタリアン",
+    "halal": "ハラール",
+    "smokingSpots": "喫煙スポット",
+    "publicTransportation": "公共交通機関"
+  },
+  "cities": {
+    "seoul": "ソウル",
+    "busan": "釜山",
+    "jeju": "済州",
+    "gyeongju": "慶州",
+    "jeonju": "全州"
+  },
+  "home": {
+    "featuredTitle": "おすすめ体験",
+    "featuredSubtitle": "地元の人が厳選、旅行者に愛される体験",
+    "exploreCities": "都市から探す",
+    "exploreCitiesSubtitle": "韓国の人気都市でユニークな体験を見つけよう",
+    "categoryTitle": "何をお探しですか？",
+    "categorySubtitle": "グルメからウェルネスまで、すべてお任せ",
+    "viewAll": "すべて見る",
+    "startingFrom": "から"
+  },
+  "listing": {
+    "reviews": "件のレビュー",
+    "aboutThis": "この体験について",
+    "highlights": "ハイライト",
+    "location": "場所",
+    "priceFrom": "から",
+    "perPerson": "/ 人"
+  },
+  "booking": {
+    "title": "この体験を予約",
+    "selectDate": "日付を選択",
+    "selectTime": "時間を選択",
+    "guests": "人数",
+    "guest": "名",
+    "guestsPlural": "名",
+    "total": "合計",
+    "bookAndPay": "予約して支払う",
+    "securePayment": "Stripeによる安全な決済",
+    "instantConfirmation": "24時間以内に確認をお送りします"
+  },
+  "footer": {
+    "about": "MUGOONGについて",
+    "aboutText": "海外からの旅行者と本場の韓国体験をつなぐプラットフォーム。隠れた地元のレストランからプレミアムウェルネスまで — 地元の人のように韓国を発見しよう。",
+    "quickLinks": "クイックリンク",
+    "support": "サポート",
+    "contactUs": "お問い合わせ",
+    "faq": "よくある質問",
+    "termsOfService": "利用規約",
+    "privacyPolicy": "プライバシーポリシー",
+    "followUs": "フォローする",
+    "copyright": "© 2026 MUGOONG. All rights reserved.",
+    "builtWith": "韓国の旅行者のために♥を込めて"
+  }
+}

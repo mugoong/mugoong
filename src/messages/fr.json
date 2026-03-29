@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "title": "MUGOONG - Votre guide pour vivre et voyager en Corée",
+    "description": "Réservez des expériences coréennes authentiques : restaurants, bien-être, activités et plus. Approuvé par les voyageurs du monde entier."
+  },
+  "nav": {
+    "home": "Accueil",
+    "restaurants": "Restaurants",
+    "wellness": "Bien-être",
+    "activities": "Activités",
+    "tipsAndTrend": "Conseils & Tendances",
+    "allCities": "Toutes les villes",
+    "selectCity": "Choisir une ville",
+    "language": "Langue",
+    "bookNow": "Réserver"
+  },
+  "hero": {
+    "title": "Découvrez la Corée,",
+    "titleHighlight": "à votre façon",
+    "subtitle": "Réservez des expériences locales authentiques — restaurants, bien-être, activités et plus. Créé par des locaux, pour les voyageurs.",
+    "searchPlaceholder": "Rechercher BBQ coréen, clinique de peau, cours de cuisine...",
+    "exploreAll": "Tout explorer"
+  },
+  "categories": {
+    "restaurants": "Restaurants",
+    "wellness": "Bien-être",
+    "activities": "Activités",
+    "tipsAndTrend": "Conseils & Tendances"
+  },
+  "subcategories": {
+    "koreanFood": "Cuisine coréenne",
+    "koreanBBQ": "BBQ coréen",
+    "koreanFriedChicken": "Poulet frit coréen",
+    "bars": "Bars",
+    "skinClinic": "Clinique dermatologique",
+    "hairSalon": "Salon de coiffure",
+    "sauna": "Sauna & Jjimjilbang",
+    "massage": "Massage",
+    "localExperience": "Expérience locale",
+    "cookingClasses": "Cours de cuisine",
+    "traditionalCulturalTours": "Visites culturelles traditionnelles",
+    "sports": "Sports",
+    "travelTips": "Conseils de voyage",
+    "trendNow": "Tendances en Corée",
+    "vegetarian": "Végétarien",
+    "halal": "Halal",
+    "smokingSpots": "Zones fumeurs",
+    "publicTransportation": "Transports en commun"
+  },
+  "cities": {
+    "seoul": "Séoul",
+    "busan": "Busan",
+    "jeju": "Jeju",
+    "gyeongju": "Gyeongju",
+    "jeonju": "Jeonju"
+  },
+  "home": {
+    "featuredTitle": "Expériences en vedette",
+    "featuredSubtitle": "Sélectionnées par des locaux, aimées par les voyageurs",
+    "exploreCities": "Explorer par ville",
+    "exploreCitiesSubtitle": "Découvrez des expériences uniques dans les destinations les plus populaires de Corée",
+    "categoryTitle": "Que recherchez-vous ?",
+    "categorySubtitle": "De la gastronomie au bien-être, nous avons tout ce qu'il vous faut",
+    "viewAll": "Voir tout",
+    "startingFrom": "À partir de"
+  },
+  "listing": {
+    "reviews": "avis",
+    "aboutThis": "À propos de cette expérience",
+    "highlights": "Points forts",
+    "location": "Emplacement",
+    "priceFrom": "À partir de",
+    "perPerson": "/ personne"
+  },
+  "booking": {
+    "title": "Réserver cette expérience",
+    "selectDate": "Sélectionner la date",
+    "selectTime": "Sélectionner l'heure",
+    "guests": "Nombre de personnes",
+    "guest": "personne",
+    "guestsPlural": "personnes",
+    "total": "Total",
+    "bookAndPay": "Réserver et payer",
+    "securePayment": "Paiement sécurisé via Stripe",
+    "instantConfirmation": "Confirmation sous 24 heures"
+  },
+  "footer": {
+    "about": "À propos de MUGOONG",
+    "aboutText": "Nous connectons les voyageurs internationaux avec des expériences coréennes authentiques. Des restaurants locaux cachés aux services de bien-être premium — découvrez la Corée comme un local.",
+    "quickLinks": "Liens rapides",
+    "support": "Support",
+    "contactUs": "Contactez-nous",
+    "faq": "FAQ",
+    "termsOfService": "Conditions d'utilisation",
+    "privacyPolicy": "Politique de confidentialité",
+    "followUs": "Suivez-nous",
+    "copyright": "© 2026 MUGOONG. Tous droits réservés.",
+    "builtWith": "Fait avec ♥ pour les voyageurs en Corée"
+  }
+}

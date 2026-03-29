@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "title": "MUGOONG - Your Guide to Living & Traveling in Korea",
+    "description": "Book authentic Korean experiences: restaurants, wellness, activities & more. Trusted by travelers and expats worldwide."
+  },
+  "nav": {
+    "home": "Home",
+    "restaurants": "Restaurants",
+    "wellness": "Wellness",
+    "activities": "Activities",
+    "tipsAndTrend": "Tips & Trend",
+    "allCities": "All Cities",
+    "selectCity": "Select City",
+    "language": "Language",
+    "bookNow": "Book Now"
+  },
+  "hero": {
+    "title": "Discover Korea,",
+    "titleHighlight": "Your Way",
+    "subtitle": "Book authentic local experiences — restaurants, wellness, activities and more. Made for travelers, by locals.",
+    "searchPlaceholder": "Search for Korean BBQ, Skin Clinic, Cooking Class...",
+    "exploreAll": "Explore All"
+  },
+  "categories": {
+    "restaurants": "Restaurants",
+    "wellness": "Wellness",
+    "activities": "Activities",
+    "tipsAndTrend": "Tips & Trend"
+  },
+  "subcategories": {
+    "koreanFood": "Korean Food",
+    "koreanBBQ": "Korean BBQ",
+    "koreanFriedChicken": "Korean Fried Chicken",
+    "bars": "Bars",
+    "skinClinic": "Skin Clinic",
+    "hairSalon": "Hair Salon",
+    "sauna": "Sauna",
+    "massage": "Massage",
+    "localExperience": "Local Experience",
+    "cookingClasses": "Cooking Classes",
+    "traditionalCulturalTours": "Traditional Cultural Tours",
+    "sports": "Sports",
+    "travelTips": "Travel Tips",
+    "trendNow": "Trend Now in Korea",
+    "vegetarian": "Vegetarian",
+    "halal": "Halal",
+    "smokingSpots": "Smoking Spots",
+    "publicTransportation": "Public Transportation"
+  },
+  "cities": {
+    "seoul": "Seoul",
+    "busan": "Busan",
+    "jeju": "Jeju",
+    "gyeongju": "Gyeongju",
+    "jeonju": "Jeonju"
+  },
+  "home": {
+    "featuredTitle": "Featured Experiences",
+    "featuredSubtitle": "Hand-picked by locals, loved by travelers",
+    "exploreCities": "Explore by City",
+    "exploreCitiesSubtitle": "Discover unique experiences across Korea's most popular destinations",
+    "categoryTitle": "What are you looking for?",
+    "categorySubtitle": "From dining to wellness, we've got you covered",
+    "viewAll": "View All",
+    "startingFrom": "From"
+  },
+  "listing": {
+    "reviews": "reviews",
+    "aboutThis": "About This Experience",
+    "highlights": "Highlights",
+    "location": "Location",
+    "priceFrom": "From",
+    "perPerson": "/ person"
+  },
+  "booking": {
+    "title": "Book This Experience",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "guests": "Number of Guests",
+    "guest": "guest",
+    "guestsPlural": "guests",
+    "total": "Total",
+    "bookAndPay": "Book & Pay Now",
+    "securePayment": "Secure payment via Stripe",
+    "instantConfirmation": "You'll receive confirmation within 24 hours"
+  },
+  "footer": {
+    "about": "About MUGOONG",
+    "aboutText": "We connect international travelers with authentic Korean experiences. From hidden local restaurants to premium wellness services — discover Korea like a local.",
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "contactUs": "Contact Us",
+    "faq": "FAQ",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "followUs": "Follow Us",
+    "copyright": "© 2026 MUGOONG. All rights reserved.",
+    "builtWith": "Made with ♥ for travelers in Korea"
+  }
+}
