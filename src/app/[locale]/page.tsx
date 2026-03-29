@@ -13,23 +13,26 @@ export default async function HomePage({ params }: { params: { locale: string } 
     <>
       {/* Hero Section */}
       {/* Hero Section */}
+      {/* Hero Section */}
       <section 
         className="relative overflow-hidden bg-gray-900 bg-cover bg-center"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1584931441315-bbbc246ee384?q=80&w=1920&auto=format&fit=crop')" }}
+        // 서울 밤 야경 보장된 이미지 URL
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=1920&auto=format&fit=crop')" }}
       >
         {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/50" />
 
-        <div className="container-main relative py-10 sm:py-14 lg:py-20">
+        {/* Increase bottom padding to fit the floating card */}
+        <div className="container-main relative pt-12 pb-32 sm:pt-16 sm:pb-40 lg:pt-24 lg:pb-48">
           <div className="mx-auto max-w-3xl text-center">
-            {/* Reduced font size for title to allow bottom icons to peak over the fold */}
+            {/* Reduced font size for mobile and slightly larger for large screens */}
             <h1 className="mb-4 text-2xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
               {t('hero.title')}{' '}
               <span className="bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent">
                 {t('hero.titleHighlight')}
               </span>
             </h1>
-            <p className="mx-auto mb-6 max-w-2xl text-base text-primary-50 sm:text-lg">
+            <p className="mx-auto mb-6 max-w-2xl text-sm text-primary-50 sm:text-lg">
               {t('hero.subtitle')}
             </p>
 
@@ -49,60 +52,40 @@ export default async function HomePage({ params }: { params: { locale: string } 
                 {t('hero.exploreAll')}
               </button>
             </div>
-
-            {/* City quick links */}
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              {cities.map((city) => (
-                <Link
-                  key={city.slug}
-                  href={`/?city=${city.slug}`}
-                  className="rounded-full border border-white/30 px-4 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-medium text-white/90 backdrop-blur-sm transition-all hover:border-white hover:bg-white/10 hover:text-white"
-                >
-                  {t(city.labelKey)}
-                </Link>
-              ))}
-            </div>
+            {/* Quick links removed as they cluttered the view. Icons do the job now. */}
           </div>
         </div>
       </section>
 
-      {/* 12 Subcategories Icon Grid */}
-      <section className="bg-white py-6 sm:py-10 border-b border-gray-100">
-        <div className="container-main">
-          {/* Strictly 6 columns on ALL breakpoints so it stacks into 2 rows of 6 */}
-          <div className="grid grid-cols-6 gap-x-2 gap-y-4 sm:gap-x-4 sm:gap-y-6">
+      {/* Floating 8-Item Menu Card (말풍선 직사각형) */}
+      <section className="bg-white pb-6 lg:pb-14 relative z-10 px-4">
+        <div className="mx-auto max-w-5xl bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 p-4 sm:p-6 lg:p-10 -mt-20 sm:-mt-24 lg:-mt-32">
+          {/* 4 columns strictly across 2 rows for desktop & mobile to ensure tight fit */}
+          <div className="grid grid-cols-4 gap-x-2 gap-y-4 sm:gap-x-4 sm:gap-y-6">
             {[
-              { main: 'restaurants', slug: 'korean-food', icon: '🍲', color: 'bg-orange-50 text-orange-600 border-orange-100' },
-              { main: 'restaurants', slug: 'korean-bbq', icon: '🥩', color: 'bg-red-50 text-red-600 border-red-100' },
-              { main: 'restaurants', slug: 'korean-fried-chicken', icon: '🍗', color: 'bg-yellow-50 text-yellow-600 border-yellow-100' },
-              { main: 'restaurants', slug: 'bars', icon: '🍻', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-              { main: 'wellness', slug: 'skin-clinic', icon: '✨', color: 'bg-pink-50 text-pink-600 border-pink-100' },
-              { main: 'wellness', slug: 'hair-salon', icon: '✂️', color: 'bg-rose-50 text-rose-600 border-rose-100' },
-              { main: 'wellness', slug: 'sauna', icon: '♨️', color: 'bg-sky-50 text-sky-600 border-sky-100' },
-              { main: 'wellness', slug: 'massage', icon: '💆‍♀️', color: 'bg-purple-50 text-purple-600 border-purple-100' },
-              { main: 'activities', slug: 'local-experience', icon: '📸', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
-              { main: 'activities', slug: 'cooking-classes', icon: '🍳', color: 'bg-teal-50 text-teal-600 border-teal-100' },
-              { main: 'activities', slug: 'traditional-cultural-tours', icon: '🏯', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-              { main: 'activities', slug: 'sports', icon: '🏸', color: 'bg-blue-50 text-blue-600 border-blue-100' },
-            ].map((sub) => {
-              const catObj = categories.find(c => c.slug === sub.main);
-              const subObj = catObj?.subcategories.find(s => s.slug === sub.slug);
-              
-              return (
-                <Link
-                  key={sub.slug}
-                  href={`/${sub.main}/${sub.slug}`}
-                  className="group flex flex-col items-center text-center transition-transform hover:-translate-y-1 cursor-pointer"
-                >
-                  <div className={`mb-2.5 flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-2xl border ${sub.color} text-2xl lg:text-3xl shadow-sm transition-all group-hover:shadow-md group-hover:scale-105`}>
-                    {sub.icon}
-                  </div>
-                  <span className="text-[11px] lg:text-xs font-bold tracking-tight text-gray-700 line-clamp-2 w-full px-1 group-hover:text-black">
-                    {subObj ? t(subObj.labelKey) : sub.slug}
-                  </span>
-                </Link>
-              );
-            })}
+              { label: 'Restaurants', icon: '🍽️', color: 'bg-orange-50 text-orange-600 border-orange-100', href: '/restaurants' },
+              { label: 'Wellness', icon: '✨', color: 'bg-pink-50 text-pink-600 border-pink-100', href: '/wellness' },
+              { label: 'Activities', icon: '🎯', color: 'bg-indigo-50 text-indigo-600 border-indigo-100', href: '/activities' },
+              { label: 'Tips', icon: '💡', color: 'bg-amber-50 text-amber-600 border-amber-100', href: '/tips-and-trend' },
+              { label: 'Vegetarian', icon: '🥬', color: 'bg-emerald-50 text-emerald-600 border-emerald-100', href: '/tips-and-trend/vegetarian' },
+              { label: 'Halal', icon: '🌙', color: 'bg-teal-50 text-teal-600 border-teal-100', href: '/tips-and-trend/halal' },
+              { label: 'Bars', icon: '🍻', color: 'bg-yellow-50 text-yellow-600 border-yellow-100', href: '/restaurants/bars' },
+              { label: 'Transport', icon: '🚆', color: 'bg-blue-50 text-blue-600 border-blue-100', href: '/tips-and-trend/public-transportation' },
+            ].map((sub) => (
+              <Link
+                key={sub.label}
+                href={sub.href}
+                className="group flex flex-col items-center text-center transition-transform hover:-translate-y-1 cursor-pointer"
+              >
+                <div className={`mb-2.5 flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-2xl border ${sub.color} text-2xl lg:text-3xl shadow-sm transition-all group-hover:shadow-md group-hover:scale-105`}>
+                  {sub.icon}
+                </div>
+                {/* Text styling made highly compact to prevent wrapping on small mobile screens */}
+                <span className="text-[10px] sm:text-xs lg:text-sm font-bold tracking-tight text-gray-700 whitespace-nowrap overflow-visible">
+                  {sub.label}
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
