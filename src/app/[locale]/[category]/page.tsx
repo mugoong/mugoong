@@ -1,8 +1,7 @@
-import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
-import { getCategoryBySlug, cities } from '@/lib/categories';
+import { getCategoryBySlug } from '@/lib/categories';
 import { sampleListings } from '@/lib/sample-data';
 import ListingCard from '@/components/ListingCard';
 import CityFilter from '@/components/CityFilter';
@@ -29,11 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params, searchParams }: Props) {
-  const { category } = await params;
+  const { locale, category } = await params;
   const { city } = await searchParams;
   const cat = getCategoryBySlug(category);
 
   if (!cat) notFound();
+
+  const t = await getTranslations({ locale });
 
   const listings = sampleListings.filter(
     (l) =>
@@ -41,19 +42,11 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       (!city || l.city === city)
   );
 
-  return <CategoryPageContent category={cat} listings={listings} activeCity={city} />;
-}
-
-function CategoryPageContent({
-  category,
-  listings,
-  activeCity,
-}: {
-  category: NonNullable<ReturnType<typeof getCategoryBySlug>>;
-  listings: typeof sampleListings;
-  activeCity?: string;
-}) {
-  const t = useTranslations();
+  const categoryLabel = t(cat.labelKey);
+  const subLabels: Record<string, string> = {};
+  for (const sub of cat.subcategories) {
+    subLabels[sub.slug] = t(sub.labelKey);
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -61,13 +54,13 @@ function CategoryPageContent({
       <div className="bg-gradient-to-r from-primary-600 to-primary-800 py-12 lg:py-16">
         <div className="container-main">
           <div className="flex items-center gap-3">
-            <span className="text-4xl">{category.icon}</span>
+            <span className="text-4xl">{cat.icon}</span>
             <div>
               <h1 className="text-3xl font-bold text-white lg:text-4xl">
-                {t(category.labelKey)}
+                {categoryLabel}
               </h1>
               <p className="mt-1 text-primary-100">
-                Discover the best {t(category.labelKey).toLowerCase()} in Korea
+                Discover the best {categoryLabel.toLowerCase()} in Korea
               </p>
             </div>
           </div>
@@ -78,24 +71,24 @@ function CategoryPageContent({
         {/* Subcategory tabs */}
         <div className="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           <Link
-            href={`/${category.slug}${activeCity ? `?city=${activeCity}` : ''}`}
+            href={`/${cat.slug}${city ? `?city=${city}` : ''}`}
             className="flex-shrink-0 rounded-full bg-primary-500 px-5 py-2 text-sm font-medium text-white"
           >
             All
           </Link>
-          {category.subcategories.map((sub) => (
+          {cat.subcategories.map((sub) => (
             <Link
               key={sub.slug}
-              href={`/${category.slug}/${sub.slug}${activeCity ? `?city=${activeCity}` : ''}`}
+              href={`/${cat.slug}/${sub.slug}${city ? `?city=${city}` : ''}`}
               className="flex-shrink-0 rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-600 transition-colors hover:border-primary-500 hover:text-primary-600"
             >
-              {t(sub.labelKey)}
+              {subLabels[sub.slug]}
             </Link>
           ))}
         </div>
 
         {/* City filter */}
-        <CityFilter activeCity={activeCity} basePath={`/${category.slug}`} />
+        <CityFilter activeCity={city} basePath={`/${cat.slug}`} />
 
         {/* Listings grid */}
         {listings.length > 0 ? (

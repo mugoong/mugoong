@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/navigation';
@@ -29,12 +28,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function SubcategoryPage({ params, searchParams }: Props) {
-  const { category, subcategory } = await params;
+  const { locale, category, subcategory } = await params;
   const { city } = await searchParams;
 
   const cat = getCategoryBySlug(category);
   const sub = getSubcategoryBySlug(category, subcategory);
   if (!cat || !sub) notFound();
+
+  const t = await getTranslations({ locale });
 
   const listings = sampleListings.filter(
     (l) =>
@@ -43,21 +44,12 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
       (!city || l.city === city)
   );
 
-  return <SubcategoryContent category={cat} subcategory={sub} listings={listings} activeCity={city} />;
-}
-
-function SubcategoryContent({
-  category,
-  subcategory,
-  listings,
-  activeCity,
-}: {
-  category: NonNullable<ReturnType<typeof getCategoryBySlug>>;
-  subcategory: NonNullable<ReturnType<typeof getSubcategoryBySlug>>;
-  listings: typeof sampleListings;
-  activeCity?: string;
-}) {
-  const t = useTranslations();
+  const categoryLabel = t(cat.labelKey);
+  const subcategoryLabel = t(sub.labelKey);
+  const subLabels: Record<string, string> = {};
+  for (const s of cat.subcategories) {
+    subLabels[s.slug] = t(s.labelKey);
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,14 +60,14 @@ function SubcategoryContent({
           <nav className="mb-4 flex items-center gap-2 text-sm text-primary-200">
             <Link href="/" className="hover:text-white">Home</Link>
             <span>/</span>
-            <Link href={`/${category.slug}`} className="hover:text-white">
-              {t(category.labelKey)}
+            <Link href={`/${cat.slug}`} className="hover:text-white">
+              {categoryLabel}
             </Link>
             <span>/</span>
-            <span className="text-white">{t(subcategory.labelKey)}</span>
+            <span className="text-white">{subcategoryLabel}</span>
           </nav>
           <h1 className="text-3xl font-bold text-white lg:text-4xl">
-            {t(subcategory.labelKey)}
+            {subcategoryLabel}
           </h1>
         </div>
       </div>
@@ -83,23 +75,23 @@ function SubcategoryContent({
       <div className="container-main py-8">
         {/* Sibling subcategory tabs */}
         <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
-          {category.subcategories.map((sub) => (
+          {cat.subcategories.map((s) => (
             <Link
-              key={sub.slug}
-              href={`/${category.slug}/${sub.slug}${activeCity ? `?city=${activeCity}` : ''}`}
+              key={s.slug}
+              href={`/${cat.slug}/${s.slug}${city ? `?city=${city}` : ''}`}
               className={`flex-shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-colors ${
-                sub.slug === subcategory.slug
+                s.slug === sub.slug
                   ? 'bg-primary-500 text-white'
                   : 'border border-gray-200 bg-white text-gray-600 hover:border-primary-500 hover:text-primary-600'
               }`}
             >
-              {t(sub.labelKey)}
+              {subLabels[s.slug]}
             </Link>
           ))}
         </div>
 
         {/* City filter */}
-        <CityFilter activeCity={activeCity} basePath={`/${category.slug}/${subcategory.slug}`} />
+        <CityFilter activeCity={city} basePath={`/${cat.slug}/${sub.slug}`} />
 
         {/* Listings */}
         {listings.length > 0 ? (
@@ -119,3 +111,4 @@ function SubcategoryContent({
     </div>
   );
 }
+
