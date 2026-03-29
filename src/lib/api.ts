@@ -1,6 +1,8 @@
 
 import { Listing } from '@/types';
 
+import { sampleListings } from '@/lib/sample-data';
+
 export const getSupabaseListings = async (): Promise<Listing[]> => {
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL + '/rest/v1/listings?published=eq.true&select=*&order=created_at.desc';
@@ -13,9 +15,9 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
     });
     
     const data = await res.json();
-    if (!Array.isArray(data)) return [];
+    if (!Array.isArray(data) || data.length === 0) return sampleListings;
     
-    return data.map(row => ({
+    return data.map((row: any) => ({
       id: row.id,
       slug: row.slug,
       category: row.category,
@@ -32,7 +34,7 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
       featured: row.featured || false,
     }));
   } catch (e) {
-    console.error(e);
-    return [];
+    console.error('Supabase fetch failed, returning sample listings fallback', e);
+    return sampleListings;
   }
 };

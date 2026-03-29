@@ -26,13 +26,13 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       {/* Top bar */}
       <div className="container-main">
-        <div className="relative flex items-center justify-between py-3 lg:py-4">
+        <div className="relative flex items-center justify-between py-4 lg:py-4">
           {/* Mobile Spacer (for flex balance) */}
           <div className="w-10 lg:hidden" />
 
           {/* Mobile Logo */}
           <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center lg:hidden">
-            <img src="/logo.png" alt="MUGOONG" className="h-[54px] w-auto" />
+            <img src="/logo.png" alt="MUGOONG" className="h-[65px] w-auto" />
           </Link>
 
           {/* Desktop Navigation Structure */}
