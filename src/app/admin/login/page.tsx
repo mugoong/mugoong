@@ -16,16 +16,26 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      if (!url || url === 'your-supabase-url-here') {
+        throw new Error('Supabase 데이터베이스 연동 키가 Vercel에 설정되지 않았습니다! Vercel 환경 변수에 URL과 Key를 등록해 주세요.');
+      }
 
-    if (error) {
-      setError(error.message);
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      router.push('/admin');
+    } catch (err: any) {
+      setError(err.message || '로그인 중 오류가 발생했습니다.');
       setLoading(false);
-      return;
     }
-
-    router.push('/admin');
   };
 
   return (
@@ -52,7 +62,7 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-200"
               placeholder="you@example.com"
             />
           </div>
@@ -64,7 +74,7 @@ export default function AdminLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-200"
               placeholder="••••••••"
             />
           </div>
@@ -72,7 +82,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-primary-500 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-50"
+            className="w-full rounded-lg bg-gray-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-black disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
