@@ -56,10 +56,10 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Breadcrumb + Hero */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 py-10 lg:py-14">
+      <div className="bg-gradient-to-r from-primary-600 to-primary-800 py-3 lg:py-5">
         <div className="container-main">
           {/* Breadcrumb */}
-          <nav className="mb-4 flex items-center gap-2 text-sm text-primary-200">
+          <nav className="mb-1.5 flex items-center gap-2 text-sm text-primary-200">
             <Link href="/" className="hover:text-white">Home</Link>
             <span>/</span>
             <Link href={`/${cat.slug}`} className="hover:text-white">

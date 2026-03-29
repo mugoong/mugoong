@@ -53,7 +53,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero banner */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 py-12 lg:py-16">
+      <div className="bg-gradient-to-r from-primary-600 to-primary-800 py-4 lg:py-5">
         <div className="container-main">
           <div className="flex items-center gap-3">
             <span className="text-4xl">{cat.icon}</span>
