@@ -12,7 +12,6 @@ export default async function HomePage({ params }: { params: { locale: string } 
 
   return (
     <>
-      {/* Hero Section */}
       <section className="relative overflow-hidden bg-gray-900 border-none">
         {/* 무제한 2초 슬라이더 배경 */}
         <HeroSlider />
@@ -55,11 +54,12 @@ export default async function HomePage({ params }: { params: { locale: string } 
 
       {/* Floating 8-Item Menu Card: 1-line horizontal scroll */}
       <section className="bg-white py-12 lg:py-20 relative z-30 px-4 flex flex-col justify-center">
-        {/* 오버랩(음수 마진)을 제거하고, 슬라이더와 명확히 떨어져 하얀 바탕 정중앙에 위치하도록 수정 */}
-        <div className="mx-auto w-full max-w-5xl bg-white rounded-3xl shadow-[0_4px_30px_rgb(0,0,0,0.08)] border border-gray-100 px-4 py-8 sm:px-8 sm:py-10">
+        {/* 내부 패딩 대폭 축소 (py-4 sm:py-6) */}
+        <div className="mx-auto w-full max-w-5xl bg-white rounded-3xl shadow-[0_4px_30px_rgb(0,0,0,0.08)] border border-gray-100 px-4 py-4 sm:px-8 sm:py-6">
           
           {/* Mobile: 4개씩 2줄 (grid-cols-4), Desktop: 8개 1줄 (lg:grid-cols-8) */}
-          <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-8 gap-x-2 sm:gap-x-4">
+          {/* 위아래 간격도 대폭 축소 (gap-y-4) */}
+          <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-5 gap-x-2 sm:gap-x-4">
             {[
               { label: 'Restaurants', icon: '🍽️', color: 'text-orange-600', href: '/restaurants' },
               { label: 'Wellness', icon: '✨', color: 'text-pink-600', href: '/wellness' },
