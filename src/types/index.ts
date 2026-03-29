@@ -1,10 +1,18 @@
 export type City = 'seoul' | 'busan' | 'jeju' | 'gyeongju' | 'jeonju';
 
 export type MainCategory = 'restaurants' | 'wellness' | 'activities' | 'tips-and-trend';
+export type ContentType = 'product' | 'article';
+
+export interface MenuItem {
+  name: string;
+  price: number;
+  description?: string;
+}
 
 export interface SubCategory {
   slug: string;
   labelKey: string;
+  defaultContentType?: ContentType;
 }
 
 export interface CategoryConfig {
@@ -25,9 +33,11 @@ export interface Listing {
   slug: string;
   category: MainCategory;
   subcategory: string;
+  contentType: ContentType;
   city: City;
   title: string;
   description: string;
+  content: string;
   image: string;
   price: number;
   currency: string;
@@ -35,4 +45,9 @@ export interface Listing {
   reviewCount: number;
   tags: string[];
   featured: boolean;
+  address?: string;
+  phone?: string;
+  operatingHours?: string;
+  menuItems?: MenuItem[];
+  published?: boolean;
 }

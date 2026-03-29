@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const {
+    let {
       listing_id,
       listing_title,
       customer_name,
@@ -27,6 +27,27 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = await createServerSupabaseClient();
+
+    if (listing_id) {
+      const { data: listing, error: listingError } = await supabase
+        .from('listings')
+        .select('title, content_type')
+        .eq('id', listing_id)
+        .single();
+
+      if (listingError) {
+        return NextResponse.json({ error: listingError.message }, { status: 400 });
+      }
+
+      if (listing.content_type === 'article') {
+        return NextResponse.json(
+          { error: 'Bookings are not available for CMS articles' },
+          { status: 400 }
+        );
+      }
+
+      listing_title = listing.title;
+    }
 
     const { data, error } = await supabase.from('bookings').insert({
       listing_id,

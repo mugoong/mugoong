@@ -6,6 +6,7 @@ import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import CityFilter from '@/components/CityFilter';
 import type { Metadata } from 'next';
+import CategoryIcon from '@/components/CategoryIcon';
 import type { MainCategory } from '@/types';
 
 type Props = {
@@ -18,7 +19,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = getCategoryBySlug(category);
   if (!cat) return {};
 
-  const allListings = await getSupabaseListings();
   const t = await getTranslations({ locale });
   const title = t(cat.labelKey);
 
@@ -56,7 +56,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <div className="bg-gradient-to-r from-primary-600 to-primary-800 py-4 lg:py-5">
         <div className="container-main">
           <div className="flex items-center gap-3">
-            <span className="text-4xl">{cat.icon}</span>
+            <CategoryIcon slug={cat.slug} className="w-10 h-10 text-white" />
             <div>
               <h1 className="text-3xl font-bold text-white lg:text-4xl">
                 {categoryLabel}

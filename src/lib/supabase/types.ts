@@ -9,6 +9,7 @@ export type Database = {
           slug: string;
           category: string;
           subcategory: string;
+          content_type: 'product' | 'article';
           city: string;
           title: string;
           description: string;
