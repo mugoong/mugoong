@@ -6,7 +6,6 @@ import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import CityFilter from '@/components/CityFilter';
 import type { Metadata } from 'next';
-import CategoryIcon from '@/components/CategoryIcon';
 import type { MainCategory } from '@/types';
 
 type Props = {
@@ -19,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const sub = getSubcategoryBySlug(category, subcategory);
   if (!sub) return {};
 
+  const allListings = await getSupabaseListings();
   const t = await getTranslations({ locale });
   const title = t(sub.labelKey);
 
@@ -68,12 +68,9 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
             <span>/</span>
             <span className="text-white">{subcategoryLabel}</span>
           </nav>
-          <div className="flex items-center gap-3">
-            <CategoryIcon slug={cat.slug} className="w-10 h-10 text-white" />
-            <h1 className="text-3xl font-bold text-white lg:text-4xl">
-              {subcategoryLabel}
-            </h1>
-          </div>
+          <h1 className="text-3xl font-bold text-white lg:text-4xl">
+            {subcategoryLabel}
+          </h1>
         </div>
       </div>
 
@@ -116,3 +113,4 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
     </div>
   );
 }
+

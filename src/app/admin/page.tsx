@@ -72,8 +72,8 @@ export default function AdminDashboard() {
             <Link href="/admin/listings/new" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:bg-primary-50 hover:border-primary-200">
               <span className="text-xl">➕</span>
               <div>
-                <p className="font-medium text-gray-900">Add New Content</p>
-                <p className="text-sm text-gray-500">Create a product or CMS article for the public website</p>
+                <p className="font-medium text-gray-900">Add New Listing</p>
+                <p className="text-sm text-gray-500">Create a restaurant, wellness, or activity listing</p>
               </div>
             </Link>
             <Link href="/admin/bookings" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:bg-primary-50 hover:border-primary-200">

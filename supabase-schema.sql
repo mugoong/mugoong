@@ -16,7 +16,6 @@ CREATE TABLE public.listings (
   slug TEXT UNIQUE NOT NULL,
   category TEXT NOT NULL,
   subcategory TEXT NOT NULL,
-  content_type TEXT NOT NULL DEFAULT 'product' CHECK (content_type IN ('product', 'article')),
   city TEXT NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL DEFAULT '',
@@ -41,7 +40,6 @@ CREATE TABLE public.listings (
 -- Indexes for fast filtering
 CREATE INDEX idx_listings_category ON public.listings(category);
 CREATE INDEX idx_listings_subcategory ON public.listings(subcategory);
-CREATE INDEX idx_listings_content_type ON public.listings(content_type);
 CREATE INDEX idx_listings_city ON public.listings(city);
 CREATE INDEX idx_listings_published ON public.listings(published);
 CREATE INDEX idx_listings_featured ON public.listings(featured);
