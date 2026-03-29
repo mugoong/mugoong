@@ -26,7 +26,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       {/* Top bar */}
       <div className="container-main">
-        <div className="flex h-16 items-center justify-between lg:h-24">
+        <div className="flex items-center justify-between py-2 lg:py-6">
           {/* Mobile Logo */}
           <Link href="/" className="flex items-center gap-2 lg:hidden">
             <img src="/logo.png" alt="MUGOONG" className="h-[72px] w-auto py-2" />
@@ -46,7 +46,7 @@ export default function Header() {
                 >
                   <Link
                     href={`/${cat.slug}`}
-                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
+                    className="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
                   >
                     {t(cat.labelKey)}
                   </Link>
@@ -113,7 +113,7 @@ export default function Header() {
                 <div className="relative">
                   <button
                     onClick={() => setCityMenuOpen(!cityMenuOpen)}
-                    className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                    className="flex whitespace-nowrap items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -151,7 +151,7 @@ export default function Header() {
                 <div className="relative">
                   <button
                     onClick={() => setLangMenuOpen(!langMenuOpen)}
-                    className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                    className="flex whitespace-nowrap items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
