@@ -26,27 +26,30 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       {/* Top bar */}
       <div className="container-main">
-        <div className="flex items-center justify-between py-2 lg:py-6">
+        <div className="relative flex items-center justify-between py-2 lg:py-4">
+          {/* Mobile Spacer (for flex balance) */}
+          <div className="w-10 lg:hidden" />
+
           {/* Mobile Logo */}
-          <Link href="/" className="flex items-center gap-2 lg:hidden">
-            <img src="/logo.png" alt="MUGOONG" className="h-[72px] w-auto py-2" />
+          <Link href="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center lg:hidden">
+            <img src="/logo.png" alt="MUGOONG" className="h-[54px] w-auto" />
           </Link>
 
           {/* Desktop Navigation Structure */}
           <div className="hidden w-full items-center justify-between lg:flex">
             
             {/* Left Nav */}
-            <nav className="flex flex-1 items-center justify-end gap-2 pr-10">
+            <nav className="flex flex-1 items-center justify-end gap-1 pr-6">
               {categories.slice(0, 2).map((cat) => (
                 <div
                   key={cat.slug}
-                  className="relative"
+                  className="relative shrink-0"
                   onMouseEnter={() => setActiveDropdown(cat.slug)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
                   <Link
                     href={`/${cat.slug}`}
-                    className="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
+                    className="block whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
                   >
                     {t(cat.labelKey)}
                   </Link>
@@ -70,22 +73,22 @@ export default function Header() {
 
             {/* Center Logo */}
             <Link href="/" className="flex flex-shrink-0 items-center justify-center px-4">
-              <img src="/logo.png" alt="MUGOONG" className="h-[110px] w-auto py-2" />
+              <img src="/logo.png" alt="MUGOONG" className="h-[80px] w-auto py-1" />
             </Link>
 
             {/* Right Nav & Utilities */}
-            <div className="flex flex-1 items-center justify-between pl-10">
-              <nav className="flex items-center gap-2">
+            <div className="flex flex-1 items-center justify-between pl-6 text-nowrap">
+              <nav className="flex items-center gap-1">
                 {categories.slice(2).map((cat) => (
                   <div
                     key={cat.slug}
-                    className="relative"
+                    className="relative shrink-0"
                     onMouseEnter={() => setActiveDropdown(cat.slug)}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
                     <Link
                       href={`/${cat.slug}`}
-                      className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
+                      className="block whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
                     >
                       {t(cat.labelKey)}
                     </Link>
@@ -108,18 +111,18 @@ export default function Header() {
               </nav>
 
               {/* City & Language Selectors */}
-              <div className="flex items-center gap-3">
+              <div className="flex shrink-0 items-center gap-2">
                 {/* City selector */}
-                <div className="relative">
+                <div className="relative shrink-0">
                   <button
                     onClick={() => setCityMenuOpen(!cityMenuOpen)}
-                    className="flex whitespace-nowrap items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                    className="flex shrink-0 whitespace-nowrap items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    {t('nav.allCities')}
+                    <span className="whitespace-nowrap">{t('nav.allCities')}</span>
                     <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -148,15 +151,15 @@ export default function Header() {
                 </div>
 
                 {/* Language selector */}
-                <div className="relative">
+                <div className="relative shrink-0">
                   <button
                     onClick={() => setLangMenuOpen(!langMenuOpen)}
-                    className="flex whitespace-nowrap items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                    className="flex shrink-0 whitespace-nowrap items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    {localeNames[locale]}
+                    <span className="whitespace-nowrap">{localeNames[locale]}</span>
                     <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
