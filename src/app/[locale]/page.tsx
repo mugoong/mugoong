@@ -54,12 +54,12 @@ export default async function HomePage({ params }: { params: { locale: string } 
       </section>
 
       {/* Floating 8-Item Menu Card: 1-line horizontal scroll */}
-      <section className="bg-white pb-6 lg:pb-14 relative z-30 px-4">
-        {/* Adjusted overlap (-mt-4) to distance from the main slider, and reduced internal padding */}
-        <div className="mx-auto max-w-4xl bg-white rounded-3xl shadow-[0_4px_24px_rgb(0,0,0,0.06)] border border-gray-100 px-4 py-5 sm:px-8 sm:py-6 lg:px-10 lg:py-8 -mt-6 sm:-mt-8 lg:-mt-10">
+      <section className="bg-white py-12 lg:py-20 relative z-30 px-4 flex flex-col justify-center">
+        {/* 오버랩(음수 마진)을 제거하고, 슬라이더와 명확히 떨어져 하얀 바탕 정중앙에 위치하도록 수정 */}
+        <div className="mx-auto w-full max-w-5xl bg-white rounded-3xl shadow-[0_4px_30px_rgb(0,0,0,0.08)] border border-gray-100 px-4 py-8 sm:px-8 sm:py-10">
           
-          {/* 1 Horizontal Row, evenly spaced on desktop, horiz scroll on mobile */}
-          <div className="flex flex-row flex-nowrap items-start justify-start sm:justify-between overflow-x-auto gap-2 sm:gap-4 pb-2 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+          {/* Mobile: 4개씩 2줄 (grid-cols-4), Desktop: 8개 1줄 (lg:grid-cols-8) */}
+          <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-8 gap-x-2 sm:gap-x-4">
             {[
               { label: 'Restaurants', icon: '🍽️', color: 'text-orange-600', href: '/restaurants' },
               { label: 'Wellness', icon: '✨', color: 'text-pink-600', href: '/wellness' },
@@ -73,12 +73,12 @@ export default async function HomePage({ params }: { params: { locale: string } 
               <Link
                 key={sub.label}
                 href={sub.href}
-                className="group flex flex-col items-center justify-start text-center cursor-pointer flex-shrink-0 w-16 sm:w-auto"
+                className="group flex flex-col items-center justify-start text-center cursor-pointer"
               >
-                <div className={`mb-2.5 flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-[14px] bg-gray-50 border border-transparent group-hover:bg-white group-hover:border-gray-100 text-lg sm:text-xl shadow-sm transition-all group-hover:shadow-md group-hover:-translate-y-1 ${sub.color}`}>
+                <div className={`mb-3 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-[16px] bg-gray-50 border border-transparent group-hover:bg-white group-hover:border-gray-100 text-xl sm:text-2xl shadow-sm transition-all group-hover:shadow-md group-hover:-translate-y-1 ${sub.color}`}>
                   {sub.icon}
                 </div>
-                <span className="text-[10px] sm:text-[11px] lg:text-xs font-medium tracking-tight text-gray-600 whitespace-nowrap group-hover:text-black">
+                <span className="text-[11px] sm:text-xs font-bold tracking-tight text-gray-700 whitespace-nowrap group-hover:text-black">
                   {sub.label}
                 </span>
               </Link>

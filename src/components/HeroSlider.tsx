@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react';
 
 const IMAGES = [
-  '/slide-1.jpg',
-  '/slide-2.jpg',
-  '/slide-3.jpg',
-  '/slide-4.jpg',
-  '/slide-5.jpg',
+  'https://images.unsplash.com/photo-1596489345711-4148acfb9fc4?q=100&w=2560&auto=format&fit=crop', // 롯데타워 노을 (유사 느낌 최고화질)
+  'https://images.unsplash.com/photo-1546874177-9e664107e3cb?q=100&w=2560&auto=format&fit=crop', // 경복궁 전경 최고화질
+  'https://images.unsplash.com/photo-1617260580956-65487e452140?q=100&w=2560&auto=format&fit=crop', // 도심 야경/남산 타워
+  'https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=100&w=2560&auto=format&fit=crop', // 남산 타워 클래식 야경 (대표님 애정 픽)
+  'https://images.unsplash.com/photo-1582236315809-5a1ac2cfbf50?q=100&w=2560&auto=format&fit=crop', // 광화문/도심 현대적 야경
 ];
 
 export default function HeroSlider() {
