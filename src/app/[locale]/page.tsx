@@ -66,8 +66,8 @@ export default async function HomePage({ params }: { params: { locale: string } 
               { label: 'Wellness', Icon: WellnessIcon, color: 'text-rose-400', href: '/wellness' },
               { label: 'Activities', Icon: ActivitiesIcon, color: 'text-amber-700', href: '/activities' },
               { label: 'Tips', Icon: TipsIcon, color: 'text-slate-600', href: '/tips-and-trend' },
-              { label: 'Vegetarian', Icon: VegetarianIcon, color: 'text-emerald-600', href: '/tips-and-trend/vegetarian' },
-              { label: 'Halal', Icon: HalalIcon, color: 'text-indigo-500', href: '/tips-and-trend/halal' },
+              { label: 'Vegetarian', Icon: VegetarianIcon, color: 'text-emerald-600', href: '/restaurants/vegetarian' },
+              { label: 'Halal', Icon: HalalIcon, color: 'text-indigo-500', href: '/restaurants/halal' },
               { label: 'Bars', Icon: BarsIcon, color: 'text-amber-500', href: '/restaurants/bars' },
               { label: 'Transport', Icon: TransportIcon, color: 'text-blue-500', href: '/tips-and-trend/public-transportation' },
             ].map((sub) => (

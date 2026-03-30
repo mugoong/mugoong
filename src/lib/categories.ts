@@ -10,6 +10,8 @@ export const categories: CategoryConfig[] = [
       { slug: 'korean-bbq', labelKey: 'subcategories.koreanBBQ' },
       { slug: 'korean-fried-chicken', labelKey: 'subcategories.koreanFriedChicken' },
       { slug: 'bars', labelKey: 'subcategories.bars' },
+      { slug: 'vegetarian', labelKey: 'subcategories.vegetarian' },
+      { slug: 'halal', labelKey: 'subcategories.halal' },
     ],
   },
   {
@@ -41,8 +43,6 @@ export const categories: CategoryConfig[] = [
     subcategories: [
       { slug: 'travel-tips', labelKey: 'subcategories.travelTips' },
       { slug: 'trend-now', labelKey: 'subcategories.trendNow' },
-      { slug: 'vegetarian', labelKey: 'subcategories.vegetarian' },
-      { slug: 'halal', labelKey: 'subcategories.halal' },
       { slug: 'smoking-spots', labelKey: 'subcategories.smokingSpots' },
       { slug: 'public-transportation', labelKey: 'subcategories.publicTransportation' },
     ],
