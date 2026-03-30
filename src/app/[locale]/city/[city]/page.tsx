@@ -9,7 +9,7 @@ import type { MainCategory } from '@/types';
 
 type Props = {
   params: Promise<{ locale: string; city: string }>;
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; subcategory?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CityPage({ params, searchParams }: Props) {
   const { locale, city } = await params;
-  const { category } = await searchParams;
+  const { category, subcategory } = await searchParams;
 
   const cityConfig = cities.find((c) => c.slug === city);
   if (!cityConfig) notFound();
@@ -40,12 +40,21 @@ export default async function CityPage({ params, searchParams }: Props) {
   const listings = allListings.filter(
     (l) =>
       l.city === city &&
-      (!category || l.category === (category as MainCategory))
+      (!category || l.category === (category as MainCategory)) &&
+      (!subcategory || l.subcategory === subcategory)
   );
 
   const categoryLabels: Record<string, string> = {};
   for (const cat of categories) {
     categoryLabels[cat.slug] = t(cat.labelKey);
+  }
+
+  const activeCat = category ? categories.find((c) => c.slug === category) : null;
+  const subLabels: Record<string, string> = {};
+  if (activeCat) {
+    for (const sub of activeCat.subcategories) {
+      subLabels[sub.slug] = t(sub.labelKey);
+    }
   }
 
   return (
@@ -69,7 +78,7 @@ export default async function CityPage({ params, searchParams }: Props) {
 
       <div className="container-main py-8">
         {/* Category filter tabs */}
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="mb-4 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           <Link
             href={`/city/${city}`}
             className={`flex-shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-colors ${
@@ -94,6 +103,35 @@ export default async function CityPage({ params, searchParams }: Props) {
             </Link>
           ))}
         </div>
+
+        {/* Subcategory filter tabs (shown when a category is selected) */}
+        {activeCat && (
+          <div className="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            <Link
+              href={`/city/${city}?category=${category}`}
+              className={`flex-shrink-0 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                !subcategory
+                  ? 'bg-gray-800 text-white'
+                  : 'border border-gray-200 bg-white text-gray-500 hover:border-gray-400 hover:text-gray-700'
+              }`}
+            >
+              All {categoryLabels[activeCat.slug]}
+            </Link>
+            {activeCat.subcategories.map((sub) => (
+              <Link
+                key={sub.slug}
+                href={`/city/${city}?category=${category}&subcategory=${sub.slug}`}
+                className={`flex-shrink-0 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                  subcategory === sub.slug
+                    ? 'bg-gray-800 text-white'
+                    : 'border border-gray-200 bg-white text-gray-500 hover:border-gray-400 hover:text-gray-700'
+                }`}
+              >
+                {subLabels[sub.slug]}
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* Listings */}
         {listings.length > 0 ? (
