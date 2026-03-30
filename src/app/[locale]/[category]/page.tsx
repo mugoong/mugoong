@@ -79,10 +79,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
       <div className="container-main py-8">
         {/* Subcategory tabs */}
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="mb-6 flex flex-wrap gap-2">
           <Link
             href={`/${cat.slug}${city ? `?city=${city}` : ''}`}
-            className="flex-shrink-0 rounded-full bg-primary-500 px-5 py-2 text-sm font-medium text-white"
+            className="rounded-full bg-primary-500 px-5 py-2 text-sm font-medium text-white"
           >
             All
           </Link>
@@ -90,7 +90,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
             <Link
               key={sub.slug}
               href={`/${cat.slug}/${sub.slug}${city ? `?city=${city}` : ''}`}
-              className="flex-shrink-0 rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-600 transition-colors hover:border-primary-500 hover:text-primary-600"
+              className="rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-600 transition-colors hover:border-primary-500 hover:text-primary-600"
             >
               {subLabels[sub.slug]}
             </Link>

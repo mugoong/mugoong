@@ -14,13 +14,13 @@ export default function CityFilter({
   const t = useTranslations();
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2">
+    <div className="flex flex-wrap gap-2">
       <Link
         href={basePath}
-        className={`flex-shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
           !activeCity
-            ? 'bg-primary-50 text-primary-600 ring-1 ring-primary-200'
-            : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-primary-200 hover:text-primary-600'
+            ? 'bg-primary-50 text-primary-600 border border-primary-200'
+            : 'bg-white text-gray-600 border border-gray-200 hover:border-primary-200 hover:text-primary-600'
         }`}
       >
         📍 {t('nav.allCities')}
@@ -29,10 +29,10 @@ export default function CityFilter({
         <Link
           key={city.slug}
           href={`${basePath}?city=${city.slug}`}
-          className={`flex-shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
             activeCity === city.slug
-              ? 'bg-primary-50 text-primary-600 ring-1 ring-primary-200'
-              : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-primary-200 hover:text-primary-600'
+              ? 'bg-primary-50 text-primary-600 border border-primary-200'
+              : 'bg-white text-gray-600 border border-gray-200 hover:border-primary-200 hover:text-primary-600'
           }`}
         >
           {t(city.labelKey)}

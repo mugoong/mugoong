@@ -130,7 +130,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
             {cities.map((city, index) => (
               <Link
                 key={city.slug}
-                href={`/?city=${city.slug}`}
+                href={`/city/${city.slug}`}
                 className={`group relative overflow-hidden rounded-2xl shadow-sm card-hover ${
                   index === 0 ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2' : ''
                 }`}
