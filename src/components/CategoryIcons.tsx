@@ -92,6 +92,52 @@ export function BarsIcon({ className = 'w-7 h-7' }: { className?: string }) {
   );
 }
 
+export function SkinClinicIcon({ className = 'w-7 h-7' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {/* Syringe/injection */}
+      <path d="M30 6l6 6" />
+      <path d="M33 9l-18 18-3 3-6 6" />
+      <path d="M27 15l6 6" />
+      <path d="M15 27l6 6" />
+      <path d="M21 21l6 6" />
+      {/* Sparkle */}
+      <line x1="40" y1="20" x2="40" y2="26" />
+      <line x1="37" y1="23" x2="43" y2="23" />
+    </svg>
+  );
+}
+
+export function MassageIcon({ className = 'w-7 h-7' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {/* Two hands giving massage */}
+      <circle cx="24" cy="14" r="6" />
+      <path d="M14 28c0-4 4-8 10-8s10 4 10 8" />
+      <path d="M10 34c2-2 5-4 8-4" />
+      <path d="M38 34c-2-2-5-4-8-4" />
+      {/* Relaxation waves */}
+      <path d="M20 38c2-1 4-1 8 0" />
+      <path d="M18 42c3-1 6-1 12 0" />
+    </svg>
+  );
+}
+
+export function TraditionalIcon({ className = 'w-7 h-7' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {/* Korean traditional gate/hanok roof */}
+      <path d="M6 22c0 0 6-12 18-12s18 12 18 12" />
+      <line x1="6" y1="22" x2="42" y2="22" />
+      <line x1="10" y1="22" x2="10" y2="40" />
+      <line x1="38" y1="22" x2="38" y2="40" />
+      <line x1="6" y1="40" x2="42" y2="40" />
+      {/* Door */}
+      <rect x="20" y="28" width="8" height="12" rx="4" />
+    </svg>
+  );
+}
+
 export function TransportIcon({ className = 'w-7 h-7' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

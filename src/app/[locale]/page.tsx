@@ -5,8 +5,9 @@ import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import HeroSlider from '@/components/HeroSlider';
 import {
-  RestaurantIcon, WellnessIcon, ActivitiesIcon, TipsIcon,
-  VegetarianIcon, HalalIcon, BarsIcon, TransportIcon,
+  RestaurantIcon, ActivitiesIcon,
+  VegetarianIcon, BarsIcon, TransportIcon,
+  SkinClinicIcon, MassageIcon, TraditionalIcon,
 } from '@/components/CategoryIcons';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
@@ -63,11 +64,11 @@ export default async function HomePage({ params }: { params: { locale: string } 
           <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-3 gap-x-2 sm:gap-x-4">
             {[
               { label: 'Restaurants', Icon: RestaurantIcon, color: 'text-stone-700', href: '/restaurants' },
-              { label: 'Wellness', Icon: WellnessIcon, color: 'text-rose-400', href: '/wellness' },
+              { label: 'Skin Clinic', Icon: SkinClinicIcon, color: 'text-rose-400', href: '/wellness/skin-clinic' },
               { label: 'Activities', Icon: ActivitiesIcon, color: 'text-amber-700', href: '/activities' },
-              { label: 'Tips', Icon: TipsIcon, color: 'text-slate-600', href: '/tips-and-trend' },
+              { label: 'Massages', Icon: MassageIcon, color: 'text-slate-600', href: '/wellness/massage' },
               { label: 'Vegetarian', Icon: VegetarianIcon, color: 'text-emerald-600', href: '/restaurants/vegetarian' },
-              { label: 'Halal', Icon: HalalIcon, color: 'text-indigo-500', href: '/restaurants/halal' },
+              { label: 'Traditional', Icon: TraditionalIcon, color: 'text-indigo-500', href: '/activities/traditional-cultural-tours' },
               { label: 'Bars', Icon: BarsIcon, color: 'text-amber-500', href: '/restaurants/bars' },
               { label: 'Transport', Icon: TransportIcon, color: 'text-blue-500', href: '/tips-and-trend/public-transportation' },
             ].map((sub) => (
