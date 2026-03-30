@@ -6,7 +6,15 @@ import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import CityFilter from '@/components/CityFilter';
 import type { Metadata } from 'next';
+import { RestaurantIcon, WellnessIcon, ActivitiesIcon, TipsIcon } from '@/components/CategoryIcons';
 import type { MainCategory } from '@/types';
+
+const categoryIcons: Record<string, React.FC<{ className?: string }>> = {
+  restaurants: RestaurantIcon,
+  wellness: WellnessIcon,
+  activities: ActivitiesIcon,
+  'tips-and-trend': TipsIcon,
+};
 
 type Props = {
   params: Promise<{ locale: string; category: string; subcategory: string }>;
@@ -68,9 +76,12 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
             <span>/</span>
             <span className="text-white">{subcategoryLabel}</span>
           </nav>
-          <h1 className="text-3xl font-bold text-white lg:text-4xl">
-            {subcategoryLabel}
-          </h1>
+          <div className="flex items-center gap-3">
+            {(() => { const Icon = categoryIcons[cat.slug]; return Icon ? <Icon className="w-8 h-8 text-white" /> : null; })()}
+            <h1 className="text-xl font-bold text-white lg:text-2xl">
+              {subcategoryLabel}
+            </h1>
+          </div>
         </div>
       </div>
 

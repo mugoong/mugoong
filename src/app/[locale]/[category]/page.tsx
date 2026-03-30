@@ -6,7 +6,15 @@ import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import CityFilter from '@/components/CityFilter';
 import type { Metadata } from 'next';
+import { RestaurantIcon, WellnessIcon, ActivitiesIcon, TipsIcon } from '@/components/CategoryIcons';
 import type { MainCategory } from '@/types';
+
+const categoryIcons: Record<string, React.FC<{ className?: string }>> = {
+  restaurants: RestaurantIcon,
+  wellness: WellnessIcon,
+  activities: ActivitiesIcon,
+  'tips-and-trend': TipsIcon,
+};
 
 type Props = {
   params: Promise<{ locale: string; category: string }>;
@@ -56,12 +64,12 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <div className="bg-gradient-to-r from-primary-600 to-primary-800 py-4 lg:py-5">
         <div className="container-main">
           <div className="flex items-center gap-3">
-            <span className="text-4xl">{cat.icon}</span>
+            {(() => { const Icon = categoryIcons[cat.slug]; return Icon ? <Icon className="w-8 h-8 text-white" /> : null; })()}
             <div>
-              <h1 className="text-3xl font-bold text-white lg:text-4xl">
+              <h1 className="text-xl font-bold text-white lg:text-2xl">
                 {categoryLabel}
               </h1>
-              <p className="mt-1 text-primary-100">
+              <p className="mt-0.5 text-xs text-primary-100 lg:text-sm">
                 Discover the best {categoryLabel.toLowerCase()} in Korea
               </p>
             </div>

@@ -56,7 +56,9 @@ export default async function HomePage({ params }: { params: { locale: string } 
       <section className="bg-white py-3 lg:py-5 relative z-30 px-4 flex flex-col justify-center">
         {/* 외부 및 내부 패딩 1/4 체감되도록 극단적 축소 (py-2 sm:py-3) */}
         <div className="mx-auto w-full max-w-5xl bg-white rounded-3xl shadow-[0_4px_30px_rgb(0,0,0,0.08)] border border-gray-100 px-4 py-3 sm:px-8 sm:py-4">
-          
+          <p className="mb-3 text-center text-sm font-medium text-gray-500">
+            Book authentic local experiences with MUGOONG
+          </p>
           {/* Mobile: 4개씩 2줄 (grid-cols-4), Desktop: 8개 1줄 (lg:grid-cols-8). 상하 간격 최대로 좁힘 (gap-y-3) */}
           <div className="grid grid-cols-4 lg:grid-cols-8 gap-y-3 gap-x-2 sm:gap-x-4">
             {[
