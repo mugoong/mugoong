@@ -139,7 +139,7 @@ export default function Header() {
                       {cities.map((city) => (
                         <Link
                           key={city.slug}
-                          href={`/?city=${city.slug}`}
+                          href={`/city/${city.slug}`}
                           onClick={() => setCityMenuOpen(false)}
                           className="block rounded-lg px-4 py-2.5 text-sm text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600"
                         >
@@ -218,7 +218,7 @@ export default function Header() {
               {cities.map((city) => (
                 <Link
                   key={city.slug}
-                  href={`/?city=${city.slug}`}
+                  href={`/city/${city.slug}`}
                   onClick={() => setMobileMenuOpen(false)}
                   className="rounded-full border border-gray-200 px-4 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-primary-500 hover:text-primary-600"
                 >
