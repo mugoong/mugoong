@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 const IMAGES = [
@@ -12,11 +12,16 @@ const IMAGES = [
 
 export default function HeroSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const directionRef = useRef(1);
 
   useEffect(() => {
-    // 2.5초 간격무제한 슬라이드 (대표님 요청)
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % IMAGES.length);
+      setCurrentIndex((prev) => {
+        const next = prev + directionRef.current;
+        if (next >= IMAGES.length - 1) directionRef.current = -1;
+        if (next <= 0) directionRef.current = 1;
+        return next;
+      });
     }, 2500);
     return () => clearInterval(timer);
   }, []);
