@@ -28,6 +28,7 @@ export interface Listing {
   city: City;
   title: string;
   description: string;
+  content: string;
   image: string;
   price: number;
   currency: string;
@@ -35,4 +36,9 @@ export interface Listing {
   reviewCount: number;
   tags: string[];
   featured: boolean;
+  address: string;
+  phone: string;
+  operating_hours: string;
+  menu_items: any[];
+  notes: string;
 }

@@ -1,5 +1,7 @@
 import { Listing } from '@/types';
 
+const defaults = { content: '', address: '', phone: '', operating_hours: '', menu_items: [] as any[], notes: '' };
+
 export const sampleListings: Listing[] = [
   {
     id: '1',
@@ -16,6 +18,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 234,
     tags: ['HOT', 'Traditional'],
     featured: true,
+    ...defaults,
   },
   {
     id: '2',
@@ -32,6 +35,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 189,
     tags: ['BEST', 'Premium'],
     featured: true,
+    ...defaults,
   },
   {
     id: '3',
@@ -48,6 +52,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 156,
     tags: ['HOT'],
     featured: false,
+    ...defaults,
   },
   {
     id: '4',
@@ -64,6 +69,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 98,
     tags: ['NEW'],
     featured: true,
+    ...defaults,
   },
   {
     id: '5',
@@ -80,6 +86,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 312,
     tags: ['BEST', 'Premium'],
     featured: true,
+    ...defaults,
   },
   {
     id: '6',
@@ -96,6 +103,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 267,
     tags: ['HOT'],
     featured: true,
+    ...defaults,
   },
   {
     id: '7',
@@ -112,6 +120,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 421,
     tags: ['Popular'],
     featured: false,
+    ...defaults,
   },
   {
     id: '8',
@@ -128,6 +137,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 345,
     tags: ['Cultural', 'HOT'],
     featured: true,
+    ...defaults,
   },
   {
     id: '9',
@@ -144,6 +154,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 178,
     tags: ['BEST'],
     featured: true,
+    ...defaults,
   },
   {
     id: '10',
@@ -160,6 +171,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 201,
     tags: ['HOT', 'Busan'],
     featured: true,
+    ...defaults,
   },
   {
     id: '11',
@@ -176,6 +188,7 @@ export const sampleListings: Listing[] = [
     reviewCount: 143,
     tags: ['Jeju Special'],
     featured: true,
+    ...defaults,
   },
   {
     id: '12',
@@ -192,5 +205,6 @@ export const sampleListings: Listing[] = [
     reviewCount: 267,
     tags: ['BEST', 'Must-Try'],
     featured: true,
+    ...defaults,
   },
 ];

@@ -50,7 +50,7 @@ export default function ListingDetail({
   subcategory: SubCategory;
 }) {
   const t = useTranslations();
-  const extra = parseExtra((listing as any).notes);
+  const extra = parseExtra(listing.notes);
   const cat = category.slug;
   const isTips = cat === 'tips-and-trend';
 
@@ -111,30 +111,28 @@ export default function ListingDetail({
             <div className="mt-8">
               <h2 className="mb-4 text-xl font-bold text-gray-900">{t('listing.aboutThis')}</h2>
               <p className="leading-relaxed text-gray-600">{listing.description}</p>
-              {(listing as any).content && (
-                <div className="mt-4 whitespace-pre-line leading-relaxed text-gray-600">{(listing as any).content}</div>
+              {listing.content && (
+                <div className="mt-4 whitespace-pre-line leading-relaxed text-gray-600">{listing.content}</div>
               )}
             </div>
 
-            {/* ── RESTAURANT-specific: info & menu ── */}
+            {/* ── RESTAURANT-specific ── */}
             {cat === 'restaurants' && (
-              <>
-                <div className="mt-8 rounded-xl border border-gray-100 p-5">
-                  <h2 className="mb-3 text-lg font-bold text-gray-900">🍽️ Restaurant Info</h2>
-                  <div className="grid gap-1 sm:grid-cols-2">
-                    <InfoRow icon="📍" label="Address" value={(listing as any).address} />
-                    <InfoRow icon="📞" label="Phone" value={(listing as any).phone} />
-                    <InfoRow icon="🕐" label="Hours" value={(listing as any).operating_hours} />
-                    <InfoRow icon="📋" label="Reservation" value={extra.reservation as string} />
-                    <InfoRow icon="🅿️" label="Parking" value={extra.parking as string} />
-                    <InfoRow icon="💳" label="Payment" value={extra.payment as string} />
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {extra.english_menu && <Check>English menu available</Check>}
-                    {extra.seating && <Check>{extra.seating as string}</Check>}
-                  </div>
+              <div className="mt-8 rounded-xl border border-gray-100 p-5">
+                <h2 className="mb-3 text-lg font-bold text-gray-900">🍽️ Restaurant Info</h2>
+                <div className="grid gap-1 sm:grid-cols-2">
+                  <InfoRow icon="📍" label="Address" value={listing.address} />
+                  <InfoRow icon="📞" label="Phone" value={listing.phone} />
+                  <InfoRow icon="🕐" label="Hours" value={listing.operating_hours} />
+                  <InfoRow icon="📋" label="Reservation" value={extra.reservation as string} />
+                  <InfoRow icon="🅿️" label="Parking" value={extra.parking as string} />
+                  <InfoRow icon="💳" label="Payment" value={extra.payment as string} />
                 </div>
-              </>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {extra.english_menu && <Check>English menu available</Check>}
+                  {extra.seating && <Check>{extra.seating as string}</Check>}
+                </div>
+              </div>
             )}
 
             {/* ── WELLNESS-specific ── */}
@@ -142,9 +140,9 @@ export default function ListingDetail({
               <div className="mt-8 rounded-xl border border-gray-100 p-5">
                 <h2 className="mb-3 text-lg font-bold text-gray-900">✨ Clinic Details</h2>
                 <div className="grid gap-1 sm:grid-cols-2">
-                  <InfoRow icon="📍" label="Address" value={(listing as any).address} />
-                  <InfoRow icon="📞" label="Phone" value={(listing as any).phone} />
-                  <InfoRow icon="🕐" label="Hours" value={(listing as any).operating_hours} />
+                  <InfoRow icon="📍" label="Address" value={listing.address} />
+                  <InfoRow icon="📞" label="Phone" value={listing.phone} />
+                  <InfoRow icon="🕐" label="Hours" value={listing.operating_hours} />
                   <InfoRow icon="📋" label="Reservation" value={extra.reservation as string} />
                   <InfoRow icon="👤" label="Gender Policy" value={extra.gender_policy as string} />
                   <InfoRow icon="⏱️" label="Duration" value={extra.duration as string} />

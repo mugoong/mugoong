@@ -25,6 +25,7 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
       city: row.city,
       title: row.title,
       description: row.description,
+      content: row.content || '',
       image: row.image_url || 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&q=80',
       price: row.price,
       currency: row.currency,
@@ -32,6 +33,11 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
       reviewCount: row.review_count || 0,
       tags: row.tags || [],
       featured: row.featured || false,
+      address: row.address || '',
+      phone: row.phone || '',
+      operating_hours: row.operating_hours || '',
+      menu_items: row.menu_items || [],
+      notes: row.notes || '',
     }));
   } catch (e) {
     console.error('Supabase fetch failed, returning sample listings fallback', e);
