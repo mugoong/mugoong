@@ -84,31 +84,31 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       <div className="container-main">
 
-        {/* ─── DESKTOP: logo is position:absolute at exact 50% — never moves ─── */}
+        {/* ─── DESKTOP ─── */}
+        {/* Logo is absolute at left:50% — always perfect center.            */}
+        {/* Left 50% = cats 1&2 (right-aligned). Right 50% = cats 3&4 (left-aligned) + utilities pinned far right. */}
         <div className="relative hidden w-full items-center py-2 lg:flex" style={{ minHeight: '104px' }}>
 
-          {/* Logo: absolute center, completely independent of left/right content */}
+          {/* Logo: absolute center — untouched by any sibling */}
           <Link href="/" className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
             <img src="/logo.png" alt="MUGOONG" className="h-[96px] w-auto py-1" />
           </Link>
 
-          {/* Left: categories 1 & 2 */}
-          <nav className="flex items-center gap-0.5">
+          {/* Left 50%: categories 1 & 2, pushed toward logo */}
+          <div className="flex w-1/2 items-center justify-end pr-[120px]">
             {categories.slice(0, 2).map((cat) => (
               <CategoryDropdown key={cat.slug} cat={cat} />
             ))}
-          </nav>
+          </div>
 
-          {/* Right: categories 3 & 4 + utilities pushed to far right */}
-          <div className="ml-auto flex items-center">
-            <nav className="flex items-center gap-0.5">
-              {categories.slice(2).map((cat) => (
-                <CategoryDropdown key={cat.slug} cat={cat} />
-              ))}
-            </nav>
+          {/* Right 50%: categories 3 & 4 close to logo, utilities at far right */}
+          <div className="flex w-1/2 items-center pl-[120px]">
+            {categories.slice(2).map((cat) => (
+              <CategoryDropdown key={cat.slug} cat={cat} />
+            ))}
 
-            {/* Utilities: city · language · divider · auth */}
-            <div className="ml-3 flex items-center gap-1">
+            {/* Utilities: always pinned to right edge */}
+            <div className="ml-auto flex items-center gap-1">
 
               {/* City selector */}
               <div className="relative">
@@ -171,7 +171,7 @@ export default function Header() {
               {/* Divider */}
               <div className="mx-1 h-5 w-px bg-gray-200" />
 
-              {/* Auth — fixed position, always visible */}
+              {/* Auth */}
               {user ? (
                 <div className="relative">
                   <button
