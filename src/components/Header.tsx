@@ -30,6 +30,16 @@ export default function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -240,7 +250,10 @@ export default function Header() {
 
       {/* ─── MOBILE MENU (drawer) ─── */}
       {mobileMenuOpen && (
-        <div className="border-t border-gray-100 bg-white lg:hidden">
+        <div
+          className="overflow-y-auto border-t border-gray-100 bg-white lg:hidden"
+          style={{ maxHeight: 'calc(100dvh - 70px)' }}
+        >
           <div className="container-main py-4">
 
             {/* City pills */}
