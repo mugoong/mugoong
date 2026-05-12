@@ -78,7 +78,7 @@ export const sampleListings: Listing[] = [
         external_reviews: [
           { source: 'Google', reviewer: 'Sarah M.', rating: 5, text: 'Absolutely incredible food tour! The bindaetteok was the best thing I\'ve ever eaten. Our guide was so knowledgeable about the market\'s history.', date: '2026-04-20' },
           { source: 'TripAdvisor', reviewer: 'James L.', rating: 4, text: 'Great experience overall. The market was busy but our guide navigated it perfectly. The mayak gimbap lives up to its name — truly addictive!', date: '2026-04-15' },
-          { source: 'Naver', reviewer: '여행자김', rating: 5, text: '외국인 친구와 함께 갔는데 영어 메뉴가 잘 되어있어서 좋았습니다. 빈대떡 맛집은 정말 최고!', date: '2026-03-28' },
+          { source: 'Naver', reviewer: '여행자김', rating: 5, text: '외국인 친구와 함께 갔는데 영어 메뉴가 잘 되어있어서 좋았습니다. 빈대떡 맛집은 정말 최고!', translation_en: 'I went with a foreign friend and the English menu was great. The bindaetteok spot is truly the best!', date: '2026-03-28' },
         ],
       },
     }),
@@ -156,7 +156,7 @@ export const sampleListings: Listing[] = [
         ],
         external_reviews: [
           { source: 'Google', reviewer: 'Mike T.', rating: 5, text: 'Best Korean BBQ I\'ve ever had. The Hanwoo melts in your mouth. Staff grills everything perfectly. Worth every penny.', date: '2026-04-10' },
-          { source: 'MangoPlate', reviewer: '맛집탐험가', rating: 5, text: '한우 품질이 정말 최상급입니다. 직원분들이 직접 구워주셔서 편하게 먹을 수 있어요.', date: '2026-03-22' },
+          { source: 'MangoPlate', reviewer: '맛집탐험가', rating: 5, text: '한우 품질이 정말 최상급입니다. 직원분들이 직접 구워주셔서 편하게 먹을 수 있어요.', translation_en: 'The Hanwoo quality is truly top-grade. The staff grills everything for you so you can eat comfortably.', date: '2026-03-22' },
           { source: 'TripAdvisor', reviewer: 'Emma K.', rating: 4, text: 'Amazing quality meat! The private room was great for our group. Only minus: a bit pricey, but you get what you pay for.', date: '2026-03-05' },
         ],
       },

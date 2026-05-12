@@ -77,10 +77,11 @@ export type MenuItemJson = {
 };
 
 export type ExternalReview = {
-  source: string;       // e.g. "Google", "TripAdvisor", "Naver", "MangoPlate"
+  source: string;
   reviewer: string;
   rating: number;
   text: string;
+  translation_en?: string;  // English translation for non-English reviews
   date: string;
 };
 
