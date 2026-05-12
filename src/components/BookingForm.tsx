@@ -16,7 +16,10 @@ export default function BookingForm({ listing }: { listing: Listing }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const total = listing.price * guests;
+  const isRestaurant = listing.category === 'restaurants';
+  const extra = (() => { try { const p = JSON.parse(listing.notes || '{}'); return p.__extra || {}; } catch { return {}; } })();
+  const deposit = extra.booking_deposit || listing.price;
+  const total = isRestaurant ? deposit : listing.price * guests;
 
   const timeSlots = [
     '09:00', '10:00', '11:00', '12:00', '13:00',
@@ -91,9 +94,18 @@ export default function BookingForm({ listing }: { listing: Listing }) {
     <form onSubmit={handleBooking} className="sticky top-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
       <h3 className="mb-1 text-lg font-bold text-gray-900">{t('title')}</h3>
       <div className="mb-6 flex items-baseline gap-1">
-        <span className="text-sm text-gray-500">From</span>
-        <span className="text-3xl font-bold text-primary-600">${listing.price}</span>
-        <span className="text-sm text-gray-500">/ person</span>
+        {isRestaurant ? (
+          <>
+            <span className="text-sm text-gray-500">Booking Deposit</span>
+            <span className="text-3xl font-bold text-primary-600">₩{deposit.toLocaleString()}</span>
+          </>
+        ) : (
+          <>
+            <span className="text-sm text-gray-500">From</span>
+            <span className="text-3xl font-bold text-primary-600">${listing.price}</span>
+            <span className="text-sm text-gray-500">/ person</span>
+          </>
+        )}
       </div>
 
       <div className="space-y-4">
@@ -212,11 +224,19 @@ export default function BookingForm({ listing }: { listing: Listing }) {
         {/* Total */}
         <div className="rounded-lg bg-gray-50 p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">
-              ${listing.price} × {guests} {guests === 1 ? t('guest') : t('guestsPlural')}
-            </span>
-            <span className="text-xl font-bold text-gray-900">${total}</span>
+            {isRestaurant ? (
+              <>
+                <span className="text-sm text-gray-600">Booking Deposit</span>
+                <span className="text-xl font-bold text-gray-900">₩{deposit.toLocaleString()}</span>
+              </>
+            ) : (
+              <>
+                <span className="text-sm text-gray-600">${listing.price} × {guests} {guests === 1 ? t('guest') : t('guestsPlural')}</span>
+                <span className="text-xl font-bold text-gray-900">${total}</span>
+              </>
+            )}
           </div>
+          {isRestaurant && <p className="mt-1 text-xs text-gray-400">Deposit will be applied to your final bill at the restaurant</p>}
         </div>
 
         {/* Submit button */}

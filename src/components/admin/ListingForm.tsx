@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { categories, cities } from '@/lib/categories';
 import { getCategoryFormConfig } from '@/lib/categoryFormConfig';
 import type { ListingRow, MenuItemJson } from '@/lib/supabase/types';
+import RestaurantFormFields from './RestaurantFormFields';
 
 type FormData = {
   title: string;
@@ -26,10 +27,10 @@ type FormData = {
   phone: string;
   operating_hours: string;
   notes: string;
-  extra: Record<string, string | boolean>;
+  extra: Record<string, any>;
 };
 
-function parseExtra(notes: string): Record<string, string | boolean> {
+function parseExtra(notes: string): Record<string, any> {
   try {
     const parsed = JSON.parse(notes);
     if (parsed && typeof parsed === 'object' && parsed.__extra) return parsed.__extra;
@@ -37,8 +38,8 @@ function parseExtra(notes: string): Record<string, string | boolean> {
   return {};
 }
 
-function serializeNotes(plainNotes: string, extra: Record<string, string | boolean>): string {
-  const hasExtra = Object.keys(extra).some((k) => extra[k] !== '' && extra[k] !== false);
+function serializeNotes(plainNotes: string, extra: Record<string, any>): string {
+  const hasExtra = Object.keys(extra).length > 0;
   if (!hasExtra) return plainNotes;
   return JSON.stringify({ __plain: plainNotes, __extra: extra });
 }
@@ -98,9 +99,11 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
     });
   };
 
-  const setExtra = (key: string, value: string | boolean) => {
+  const setExtra = (key: string, value: any) => {
     setForm({ ...form, extra: { ...form.extra, [key]: value } });
   };
+
+  const isRestaurant = form.category === 'restaurants';
 
   const addMenuItem = () => {
     setForm({ ...form, menu_items: [...form.menu_items, { name: '', price: 0, description: '' }] });
@@ -281,15 +284,31 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         </div>
       </section>
 
-      {/* ── Section 4: Menu / Treatment / Program (conditional) ── */}
-      {cfg.showMenuItems && (
+      {/* ── Restaurant-specific sections ── */}
+      {isRestaurant && (
+        <RestaurantFormFields
+          menuItems={form.menu_items}
+          setMenuItems={(items) => setForm({ ...form, menu_items: items })}
+          extra={form.extra}
+          setExtra={setExtra}
+          operatingHours={form.operating_hours}
+          setOperatingHours={(v) => setForm({ ...form, operating_hours: v })}
+          address={form.address}
+          setAddress={(v) => setForm({ ...form, address: v })}
+          phone={form.phone}
+          setPhone={(v) => setForm({ ...form, phone: v })}
+        />
+      )}
+
+      {/* ── Menu (non-restaurant) ── */}
+      {!isRestaurant && cfg.showMenuItems && (
         <section className="rounded-xl border border-gray-200 bg-white p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">{cfg.menuLabel}</h2>
             <button type="button" onClick={addMenuItem} className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">+ Add Item</button>
           </div>
           {form.menu_items.length === 0 ? (
-            <p className="text-sm text-gray-400">No items yet. Click &quot;Add Item&quot; to add.</p>
+            <p className="text-sm text-gray-400">No items yet.</p>
           ) : (
             <div className="space-y-3">
               {form.menu_items.map((item, i) => (
@@ -307,69 +326,29 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         </section>
       )}
 
-      {/* ── Section 5: Location & Details (conditional) ── */}
-      {(cfg.showAddress || cfg.showPhone || cfg.showHours) && (
+      {/* ── Location (non-restaurant) ── */}
+      {!isRestaurant && (cfg.showAddress || cfg.showPhone || cfg.showHours) && (
         <section className="rounded-xl border border-gray-200 bg-white p-6">
           <h2 className="mb-4 text-lg font-semibold text-gray-900">📍 Location & Contact</h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            {cfg.showAddress && (
-              <div className="sm:col-span-2">
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">Address</label>
-                <input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={inputCls} placeholder="Full address in English" />
-              </div>
-            )}
-            {cfg.showPhone && (
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">Phone</label>
-                <input type="text" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="+82-2-XXX-XXXX" />
-              </div>
-            )}
-            {cfg.showHours && (
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">Operating Hours</label>
-                <input type="text" value={form.operating_hours} onChange={(e) => setForm({ ...form, operating_hours: e.target.value })} className={inputCls} placeholder="Mon-Fri 10:00-22:00" />
-              </div>
-            )}
+            {cfg.showAddress && (<div className="sm:col-span-2"><label className="mb-1.5 block text-sm font-medium text-gray-700">Address</label><input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={inputCls} placeholder="Full address in English" /></div>)}
+            {cfg.showPhone && (<div><label className="mb-1.5 block text-sm font-medium text-gray-700">Phone</label><input type="text" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="+82-2-XXX-XXXX" /></div>)}
+            {cfg.showHours && (<div><label className="mb-1.5 block text-sm font-medium text-gray-700">Operating Hours</label><input type="text" value={form.operating_hours} onChange={(e) => setForm({ ...form, operating_hours: e.target.value })} className={inputCls} placeholder="Mon-Fri 10:00-22:00" /></div>)}
           </div>
         </section>
       )}
 
-      {/* ── Section 6: Category-Specific Extra Fields ── */}
-      {cfg.extraFields.length > 0 && (
+      {/* ── Extra Fields (non-restaurant) ── */}
+      {!isRestaurant && cfg.extraFields.length > 0 && (
         <section className="rounded-xl border bg-white p-6" style={{ borderColor: cfg.color + '40' }}>
-          <h2 className="mb-4 text-lg font-semibold" style={{ color: cfg.color }}>
-            {cfg.icon} {form.category === 'restaurants' ? 'Restaurant Details' : form.category === 'wellness' ? 'Wellness Details' : form.category === 'activities' ? 'Activity Details' : 'Article Details'}
-          </h2>
+          <h2 className="mb-4 text-lg font-semibold" style={{ color: cfg.color }}>{cfg.icon} {form.category === 'wellness' ? 'Wellness Details' : form.category === 'activities' ? 'Activity Details' : 'Article Details'}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {cfg.extraFields.map((field) => (
               <div key={field.key} className={field.type === 'boolean' ? '' : 'sm:col-span-1'}>
-                {field.type === 'text' && (
-                  <>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label>
-                    <input type="text" value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls} placeholder={field.placeholder} />
-                  </>
-                )}
-                {field.type === 'number' && (
-                  <>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label>
-                    <input type="number" value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls} placeholder={field.placeholder} />
-                  </>
-                )}
-                {field.type === 'select' && (
-                  <>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label>
-                    <select value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls}>
-                      <option value="">— Select —</option>
-                      {field.options?.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                  </>
-                )}
-                {field.type === 'boolean' && (
-                  <label className="flex items-center gap-3 cursor-pointer py-2">
-                    <input type="checkbox" checked={!!form.extra[field.key]} onChange={(e) => setExtra(field.key, e.target.checked)} className="h-5 w-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
-                    <span className="text-sm font-medium text-gray-700">{field.label}</span>
-                  </label>
-                )}
+                {field.type === 'text' && (<><label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label><input type="text" value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls} placeholder={field.placeholder} /></>)}
+                {field.type === 'number' && (<><label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label><input type="number" value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls} placeholder={field.placeholder} /></>)}
+                {field.type === 'select' && (<><label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label><select value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls}><option value="">— Select —</option>{field.options?.map((opt) => <option key={opt} value={opt}>{opt}</option>)}</select></>)}
+                {field.type === 'boolean' && (<label className="flex items-center gap-3 cursor-pointer py-2"><input type="checkbox" checked={!!form.extra[field.key]} onChange={(e) => setExtra(field.key, e.target.checked)} className="h-5 w-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500" /><span className="text-sm font-medium text-gray-700">{field.label}</span></label>)}
               </div>
             ))}
           </div>

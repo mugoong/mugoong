@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx next:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\User\\Desktop\\블라썸무궁\\mugoong\\src\\app\\[locale]\\city"
+    ]
+  }
+}

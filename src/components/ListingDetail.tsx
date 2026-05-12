@@ -6,8 +6,8 @@ import Image from 'next/image';
 import type { Listing, CategoryConfig, SubCategory } from '@/types';
 import BookingForm from './BookingForm';
 
-/* ── helpers to read extra fields stored in notes ── */
-function parseExtra(notes?: string): Record<string, string | boolean> {
+/* ── helpers ── */
+function parseExtra(notes?: string): Record<string, any> {
   if (!notes) return {};
   try {
     const parsed = JSON.parse(notes);
@@ -27,7 +27,7 @@ function Check({ children }: { children: React.ReactNode }) {
   );
 }
 
-function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
+function InfoRow({ icon, label, value }: { icon: string; label: string; value?: string }) {
   if (!value) return null;
   return (
     <div className="flex items-start gap-3 py-2">
@@ -36,6 +36,18 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
         <p className="text-xs font-medium text-gray-400 uppercase">{label}</p>
         <p className="text-sm text-gray-700">{value}</p>
       </div>
+    </div>
+  );
+}
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map(i => (
+        <svg key={i} className={`h-4 w-4 ${i <= rating ? 'text-yellow-400' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      ))}
     </div>
   );
 }
@@ -53,6 +65,9 @@ export default function ListingDetail({
   const extra = parseExtra(listing.notes);
   const cat = category.slug;
   const isTips = cat === 'tips-and-trend';
+  const isRestaurant = cat === 'restaurants';
+  const menuItems = listing.menu_items || [];
+  const dietary = extra.dietary || {};
 
   return (
     <div className="min-h-screen bg-white">
@@ -107,32 +122,149 @@ export default function ListingDetail({
               )}
             </div>
 
-            {/* Description */}
+            {/* Dietary badges (restaurant) */}
+            {isRestaurant && Object.keys(dietary).some(k => dietary[k]) && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {dietary.vegetarian && <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">🥦 Vegetarian</span>}
+                {dietary.pescetarian && <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">🐟 Pescetarian</span>}
+                {dietary.halal && <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">🕌 Halal</span>}
+                {dietary.gluten_free && <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">🌾 Gluten-Free</span>}
+                {dietary.non_dairy && <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700">🥛 Non-Dairy</span>}
+              </div>
+            )}
+
+            {/* Story / Description */}
             <div className="mt-8">
-              <h2 className="mb-4 text-xl font-bold text-gray-900">{t('listing.aboutThis')}</h2>
+              <h2 className="mb-4 text-xl font-bold text-gray-900">
+                {isRestaurant ? '🍽️ The Story Behind the Table' : isTips ? '📝 Article' : t('listing.aboutThis')}
+              </h2>
               <p className="leading-relaxed text-gray-600">{listing.description}</p>
               {listing.content && (
                 <div className="mt-4 whitespace-pre-line leading-relaxed text-gray-600">{listing.content}</div>
               )}
             </div>
 
-            {/* ── RESTAURANT-specific ── */}
-            {cat === 'restaurants' && (
-              <div className="mt-8 rounded-xl border border-gray-100 p-5">
-                <h2 className="mb-3 text-lg font-bold text-gray-900">🍽️ Restaurant Info</h2>
-                <div className="grid gap-1 sm:grid-cols-2">
-                  <InfoRow icon="📍" label="Address" value={listing.address} />
-                  <InfoRow icon="📞" label="Phone" value={listing.phone} />
-                  <InfoRow icon="🕐" label="Hours" value={listing.operating_hours} />
-                  <InfoRow icon="📋" label="Reservation" value={extra.reservation as string} />
-                  <InfoRow icon="🅿️" label="Parking" value={extra.parking as string} />
-                  <InfoRow icon="💳" label="Payment" value={extra.payment as string} />
+            {/* ══════════════════════════════════════ */}
+            {/* ── RESTAURANT SECTIONS ── */}
+            {/* ══════════════════════════════════════ */}
+            {isRestaurant && (
+              <>
+                {/* Menu */}
+                {menuItems.length > 0 && (
+                  <div className="mt-8">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">📋 Menu</h2>
+                    {['main', 'side', 'drink'].map(cat => {
+                      const items = menuItems.filter(i => (i.category || 'main') === cat);
+                      if (items.length === 0) return null;
+                      return (
+                        <div key={cat} className="mb-6">
+                          <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-gray-400">
+                            {cat === 'main' ? '🥩 Main Menu' : cat === 'side' ? '🥗 Side Dishes' : '🍺 Drinks & Alcohol'}
+                          </h3>
+                          <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
+                            {items.map((item, i) => (
+                              <div key={i} className="flex items-center justify-between px-4 py-3">
+                                <div>
+                                  <p className="font-medium text-gray-800">{item.name}</p>
+                                  {item.description && <p className="text-xs text-gray-500">{item.description}</p>}
+                                </div>
+                                <span className="text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString()}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Location & Maps */}
+                <div className="mt-8 rounded-xl border border-gray-100 p-5">
+                  <h2 className="mb-3 text-lg font-bold text-gray-900">📍 Location & Info</h2>
+                  <div className="grid gap-1 sm:grid-cols-2">
+                    <InfoRow icon="📍" label="Address" value={listing.address} />
+                    <InfoRow icon="📞" label="Phone" value={listing.phone} />
+                    <InfoRow icon="🕐" label="Hours" value={listing.operating_hours} />
+                    <InfoRow icon="☕" label="Break Time" value={extra.break_time} />
+                    <InfoRow icon="🚫" label="Closed" value={extra.holidays} />
+                  </div>
+                  {/* Map buttons */}
+                  {(extra.naver_map_url || extra.kakao_map_url || extra.google_map_url) && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {extra.naver_map_url && (
+                        <a href={extra.naver_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100 transition">
+                          🗺️ Naver Map
+                        </a>
+                      )}
+                      {extra.kakao_map_url && (
+                        <a href={extra.kakao_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 transition">
+                          🗺️ Kakao Map
+                        </a>
+                      )}
+                      {extra.google_map_url && (
+                        <a href={extra.google_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">
+                          🗺️ Google Map
+                        </a>
+                      )}
+                    </div>
+                  )}
+                  {/* Satellite embed */}
+                  {extra.google_map_url && (
+                    <div className="mt-4 overflow-hidden rounded-lg">
+                      <iframe
+                        src={`https://www.google.com/maps?q=${encodeURIComponent(listing.address)}&output=embed&t=k`}
+                        width="100%" height="250" style={{ border: 0 }} allowFullScreen loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
+                    </div>
+                  )}
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {extra.english_menu && <Check>English menu available</Check>}
-                  {extra.seating && <Check>{extra.seating as string}</Check>}
-                </div>
-              </div>
+
+                {/* Reservation Notices */}
+                {extra.reservation_notices?.length > 0 && (
+                  <div className="mt-8">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">📋 Reservation Info</h2>
+                    <div className="space-y-2">
+                      {extra.reservation_notices.map((notice: string, i: number) => (
+                        <div key={i} className="flex items-start gap-3 rounded-lg bg-blue-50 p-3">
+                          <span className="mt-0.5 text-blue-500 font-bold text-sm">{i + 1}</span>
+                          <span className="text-sm text-gray-700">{notice}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Cancellation & Refund Policy */}
+                {extra.cancellation_policy?.length > 0 && (
+                  <div className="mt-8">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">🔄 Cancellation & Refund Policy</h2>
+                    <div className="space-y-2">
+                      {extra.cancellation_policy.map((policy: string, i: number) => (
+                        <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
+                          <span className="mt-0.5 text-gray-400">•</span>
+                          <span className="text-sm text-gray-700">{policy}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Important Things to Know */}
+                {extra.important_notes?.length > 0 && (
+                  <div className="mt-8">
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">⚠️ Things to Know</h2>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {extra.important_notes.map((note: string, i: number) => (
+                        <div key={i} className="flex items-start gap-3 rounded-lg border border-amber-100 bg-amber-50 p-3">
+                          <span className="text-amber-500">⚡</span>
+                          <span className="text-sm text-gray-700">{note}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             {/* ── WELLNESS-specific ── */}
@@ -143,14 +275,10 @@ export default function ListingDetail({
                   <InfoRow icon="📍" label="Address" value={listing.address} />
                   <InfoRow icon="📞" label="Phone" value={listing.phone} />
                   <InfoRow icon="🕐" label="Hours" value={listing.operating_hours} />
-                  <InfoRow icon="📋" label="Reservation" value={extra.reservation as string} />
-                  <InfoRow icon="👤" label="Gender Policy" value={extra.gender_policy as string} />
-                  <InfoRow icon="⏱️" label="Duration" value={extra.duration as string} />
+                  <InfoRow icon="👤" label="Gender Policy" value={extra.gender_policy} />
+                  <InfoRow icon="⏱️" label="Duration" value={extra.duration} />
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {extra.english_staff && <Check>English-speaking staff</Check>}
-                  {extra.what_to_bring && <Check>{extra.what_to_bring as string}</Check>}
-                </div>
+                {extra.english_staff && <div className="mt-3"><Check>English-speaking staff</Check></div>}
               </div>
             )}
 
@@ -159,32 +287,22 @@ export default function ListingDetail({
               <div className="mt-8 rounded-xl border border-gray-100 p-5">
                 <h2 className="mb-3 text-lg font-bold text-gray-900">🎯 Activity Info</h2>
                 <div className="grid gap-1 sm:grid-cols-2">
-                  <InfoRow icon="⏱️" label="Duration" value={extra.duration as string} />
-                  <InfoRow icon="👥" label="Group Size" value={extra.group_size as string} />
-                  <InfoRow icon="📊" label="Difficulty" value={extra.difficulty as string} />
-                  <InfoRow icon="📍" label="Meeting Point" value={extra.meeting_point as string} />
-                  <InfoRow icon="🎒" label="What to Bring" value={extra.what_to_bring as string} />
-                  <InfoRow icon="🎁" label="What's Included" value={extra.inclusions as string} />
+                  <InfoRow icon="⏱️" label="Duration" value={extra.duration} />
+                  <InfoRow icon="👥" label="Group Size" value={extra.group_size} />
+                  <InfoRow icon="📊" label="Difficulty" value={extra.difficulty} />
+                  <InfoRow icon="📍" label="Meeting Point" value={extra.meeting_point} />
+                  <InfoRow icon="🎒" label="What to Bring" value={extra.what_to_bring} />
+                  <InfoRow icon="🎁" label="What's Included" value={extra.inclusions} />
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {extra.english_guide && <Check>English guide available</Check>}
-                </div>
+                {extra.english_guide && <div className="mt-3"><Check>English guide available</Check></div>}
               </div>
             )}
 
-            {/* Highlights (non-tips only) */}
-            {!isTips && (
+            {/* Highlights (non-tips, non-restaurant) */}
+            {!isTips && !isRestaurant && (
               <div className="mt-8">
                 <h2 className="mb-4 text-xl font-bold text-gray-900">{t('listing.highlights')}</h2>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {cat === 'restaurants' && (
-                    <>
-                      <Check>Authentic Korean cuisine</Check>
-                      {extra.english_menu && <Check>English menu provided</Check>}
-                      <Check>Foreigner-friendly service</Check>
-                      <Check>Easy subway access</Check>
-                    </>
-                  )}
                   {cat === 'wellness' && (
                     <>
                       {extra.english_staff && <Check>English-speaking staff</Check>}
@@ -201,6 +319,30 @@ export default function ListingDetail({
                       <Check>Free cancellation up to 24h</Check>
                     </>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* ── External Reviews ── */}
+            {extra.external_reviews?.length > 0 && (
+              <div className="mt-8">
+                <h2 className="mb-4 text-xl font-bold text-gray-900">⭐ Reviews</h2>
+                <div className="space-y-3">
+                  {extra.external_reviews.map((review: any, i: number) => (
+                    <div key={i} className="rounded-xl border border-gray-100 p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Stars rating={review.rating} />
+                          <span className="font-medium text-gray-800">{review.reviewer}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">{review.source}</span>
+                          {review.date && <span className="text-xs text-gray-400">{review.date}</span>}
+                        </div>
+                      </div>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600">{review.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

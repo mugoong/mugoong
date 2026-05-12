@@ -46,3 +46,5 @@ env/
 # Supabase local state
 supabase/.branches/
 supabase/.temp/
+
+.vercel

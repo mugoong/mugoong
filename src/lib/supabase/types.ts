@@ -70,9 +70,18 @@ export type Database = {
 };
 
 export type MenuItemJson = {
+  category?: 'main' | 'side' | 'drink';
   name: string;
   price: number;
   description?: string;
+};
+
+export type ExternalReview = {
+  source: string;       // e.g. "Google", "TripAdvisor", "Naver", "MangoPlate"
+  reviewer: string;
+  rating: number;
+  text: string;
+  date: string;
 };
 
 export type ListingRow = Database['public']['Tables']['listings']['Row'];
