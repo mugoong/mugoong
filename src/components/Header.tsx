@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { useLocale } from 'next-intl';
 import { locales, localeNames, type Locale } from '@/i18n/routing';
 import { categories, cities } from '@/lib/categories';
+import { createClient } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
 
 export default function Header() {
   const t = useTranslations();
@@ -16,6 +18,24 @@ export default function Header() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    setUserMenuOpen(false);
+  };
 
   const switchLocale = (newLocale: Locale) => {
     router.replace(pathname, { locale: newLocale });
@@ -109,6 +129,59 @@ export default function Header() {
                   </div>
                 ))}
               </nav>
+
+              {/* Auth buttons / User menu */}
+              <div className="flex shrink-0 items-center gap-2 border-r border-gray-100 pr-2 mr-1">
+                {user ? (
+                  <div className="relative shrink-0">
+                    <button
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-500 text-xs font-bold text-white">
+                        {(user.email ?? '?')[0].toUpperCase()}
+                      </div>
+                      <svg className="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {userMenuOpen && (
+                      <div className="absolute right-0 top-full z-50 mt-1 min-w-[180px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
+                        <p className="px-3 py-1.5 text-xs text-gray-400 truncate">{user.email}</p>
+                        <div className="my-1 border-t border-gray-100" />
+                        <Link
+                          href="/account"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="block rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-primary-50 hover:text-primary-600"
+                        >
+                          My Account
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full rounded-lg px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-red-50 hover:text-red-600"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="whitespace-nowrap rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
 
               {/* City & Language Selectors */}
               <div className="flex shrink-0 items-center gap-2">
@@ -251,6 +324,37 @@ export default function Header() {
                 </div>
               </div>
             ))}
+
+            {/* Auth mobile */}
+            <div className="mt-4 border-t border-gray-100 pt-4">
+              {user ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-500 text-sm font-bold text-white">
+                      {(user.email ?? '?')[0].toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 truncate max-w-[140px]">{user.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">
+                      Account
+                    </Link>
+                    <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="rounded-lg border border-red-100 px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50">
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Sign In
+                  </Link>
+                  <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="flex-1 rounded-xl bg-gray-900 py-2.5 text-center text-sm font-semibold text-white hover:bg-black">
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
 
             {/* Language switcher mobile */}
             <div className="mt-4 border-t border-gray-100 pt-4">
