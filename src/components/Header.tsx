@@ -74,31 +74,31 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
       <div className="container-main">
 
-        {/* ─── DESKTOP: CSS Grid [1fr | auto | 1fr] — logo is always mathematically centered ─── */}
-        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:py-1">
+        {/* ─── DESKTOP: logo is position:absolute at exact 50% — never moves ─── */}
+        <div className="relative hidden w-full items-center py-2 lg:flex" style={{ minHeight: '104px' }}>
 
-          {/* Left column: categories 1 & 2, pushed to the right */}
-          <nav className="flex items-center justify-end gap-0.5">
+          {/* Logo: absolute center, completely independent of left/right content */}
+          <Link href="/" className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
+            <img src="/logo.png" alt="MUGOONG" className="h-[96px] w-auto py-1" />
+          </Link>
+
+          {/* Left: categories 1 & 2 */}
+          <nav className="flex items-center gap-0.5">
             {categories.slice(0, 2).map((cat) => (
               <CategoryDropdown key={cat.slug} cat={cat} />
             ))}
           </nav>
 
-          {/* Center column: logo — always centered */}
-          <Link href="/" className="flex items-center justify-center px-6">
-            <img src="/logo.png" alt="MUGOONG" className="h-[96px] w-auto py-1" />
-          </Link>
-
-          {/* Right column: categories 3 & 4 on the left, utilities pinned right */}
-          <div className="flex items-center">
+          {/* Right: categories 3 & 4 + utilities pushed to far right */}
+          <div className="ml-auto flex items-center">
             <nav className="flex items-center gap-0.5">
               {categories.slice(2).map((cat) => (
                 <CategoryDropdown key={cat.slug} cat={cat} />
               ))}
             </nav>
 
-            {/* Utilities: city · language · divider · auth — all pinned to right, fixed */}
-            <div className="ml-auto flex items-center gap-1">
+            {/* Utilities: city · language · divider · auth */}
+            <div className="ml-3 flex items-center gap-1">
 
               {/* City selector */}
               <div className="relative">
