@@ -105,8 +105,8 @@ export default async function HomePage({ params }: { params: { locale: string } 
             </Link>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.slice(0, 6).map((listing) => (
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {featured.slice(0, 8).map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
