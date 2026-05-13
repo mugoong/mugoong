@@ -39,6 +39,7 @@ export interface Listing {
   address: string;
   phone: string;
   operating_hours: string;
+  gallery: string[];
   menu_items: any[];
   notes: string;
 }

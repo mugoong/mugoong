@@ -8,6 +8,8 @@ import { getCategoryFormConfig } from '@/lib/categoryFormConfig';
 import type { ListingRow, MenuItemJson } from '@/lib/supabase/types';
 import RestaurantFormFields from './RestaurantFormFields';
 
+type GalleryItem = { url: string; file?: File };
+
 type FormData = {
   title: string;
   slug: string;
@@ -17,6 +19,7 @@ type FormData = {
   description: string;
   content: string;
   image_url: string;
+  gallery: GalleryItem[];
   price: number;
   currency: string;
   tags: string;
@@ -66,6 +69,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
     description: existing?.description ?? '',
     content: existing?.content ?? '',
     image_url: existing?.image_url ?? '',
+    gallery: (existing?.gallery ?? []).map((url) => ({ url })),
     price: existing?.price ?? 0,
     currency: existing?.currency ?? 'USD',
     tags: existing?.tags?.join(', ') ?? '',
@@ -130,12 +134,44 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
     return data.publicUrl;
   };
 
+  const uploadGallery = async (): Promise<string[]> => {
+    const supabase = createClient();
+    return Promise.all(
+      form.gallery
+        .filter((g) => g.url || g.file)
+        .map(async (g) => {
+          if (!g.file) return g.url;
+          const ext = g.file.name.split('.').pop();
+          const fileName = `${form.slug}-gallery-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+          const { error } = await supabase.storage.from('listings').upload(fileName, g.file, { upsert: true });
+          if (error) throw error;
+          const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
+          return data.publicUrl;
+        })
+    );
+  };
+
+  const addGallerySlot = () => {
+    if (form.gallery.length < 7) setForm({ ...form, gallery: [...form.gallery, { url: '' }] });
+  };
+
+  const updateGallerySlot = (i: number, url: string, file?: File) => {
+    const updated = [...form.gallery];
+    updated[i] = { url, file };
+    setForm({ ...form, gallery: updated });
+  };
+
+  const removeGallerySlot = (i: number) => {
+    setForm({ ...form, gallery: form.gallery.filter((_, idx) => idx !== i) });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     try {
       const supabase = createClient();
       const imageUrl = await uploadImage();
+      const galleryUrls = await uploadGallery();
       const payload = {
         title: form.title,
         slug: form.slug,
@@ -145,6 +181,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         description: form.description,
         content: form.content,
         image_url: imageUrl,
+        gallery: galleryUrls,
         price: form.price,
         currency: form.currency,
         tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
@@ -268,19 +305,84 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         </div>
       </section>
 
-      {/* ── Section 3: Image ── */}
+      {/* ── Section 3: Images (main + gallery up to 7) ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">🖼️ Image</h2>
-        <div className="space-y-4">
-          {form.image_url && <img src={form.image_url} alt="Preview" className="h-48 w-full rounded-lg object-cover" />}
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Upload Image</label>
-            <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} className="w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-primary-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-600 hover:file:bg-primary-100" />
+        <h2 className="mb-1 text-lg font-semibold text-gray-900">🖼️ Images</h2>
+        <p className="mb-5 text-xs text-gray-400">Main image + up to 7 gallery images (max 8 total)</p>
+
+        {/* Main image */}
+        <div className="mb-6 rounded-xl bg-gray-50 p-4">
+          <p className="mb-3 text-sm font-semibold text-gray-700">① Main Image <span className="text-xs font-normal text-gray-400">(required)</span></p>
+          {(imageFile ? URL.createObjectURL(imageFile) : form.image_url) && (
+            <img
+              src={imageFile ? URL.createObjectURL(imageFile) : form.image_url}
+              alt="Main preview"
+              className="mb-3 h-40 w-full rounded-lg object-cover"
+            />
+          )}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-gray-600">Upload file</label>
+              <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} className="w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-primary-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-primary-600 hover:file:bg-primary-100" />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-gray-600">Or paste URL</label>
+              <input type="text" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className={inputCls} placeholder="https://..." />
+            </div>
           </div>
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Or Image URL</label>
-            <input type="text" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className={inputCls} placeholder="https://..." />
+        </div>
+
+        {/* Gallery images */}
+        <div>
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm font-semibold text-gray-700">② Gallery Images <span className="text-xs font-normal text-gray-400">({form.gallery.length}/7)</span></p>
+            {form.gallery.length < 7 && (
+              <button type="button" onClick={addGallerySlot} className="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200">
+                + Add Image
+              </button>
+            )}
           </div>
+          {form.gallery.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-gray-200 py-6 text-center text-sm text-gray-400">
+              No gallery images. Click &quot;Add Image&quot; to add up to 7 more.
+            </p>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {form.gallery.map((item, i) => (
+                <div key={i} className="rounded-xl border border-gray-100 bg-gray-50 p-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-500">Image {i + 2}</span>
+                    <button type="button" onClick={() => removeGallerySlot(i)} className="text-xs text-red-400 hover:text-red-600">Remove</button>
+                  </div>
+                  {(item.file ? URL.createObjectURL(item.file) : item.url) && (
+                    <img
+                      src={item.file ? URL.createObjectURL(item.file) : item.url}
+                      alt={`Gallery ${i + 2}`}
+                      className="mb-2 h-28 w-full rounded-lg object-cover"
+                    />
+                  )}
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) updateGallerySlot(i, item.url, file);
+                      }}
+                      className="text-xs text-gray-500 file:mr-2 file:rounded file:border-0 file:bg-primary-50 file:px-2 file:py-1 file:text-xs file:text-primary-600"
+                    />
+                    <input
+                      type="text"
+                      value={item.url}
+                      onChange={(e) => updateGallerySlot(i, e.target.value)}
+                      placeholder="or paste URL"
+                      className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs outline-none focus:border-primary-400"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

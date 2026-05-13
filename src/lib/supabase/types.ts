@@ -74,6 +74,7 @@ export type MenuItemJson = {
   name: string;
   price: number;
   description?: string;
+  image_url?: string;
 };
 
 export type ExternalReview = {

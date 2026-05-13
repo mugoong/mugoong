@@ -1,6 +1,6 @@
 import { Listing } from '@/types';
 
-const wDefaults = { content: '', address: '', phone: '', operating_hours: '', menu_items: [] as any[], notes: '' };
+const wDefaults = { content: '', address: '', phone: '', operating_hours: '', gallery: [] as string[], menu_items: [] as any[], notes: '' };
 
 export const sampleListings: Listing[] = [
   /* ─── 🍽️ RESTAURANT 1: Gwangjang Market ─── */
@@ -14,6 +14,15 @@ export const sampleListings: Listing[] = [
     description: 'Experience the oldest traditional market in Seoul. Taste bindaetteok, mayak gimbap, and more authentic Korean street food from vendors who have been serving for decades.',
     content: 'Gwangjang Market has been Seoul\'s beating culinary heart since 1905. Walking through the narrow aisles, you\'ll be greeted by the sizzle of cast-iron griddles and the irresistible aroma of freshly fried mung bean pancakes.\n\nOur curated food tour introduces you to the market\'s legendary stalls — some run by third-generation vendors who\'ve perfected their recipes over 60 years. From the addictive mini gimbap rolls (nicknamed "mayak" meaning "drug" for their addictive taste) to the silky raw beef tartare (yukhoe), every bite tells a story of Korean food heritage.\n\nThe tour also visits the hidden knife-cut noodle alley and the vibrant textile section upstairs, offering a complete picture of this living cultural landmark.',
     image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&q=80',
+      'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+      'https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80',
+      'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800&q=80',
+      'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&q=80',
+      'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&q=80',
+      'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800&q=80',
+    ],
     price: 35,
     currency: 'USD',
     rating: 4.8,
@@ -95,6 +104,15 @@ export const sampleListings: Listing[] = [
     description: 'Savor the finest Korean beef at a top-rated Gangnam BBQ restaurant. Premium 1++ grade Hanwoo with expert grilling service and 12 banchan side dishes.',
     content: 'This is not your average Korean BBQ. Located in the heart of Gangnam, this restaurant specializes in 1++ grade Hanwoo — the highest quality Korean beef, known for its exceptional marbling and melt-in-your-mouth texture.\n\nYour experience begins with a curated banchan spread of 12 seasonal side dishes, followed by a premium meat course. The staff will expertly grill each cut to perfection over premium charcoal and guide you on the best way to enjoy each piece.\n\nThe restaurant features both open seating and private rooms, making it perfect for both intimate dinners and group celebrations. Complimentary digestif (soju or plum wine) is served after the meal.',
     image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80',
+      'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+      'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=800&q=80',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
+      'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&q=80',
+      'https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=800&q=80',
+    ],
     price: 65,
     currency: 'USD',
     rating: 4.9,
@@ -174,6 +192,15 @@ export const sampleListings: Listing[] = [
     description: 'Get world-class skin treatments at Korea\'s most renowned dermatology clinic. Consultation included with English-speaking dermatologists.',
     content: 'Korea is the global capital of skincare, and this Gangnam clinic represents the pinnacle of K-beauty dermatology. Your visit begins with an AI-powered skin analysis, followed by a one-on-one consultation with a board-certified dermatologist.\n\nPopular treatments include hydrafacial, laser toning, and the signature "Glass Skin" package. Post-treatment care instructions are provided in English.',
     image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&q=80',
+      'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80',
+      'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&q=80',
+      'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80',
+      'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=800&q=80',
+      'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=800&q=80',
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80',
+    ],
     price: 120, currency: 'USD', rating: 4.9, reviewCount: 312,
     tags: ['BEST', 'Premium'], featured: true,
     address: '412 Gangnam-daero, Gangnam-gu, Seoul (3F)',
@@ -198,6 +225,15 @@ export const sampleListings: Listing[] = [
     description: 'Hands-on Korean cooking class in a traditional kitchen. Learn to make kimchi, bibimbap, and Korean pancakes from a local chef.',
     content: 'Led by Chef Minji with 20 years of experience. Start with a market tour, then cook 3 iconic Korean dishes. Dietary accommodations available.',
     image: 'https://images.unsplash.com/photo-1583224994076-0a5a4e3384c7?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=800&q=80',
+      'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80',
+      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
+      'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=800&q=80',
+      'https://images.unsplash.com/photo-1498579687545-d5a4fffb0a9e?w=800&q=80',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
+      'https://images.unsplash.com/photo-1543353071-087092ec393a?w=800&q=80',
+    ],
     price: 55, currency: 'USD', rating: 4.9, reviewCount: 178,
     tags: ['BEST'], featured: true,
     address: '15 Insadong-gil, Jongno-gu, Seoul (B1)',
@@ -220,6 +256,15 @@ export const sampleListings: Listing[] = [
     description: 'Everything you need to know about navigating Seoul\'s subway system — from buying T-money cards to transferring between lines.',
     content: 'Seoul\'s metro system is one of the best in the world.\n\n🎫 Getting a T-money Card\nBuy at any convenience store for ₩2,500. Each ride costs ₩1,250.\n\n📱 Must-Have Apps\n• Naver Map — Best for Korean transit\n• KakaoMetro — Real-time arrivals\n\n🚇 Pro Tips\n• Rush hour: 7:30–9:00 and 17:30–19:00\n• Free Wi-Fi on all trains\n• Pink seats are priority seats — always leave them empty',
     image: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&q=80',
+      'https://images.unsplash.com/photo-1581262208435-41726149a759?w=800&q=80',
+      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80',
+      'https://images.unsplash.com/photo-1559825481-12a05cc00344?w=800&q=80',
+      'https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=800&q=80',
+      'https://images.unsplash.com/photo-1554041839-bc64b14f30a5?w=800&q=80',
+      'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=800&q=80',
+    ],
     price: 0, currency: 'USD', rating: 0, reviewCount: 0,
     tags: ['Guide', 'Essential'], featured: false,
     address: '', phone: '', operating_hours: '', menu_items: [], notes: '',

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npx next:*)",
       "Bash(npx tsc *)",
-      "Bash(git -c core.quotepath=false ls-files --others --exclude-standard)"
+      "Bash(git -c core.quotepath=false ls-files --others --exclude-standard)",
+      "Bash(grep -v \"^$\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\User\\Desktop\\블라썸무궁\\mugoong\\src\\app\\[locale]\\city"

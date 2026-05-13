@@ -31,6 +31,7 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
       currency: row.currency,
       rating: parseFloat(row.rating) || 0,
       reviewCount: row.review_count || 0,
+      gallery: row.gallery || [],
       tags: row.tags || [],
       featured: row.featured || false,
       address: row.address || '',

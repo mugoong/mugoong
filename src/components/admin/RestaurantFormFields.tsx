@@ -61,11 +61,16 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
         )}
       </div>
       {items.map((item, i) => (
-        <div key={i} className="mb-2 flex items-center gap-2">
-          <input type="text" value={item.name} onChange={e => update(i, 'name', e.target.value)} placeholder="Name" className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
-          <input type="number" value={item.price} onChange={e => update(i, 'price', Number(e.target.value))} placeholder="₩" className="w-24 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
-          <input type="text" value={item.description || ''} onChange={e => update(i, 'description', e.target.value)} placeholder="Description" className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
-          <button type="button" onClick={() => remove(i)} className="text-red-400 hover:text-red-600 text-lg">✕</button>
+        <div key={i} className="mb-3 rounded-xl border border-gray-100 bg-white p-3">
+          <div className="mb-2 flex items-center gap-2">
+            <input type="text" value={item.name} onChange={e => update(i, 'name', e.target.value)} placeholder="Dish name" className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
+            <input type="number" value={item.price} onChange={e => update(i, 'price', Number(e.target.value))} placeholder="₩" className="w-24 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
+            <button type="button" onClick={() => remove(i)} className="text-red-400 hover:text-red-600 text-lg">✕</button>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <input type="text" value={item.description || ''} onChange={e => update(i, 'description', e.target.value)} placeholder="Description (optional)" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
+            <input type="text" value={item.image_url || ''} onChange={e => update(i, 'image_url', e.target.value)} placeholder="🖼️ Image URL (optional)" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
+          </div>
         </div>
       ))}
       {items.length === 0 && <p className="text-xs text-gray-400 mb-2">No items yet.</p>}

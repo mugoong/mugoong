@@ -99,12 +99,20 @@ export default function ListingDetail({
   subcategory: SubCategory;
 }) {
   const t = useTranslations();
+  const [galleryExpanded, setGalleryExpanded] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const extra = parseExtra(listing.notes);
   const cat = category.slug;
   const isTips = cat === 'tips-and-trend';
   const isRestaurant = cat === 'restaurants';
   const menuItems = listing.menu_items || [];
   const dietary = extra.dietary || {};
+
+  /* gallery: main image + up to 7 extra */
+  const allImages = [listing.image, ...(listing.gallery ?? [])].filter(Boolean);
+  const INITIAL_SHOW = 5; // main + 4 thumbs
+  const extraCount = Math.max(0, allImages.length - INITIAL_SHOW);
+  const visibleImages = galleryExpanded ? allImages : allImages.slice(0, INITIAL_SHOW);
 
   return (
     <div className="min-h-screen bg-white">
@@ -127,15 +135,95 @@ export default function ListingDetail({
         <div className={`grid gap-8 ${isTips ? '' : 'lg:grid-cols-3'}`}>
           {/* Left: Content */}
           <div className={isTips ? 'mx-auto max-w-3xl' : 'lg:col-span-2'}>
-            {/* Image */}
-            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl">
-              <Image src={listing.image} alt={listing.title} fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 66vw" />
-              <div className="absolute left-4 top-4 flex gap-2">
-                {listing.tags.map((tag) => (
-                  <span key={tag} className={tag === 'HOT' ? 'badge-hot' : tag === 'BEST' ? 'badge-best' : tag === 'NEW' ? 'badge-new' : 'rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-700'}>{tag}</span>
-                ))}
+            {/* ── Image Gallery ── */}
+            <div>
+              {/* Main image */}
+              <div
+                className="relative aspect-[16/9] cursor-pointer overflow-hidden rounded-2xl"
+                onClick={() => setLightboxIdx(0)}
+              >
+                <Image src={allImages[0]} alt={listing.title} fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 66vw" />
+                <div className="absolute left-4 top-4 flex gap-2">
+                  {listing.tags.map((tag) => (
+                    <span key={tag} className={tag === 'HOT' ? 'badge-hot' : tag === 'BEST' ? 'badge-best' : tag === 'NEW' ? 'badge-new' : 'rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-700'}>{tag}</span>
+                  ))}
+                </div>
               </div>
+
+              {/* Thumbnails: show up to 4, last one gets "+more" overlay */}
+              {allImages.length > 1 && (
+                <div className="mt-2 grid grid-cols-4 gap-2">
+                  {visibleImages.slice(1, 5).map((img, i) => {
+                    const globalIdx = i + 1;
+                    const isLastVisible = i === 3 && extraCount > 0 && !galleryExpanded;
+                    return (
+                      <div
+                        key={globalIdx}
+                        className="relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg"
+                        onClick={() => isLastVisible ? setGalleryExpanded(true) : setLightboxIdx(globalIdx)}
+                      >
+                        <Image src={img} alt={`${listing.title} ${globalIdx + 1}`} fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="25vw" />
+                        {isLastVisible && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                            <span className="text-2xl font-bold text-white">+{extraCount}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Expanded extra images */}
+              {galleryExpanded && extraCount > 0 && (
+                <div className="mt-2 grid grid-cols-4 gap-2">
+                  {allImages.slice(5).map((img, i) => (
+                    <div
+                      key={i + 5}
+                      className="relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg"
+                      onClick={() => setLightboxIdx(i + 5)}
+                    >
+                      <Image src={img} alt={`${listing.title} ${i + 6}`} fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="25vw" />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
+
+            {/* Lightbox */}
+            {lightboxIdx !== null && (
+              <div
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+                onClick={() => setLightboxIdx(null)}
+              >
+                <button
+                  className="absolute left-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+                  onClick={(e) => { e.stopPropagation(); setLightboxIdx(Math.max(0, lightboxIdx - 1)); }}
+                  disabled={lightboxIdx === 0}
+                >
+                  ‹
+                </button>
+                <div className="relative max-h-[90vh] max-w-5xl w-full aspect-[16/9]" onClick={(e) => e.stopPropagation()}>
+                  <Image src={allImages[lightboxIdx]} alt={listing.title} fill className="object-contain" sizes="100vw" />
+                </div>
+                <button
+                  className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+                  onClick={(e) => { e.stopPropagation(); setLightboxIdx(null); }}
+                >
+                  ✕
+                </button>
+                <button
+                  className="absolute right-16 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+                  onClick={(e) => { e.stopPropagation(); setLightboxIdx(Math.min(allImages.length - 1, lightboxIdx + 1)); }}
+                  disabled={lightboxIdx === allImages.length - 1}
+                >
+                  ›
+                </button>
+                <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/70">
+                  {lightboxIdx + 1} / {allImages.length}
+                </p>
+              </div>
+            )}
 
             {/* Title & rating */}
             <div className="mt-6">
@@ -200,12 +288,19 @@ export default function ListingDetail({
                           </h3>
                           <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
                             {items.map((item, i) => (
-                              <div key={i} className="flex items-center justify-between px-4 py-3">
-                                <div>
-                                  <p className="font-medium text-gray-800">{item.name}</p>
-                                  {item.description && <p className="text-xs text-gray-500">{item.description}</p>}
+                              <div key={i} className="flex items-start gap-3 px-4 py-3">
+                                {item.image_url && (
+                                  <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg">
+                                    <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="56px" />
+                                  </div>
+                                )}
+                                <div className="flex flex-1 items-center justify-between">
+                                  <div>
+                                    <p className="font-medium text-gray-800">{item.name}</p>
+                                    {item.description && <p className="text-xs text-gray-500">{item.description}</p>}
+                                  </div>
+                                  <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString()}</span>
                                 </div>
-                                <span className="text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString()}</span>
                               </div>
                             ))}
                           </div>
