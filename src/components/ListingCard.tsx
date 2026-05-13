@@ -71,9 +71,9 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             <span>{t(`cities.${listing.city}`)}</span>
           </div>
 
-          {/* Keyword chips — desktop only */}
+          {/* Keyword chips */}
           {keywordTags.length > 0 && (
-            <div className="hidden sm:flex mt-2 mb-1 flex-wrap gap-1">
+            <div className="flex mt-1.5 mb-0.5 flex-wrap gap-1">
               {keywordTags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
@@ -101,11 +101,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               <span className="text-sm font-bold text-primary-600">${listing.price}</span>
             </div>
           </div>
-        ) : (
-          keywordTags.length > 0 && (
-            <span className="truncate text-[10px] text-gray-400 sm:hidden">{keywordTags[0]}</span>
-          )
-        )}
+        ) : null}
       </div>
     </Link>
   );
