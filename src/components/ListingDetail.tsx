@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
@@ -101,6 +101,7 @@ export default function ListingDetail({
   const t = useTranslations();
   const [galleryExpanded, setGalleryExpanded] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
   const extra = parseExtra(listing.notes);
   const cat = category.slug;
   const isTips = cat === 'tips-and-trend';
@@ -193,32 +194,49 @@ export default function ListingDetail({
             {/* Lightbox */}
             {lightboxIdx !== null && (
               <div
-                className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
                 onClick={() => setLightboxIdx(null)}
               >
+                {/* Close */}
                 <button
-                  className="absolute left-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-                  onClick={(e) => { e.stopPropagation(); setLightboxIdx(Math.max(0, lightboxIdx - 1)); }}
-                  disabled={lightboxIdx === 0}
-                >
-                  ‹
-                </button>
-                <div className="relative max-h-[90vh] max-w-5xl w-full aspect-[16/9]" onClick={(e) => e.stopPropagation()}>
-                  <Image src={allImages[lightboxIdx]} alt={listing.title} fill className="object-contain" sizes="100vw" />
-                </div>
-                <button
-                  className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+                  className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
                   onClick={(e) => { e.stopPropagation(); setLightboxIdx(null); }}
                 >
                   ✕
                 </button>
-                <button
-                  className="absolute right-16 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-                  onClick={(e) => { e.stopPropagation(); setLightboxIdx(Math.min(allImages.length - 1, lightboxIdx + 1)); }}
-                  disabled={lightboxIdx === allImages.length - 1}
+
+                {/* Image with side arrows + swipe */}
+                <div
+                  className="relative flex w-full max-w-5xl items-center px-14"
+                  onClick={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+                  onTouchEnd={(e) => {
+                    if (touchStartX.current === null) return;
+                    const delta = touchStartX.current - e.changedTouches[0].clientX;
+                    if (delta > 50 && lightboxIdx < allImages.length - 1) setLightboxIdx(lightboxIdx + 1);
+                    if (delta < -50 && lightboxIdx > 0) setLightboxIdx(lightboxIdx - 1);
+                    touchStartX.current = null;
+                  }}
                 >
-                  ›
-                </button>
+                  <button
+                    className="absolute left-2 z-10 rounded-full bg-white/10 p-3 text-2xl leading-none text-white transition hover:bg-white/30 disabled:opacity-20"
+                    onClick={(e) => { e.stopPropagation(); setLightboxIdx(Math.max(0, lightboxIdx - 1)); }}
+                    disabled={lightboxIdx === 0}
+                  >
+                    ‹
+                  </button>
+                  <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
+                    <Image src={allImages[lightboxIdx]} alt={listing.title} fill className="object-contain" sizes="100vw" />
+                  </div>
+                  <button
+                    className="absolute right-2 z-10 rounded-full bg-white/10 p-3 text-2xl leading-none text-white transition hover:bg-white/30 disabled:opacity-20"
+                    onClick={(e) => { e.stopPropagation(); setLightboxIdx(Math.min(allImages.length - 1, lightboxIdx + 1)); }}
+                    disabled={lightboxIdx === allImages.length - 1}
+                  >
+                    ›
+                  </button>
+                </div>
+
                 <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/70">
                   {lightboxIdx + 1} / {allImages.length}
                 </p>
