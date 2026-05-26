@@ -83,10 +83,10 @@ export default async function CityPage({ params, searchParams }: Props) {
 
       <div className="container-main py-8">
         {/* Category filter tabs */}
-        <div className="mb-4 flex gap-2 flex-wrap">
+        <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto">
           <Link
             href={`/city/${city}`}
-            className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
+            className={`shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-colors ${
               !category
                 ? 'bg-primary-500 text-white'
                 : 'border border-gray-200 bg-white text-gray-600 hover:border-primary-500 hover:text-primary-600'
@@ -98,7 +98,7 @@ export default async function CityPage({ params, searchParams }: Props) {
             <Link
               key={cat.slug}
               href={`/city/${city}?category=${cat.slug}`}
-              className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
+              className={`shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-colors ${
                 category === cat.slug
                   ? 'bg-primary-500 text-white'
                   : 'border border-gray-200 bg-white text-gray-600 hover:border-primary-500 hover:text-primary-600'
@@ -111,10 +111,10 @@ export default async function CityPage({ params, searchParams }: Props) {
 
         {/* Subcategory filter tabs (shown when a category is selected) */}
         {activeCat && (
-          <div className="mb-6 flex gap-2 flex-wrap">
+          <div className="no-scrollbar mb-6 flex gap-2 overflow-x-auto">
             <Link
               href={`/city/${city}?category=${category}`}
-              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                 !subcategory
                   ? 'bg-gray-800 text-white'
                   : 'border border-gray-200 bg-white text-gray-500 hover:border-gray-400 hover:text-gray-700'
@@ -126,7 +126,7 @@ export default async function CityPage({ params, searchParams }: Props) {
               <Link
                 key={sub.slug}
                 href={`/city/${city}?category=${category}&subcategory=${sub.slug}`}
-                className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                   subcategory === sub.slug
                     ? 'bg-gray-800 text-white'
                     : 'border border-gray-200 bg-white text-gray-500 hover:border-gray-400 hover:text-gray-700'
