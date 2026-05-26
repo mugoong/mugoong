@@ -88,6 +88,12 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
       <div className="container-main py-8">
         {/* Sibling subcategory tabs */}
         <div className="mb-6 flex flex-wrap gap-2">
+          <Link
+            href={`/${cat.slug}${city ? `?city=${city}` : ''}`}
+            className="rounded-full px-5 py-2 text-sm font-medium transition-colors border border-gray-200 bg-white text-gray-600 hover:border-primary-500 hover:text-primary-600"
+          >
+            All
+          </Link>
           {cat.subcategories.map((s) => (
             <Link
               key={s.slug}
