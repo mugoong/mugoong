@@ -103,9 +103,16 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         </div>
 
         {/* City filter + Sort */}
-        <div className="flex items-center justify-between gap-4">
-          <CityFilter activeCity={city} basePath={`/${cat.slug}`} />
-          <SortSelect activeSort={sort} />
+        <div>
+          <div className="flex items-center gap-4">
+            <CityFilter activeCity={city} basePath={`/${cat.slug}`} />
+            <div className="ml-auto hidden sm:block">
+              <SortSelect activeSort={sort} />
+            </div>
+          </div>
+          <div className="mt-2 sm:hidden">
+            <SortSelect activeSort={sort} />
+          </div>
         </div>
 
         {/* Listings grid */}

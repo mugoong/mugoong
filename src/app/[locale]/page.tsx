@@ -4,6 +4,7 @@ import { categories, cities } from '@/lib/categories';
 import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import HeroSlider from '@/components/HeroSlider';
+import SearchBar from '@/components/SearchBar';
 import {
   RestaurantIcon, ActivitiesIcon,
   VegetarianIcon, BarsIcon, TransportIcon,
@@ -34,21 +35,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
               {t('hero.subtitle')}
             </p>
 
-            <div className="mx-auto flex max-w-xl items-center overflow-hidden rounded-full bg-white shadow-2xl">
-              <div className="flex flex-1 items-center gap-2 px-4 py-2 sm:px-5 sm:py-3.5">
-                <svg className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder={t('hero.searchPlaceholder')}
-                  className="w-full text-xs sm:text-sm text-gray-700 placeholder-gray-400 outline-none"
-                />
-              </div>
-              <button className="mr-2 rounded-full bg-gray-900 px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-semibold text-white transition-colors hover:bg-black">
-                {t('hero.exploreAll')}
-              </button>
-            </div>
+            <SearchBar placeholder={t('hero.searchPlaceholder')} />
           </div>
         </div>
       </section>
