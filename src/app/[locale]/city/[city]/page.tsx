@@ -4,12 +4,14 @@ import { Link } from '@/i18n/navigation';
 import { categories, cities } from '@/lib/categories';
 import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
+import SortSelect from '@/components/SortSelect';
+import { sortListings } from '@/lib/sort-listings';
 import type { Metadata } from 'next';
 import type { MainCategory } from '@/types';
 
 type Props = {
   params: Promise<{ locale: string; city: string }>;
-  searchParams: Promise<{ category?: string; subcategory?: string }>;
+  searchParams: Promise<{ category?: string; subcategory?: string; sort?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CityPage({ params, searchParams }: Props) {
   const { locale, city } = await params;
-  const { category, subcategory } = await searchParams;
+  const { category, subcategory, sort } = await searchParams;
 
   const cityConfig = cities.find((c) => c.slug === city);
   if (!cityConfig) notFound();
@@ -37,11 +39,14 @@ export default async function CityPage({ params, searchParams }: Props) {
   const cityName = t(cityConfig.labelKey);
   const allListings = await getSupabaseListings();
 
-  const listings = allListings.filter(
-    (l) =>
-      l.city === city &&
-      (!category || l.category === (category as MainCategory)) &&
-      (!subcategory || l.subcategory === subcategory)
+  const listings = sortListings(
+    allListings.filter(
+      (l) =>
+        l.city === city &&
+        (!category || l.category === (category as MainCategory)) &&
+        (!subcategory || l.subcategory === subcategory)
+    ),
+    sort
   );
 
   const categoryLabels: Record<string, string> = {};
@@ -132,6 +137,11 @@ export default async function CityPage({ params, searchParams }: Props) {
             ))}
           </div>
         )}
+
+        {/* Sort */}
+        <div className="mb-4 flex justify-end">
+          <SortSelect activeSort={sort} />
+        </div>
 
         {/* Listings */}
         {listings.length > 0 ? (

@@ -5,6 +5,8 @@ import { getCategoryBySlug } from '@/lib/categories';
 import { getSupabaseListings } from '@/lib/api';
 import ListingCard from '@/components/ListingCard';
 import CityFilter from '@/components/CityFilter';
+import SortSelect from '@/components/SortSelect';
+import { sortListings } from '@/lib/sort-listings';
 import type { Metadata } from 'next';
 import { RestaurantIcon, WellnessIcon, ActivitiesIcon, TipsIcon } from '@/components/CategoryIcons';
 import type { MainCategory } from '@/types';
@@ -18,7 +20,7 @@ const categoryIcons: Record<string, React.FC<{ className?: string }>> = {
 
 type Props = {
   params: Promise<{ locale: string; category: string }>;
-  searchParams: Promise<{ city?: string }>;
+  searchParams: Promise<{ city?: string; sort?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -38,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { locale, category } = await params;
-  const { city } = await searchParams;
+  const { city, sort } = await searchParams;
   const cat = getCategoryBySlug(category);
 
   if (!cat) notFound();
@@ -46,10 +48,13 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const t = await getTranslations({ locale });
   const allListings = await getSupabaseListings();
 
-  const listings = allListings.filter(
-    (l) =>
-      l.category === (category as MainCategory) &&
-      (!city || l.city === city)
+  const listings = sortListings(
+    allListings.filter(
+      (l) =>
+        l.category === (category as MainCategory) &&
+        (!city || l.city === city)
+    ),
+    sort
   );
 
   const categoryLabel = t(cat.labelKey);
@@ -97,8 +102,11 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           ))}
         </div>
 
-        {/* City filter */}
-        <CityFilter activeCity={city} basePath={`/${cat.slug}`} />
+        {/* City filter + Sort */}
+        <div className="flex items-center justify-between gap-4">
+          <CityFilter activeCity={city} basePath={`/${cat.slug}`} />
+          <SortSelect activeSort={sort} />
+        </div>
 
         {/* Listings grid */}
         {listings.length > 0 ? (
