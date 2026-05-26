@@ -122,7 +122,7 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
               <SortSelect activeSort={sort} />
             </div>
           </div>
-          <div className="mt-2 sm:hidden">
+          <div className="mt-2 flex justify-end sm:hidden">
             <SortSelect activeSort={sort} />
           </div>
         </div>

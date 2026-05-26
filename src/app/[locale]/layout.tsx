@@ -77,7 +77,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale} className="h-full">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" type="image/png" sizes="any" />
+        <link rel="apple-touch-icon" href="/logo.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className="flex min-h-full flex-col bg-white text-[#111111] font-sans">
