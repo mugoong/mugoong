@@ -26,8 +26,8 @@ export default async function HomePage({ params }: { params: { locale: string } 
         <div className="container-main relative z-20 pt-12 pb-24 sm:pt-16 sm:pb-32 lg:pt-24 lg:pb-40">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="mb-4 text-2xl font-extrabold tracking-tight text-white sm:text-3xl lg:text-4xl">
-              {t('hero.title')}{' '}
-              <span className="bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent">
+              {t('hero.title')}
+              <span className="block sm:inline sm:ml-2 bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent">
                 {t('hero.titleHighlight')}
               </span>
             </h1>
