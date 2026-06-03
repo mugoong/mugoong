@@ -65,11 +65,7 @@ export default function LoginPage() {
     return (
       <div className="flex min-h-[80vh] items-center justify-center px-4">
         <div className="w-full max-w-md">
-          <div className="mb-8 text-center">
-            <Link href="/" className="inline-block">
-              <img src="/logo.png" alt="MUGOONG" className="mx-auto h-14 w-auto" />
-            </Link>
-          </div>
+          <div className="mb-8" />
           <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
             {resetSent ? (
               <div className="text-center">
@@ -118,10 +114,7 @@ export default function LoginPage() {
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <Link href="/" className="inline-block">
-            <img src="/logo.png" alt="MUGOONG" className="mx-auto h-14 w-auto" />
-          </Link>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
           <p className="mt-1 text-sm text-gray-500">Sign in to your MUGOONG account</p>
         </div>
 

@@ -213,10 +213,7 @@ export default function SignupPage() {
     <div className="flex min-h-[85vh] items-start justify-center px-4 py-12">
       <div className="w-full max-w-lg">
         <div className="mb-8 text-center">
-          <Link href="/" className="inline-block">
-            <img src="/logo.png" alt="MUGOONG" className="mx-auto h-14 w-auto" />
-          </Link>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900">Create your account</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
           <p className="mt-1 text-sm text-gray-500">{stepLabels[step - 1]}</p>
         </div>
 
