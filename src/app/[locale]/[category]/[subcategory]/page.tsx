@@ -92,7 +92,7 @@ export default async function SubcategoryPage({ params, searchParams }: Props) {
 
       <div className="container-main py-8">
         {/* Sibling subcategory tabs */}
-        <div className="no-scrollbar mb-6 flex gap-2 overflow-x-auto">
+        <div className="no-scrollbar mb-6 flex gap-2 overflow-x-auto flex-nowrap lg:flex-wrap lg:overflow-x-visible">
           <Link
             href={`/${cat.slug}${city ? `?city=${city}` : ''}`}
             className="shrink-0 rounded-full px-5 py-2 text-sm font-medium transition-colors border border-gray-200 bg-white text-gray-600 hover:border-primary-500 hover:text-primary-600"
