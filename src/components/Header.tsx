@@ -65,7 +65,7 @@ export default function Header() {
         {t(cat.labelKey)}
       </Link>
       {activeDropdown === cat.slug && (
-        <div className={`absolute left-0 top-full z-50 rounded-xl border border-gray-100 bg-white p-2 shadow-lg ${cat.subcategories.length > 6 ? 'grid grid-cols-2 gap-x-1 min-w-[380px]' : 'min-w-[220px]'}`}>
+        <div className="absolute left-0 top-full z-50 min-w-[220px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
           {cat.subcategories.map((sub) => (
             <Link
               key={sub.slug}
