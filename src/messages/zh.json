@@ -28,10 +28,17 @@
     "tipsAndTrend": "攻略&趋势"
   },
   "subcategories": {
-    "koreanFood": "韩国美食",
     "koreanBBQ": "韩国烤肉",
     "koreanFriedChicken": "韩式炸鸡",
-    "bars": "酒吧",
+    "classicKorean": "韩式经典料理",
+    "streetFoodMarkets": "街头小吃与市场",
+    "barsNightlife": "酒吧与夜生活",
+    "cafesDesserts": "咖啡馆与甜点",
+    "fineDining": "精致餐厅",
+    "seafood": "海鲜",
+    "quickBites": "快餐小吃",
+    "vegetarianVegan": "素食与纯素",
+    "halalMuslimFriendly": "清真与穆斯林友好",
     "skinClinic": "皮肤科诊所",
     "hairSalon": "美发沙龙",
     "sauna": "桑拿・汗蒸房",
@@ -42,8 +49,6 @@
     "sports": "体育运动",
     "travelTips": "旅行贴士",
     "trendNow": "韩国最新潮流",
-    "vegetarian": "素食",
-    "halal": "清真",
     "smokingSpots": "吸烟区",
     "publicTransportation": "公共交通"
   },

@@ -28,10 +28,17 @@
     "tipsAndTrend": "Tips & Trend"
   },
   "subcategories": {
-    "koreanFood": "Korean Food",
     "koreanBBQ": "Korean BBQ",
     "koreanFriedChicken": "Korean Fried Chicken",
-    "bars": "Bars",
+    "classicKorean": "Classic Korean",
+    "streetFoodMarkets": "Street Food & Markets",
+    "barsNightlife": "Bars & Nightlife",
+    "cafesDesserts": "Cafes & Desserts",
+    "fineDining": "Fine Dining",
+    "seafood": "Seafood",
+    "quickBites": "Quick Bites",
+    "vegetarianVegan": "Vegetarian & Vegan",
+    "halalMuslimFriendly": "Halal & Muslim-Friendly",
     "skinClinic": "Skin Clinic",
     "hairSalon": "Hair Salon",
     "sauna": "Sauna",
@@ -42,8 +49,6 @@
     "sports": "Sports",
     "travelTips": "Travel Tips",
     "trendNow": "Trend Now in Korea",
-    "vegetarian": "Vegetarian",
-    "halal": "Halal",
     "smokingSpots": "Smoking Spots",
     "publicTransportation": "Public Transportation"
   },

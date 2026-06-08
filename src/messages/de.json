@@ -28,10 +28,17 @@
     "tipsAndTrend": "Tipps & Trends"
   },
   "subcategories": {
-    "koreanFood": "Koreanische Küche",
     "koreanBBQ": "Korean BBQ",
     "koreanFriedChicken": "Koreanisches Brathähnchen",
-    "bars": "Bars",
+    "classicKorean": "Klassische koreanische Küche",
+    "streetFoodMarkets": "Straßenessen & Märkte",
+    "barsNightlife": "Bars & Nachtleben",
+    "cafesDesserts": "Cafés & Desserts",
+    "fineDining": "Fine Dining",
+    "seafood": "Meeresfrüchte",
+    "quickBites": "Snacks",
+    "vegetarianVegan": "Vegetarisch & Vegan",
+    "halalMuslimFriendly": "Halal & Muslimfreundlich",
     "skinClinic": "Hautklinik",
     "hairSalon": "Friseursalon",
     "sauna": "Sauna & Jjimjilbang",
@@ -42,8 +49,6 @@
     "sports": "Sport",
     "travelTips": "Reisetipps",
     "trendNow": "Trends in Korea",
-    "vegetarian": "Vegetarisch",
-    "halal": "Halal",
     "smokingSpots": "Raucherbereiche",
     "publicTransportation": "Öffentliche Verkehrsmittel"
   },
