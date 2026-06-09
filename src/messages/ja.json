@@ -79,6 +79,7 @@
   },
   "booking": {
     "title": "この体験を予約",
+    "titlePlace": "このスポットを予約する",
     "selectDate": "日付を選択",
     "selectTime": "時間を選択",
     "guests": "人数",

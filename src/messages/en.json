@@ -79,6 +79,7 @@
   },
   "booking": {
     "title": "Book This Experience",
+    "titlePlace": "Book This Place",
     "selectDate": "Select Date",
     "selectTime": "Select Time",
     "guests": "Number of Guests",

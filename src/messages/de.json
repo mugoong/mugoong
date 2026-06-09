@@ -79,6 +79,7 @@
   },
   "booking": {
     "title": "Dieses Erlebnis buchen",
+    "titlePlace": "Diesen Ort buchen",
     "selectDate": "Datum wählen",
     "selectTime": "Uhrzeit wählen",
     "guests": "Anzahl der Gäste",

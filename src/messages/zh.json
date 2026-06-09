@@ -79,6 +79,7 @@
   },
   "booking": {
     "title": "预订此体验",
+    "titlePlace": "预订此地点",
     "selectDate": "选择日期",
     "selectTime": "选择时间",
     "guests": "人数",
