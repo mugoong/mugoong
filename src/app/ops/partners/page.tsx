@@ -97,7 +97,7 @@ export default function PartnersPage() {
   ];
 
   return (
-    <OpsShell>
+    <OpsShell module="partners">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">협력사 관리</h1>

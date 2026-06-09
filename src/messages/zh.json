@@ -203,6 +203,8 @@
     "kakaoMap": "Kakao 地图",
     "googleMap": "谷歌地图",
     "showOriginal": "显示原文",
-    "seeEnglishTranslation": "查看英文翻译"
+    "seeEnglishTranslation": "查看英文翻译",
+    "moreDetails": "查看详情",
+    "selectDates": "选择日期"
   }
 }

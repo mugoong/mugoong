@@ -25,7 +25,7 @@ export default function EmployeeDetailPage() {
   const pct = (employee.annual_leave_used / employee.annual_leave_total) * 100;
 
   return (
-    <OpsShell>
+    <OpsShell module="hr">
       <div className="mb-6">
         <a href="/ops/hr" className="text-[13px] font-medium text-indigo-500 hover:text-indigo-700">
           ← 직원 목록

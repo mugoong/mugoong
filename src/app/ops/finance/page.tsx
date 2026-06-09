@@ -51,7 +51,7 @@ export default function FinancePage() {
   const growthPct = ((totalRevenue - lastMonthRevenue) / lastMonthRevenue * 100).toFixed(1);
 
   return (
-    <OpsShell>
+    <OpsShell module="finance">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">매출 대시보드</h1>
         <p className="mt-1 text-[14px] text-gray-400">재무/회계 — 매출 현황 및 분석</p>

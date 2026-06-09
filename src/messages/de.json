@@ -203,6 +203,8 @@
     "kakaoMap": "Kakao Karte",
     "googleMap": "Google Karte",
     "showOriginal": "Original anzeigen",
-    "seeEnglishTranslation": "Englische Übersetzung anzeigen"
+    "seeEnglishTranslation": "Englische Übersetzung anzeigen",
+    "moreDetails": "Mehr Details",
+    "selectDates": "Datum auswählen"
   }
 }

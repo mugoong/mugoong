@@ -15,7 +15,7 @@ const monthlyRevenue = [
 
 export default function PartnerPortal() {
   return (
-    <OpsShell>
+    <OpsShell module="partners">
       <div className="mb-8">
         <div className="mb-2 flex items-center gap-2">
           <span

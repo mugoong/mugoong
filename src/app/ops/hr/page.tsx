@@ -94,7 +94,7 @@ export default function HRPage() {
   ];
 
   return (
-    <OpsShell>
+    <OpsShell module="hr">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">직원 관리</h1>

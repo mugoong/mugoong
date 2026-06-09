@@ -10,7 +10,7 @@ const myListings = [
 
 export default function PartnerListingsPage() {
   return (
-    <OpsShell>
+    <OpsShell module="partners">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <span

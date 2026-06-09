@@ -22,7 +22,7 @@ export default function NewPartnerListingPage() {
   };
 
   return (
-    <OpsShell>
+    <OpsShell module="partners">
       <div className="mb-6">
         <a href="/ops/partners/portal/listings" className="text-[13px] font-medium text-indigo-500 hover:text-indigo-700">
           ← 내 리스팅

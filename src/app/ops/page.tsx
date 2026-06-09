@@ -1,186 +1,160 @@
 'use client';
 
-import OpsShell from '@/components/ops/OpsShell';
-import StatsCard from '@/components/ops/StatsCard';
-import Chart from '@/components/ops/Chart';
+import Link from 'next/link';
 import SiteMap from '@/components/ops/SiteMap';
 
-// Demo KPI data
-const kpis = [
-  { label: '총 직원 수', value: 12, icon: '👥', color: 'violet', trend: { value: 8.3, isUp: true } },
-  { label: '이번 달 매출', value: '₩14.2M', icon: '💰', color: 'emerald', trend: { value: 12.5, isUp: true } },
-  { label: '활성 협력사', value: 8, icon: '🤝', color: 'amber', trend: { value: 33.3, isUp: true } },
-  { label: '대기 예약', value: 23, icon: '📅', color: 'indigo', trend: { value: 5.2, isUp: false } },
-  { label: '미정산 건수', value: 5, icon: '🧾', color: 'rose', trend: { value: 16.7, isUp: false } },
-  { label: '이번 달 예약', value: 156, icon: '🎫', color: 'sky', trend: { value: 22.1, isUp: true } },
+const modules = [
+  {
+    href: '/ops/hr',
+    title: '인사 / 노무',
+    desc: '직원 정보, 연차 관리, 일정 캘린더',
+    icon: '👤',
+    color: '#8b5cf6',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+    features: ['직원 관리', '연차 관리', '캘린더'],
+  },
+  {
+    href: '/ops/finance',
+    title: '재무 / 회계',
+    desc: '매출 현황, 예약 매출, 통계 분석',
+    icon: '💰',
+    color: '#10b981',
+    gradient: 'linear-gradient(135deg, #10b981, #34d399)',
+    features: ['매출 대시보드', '예약 매출', '통계'],
+  },
+  {
+    href: '/ops/partners',
+    title: '협력사 포털',
+    desc: '협력사 관리, 리스팅, 정산',
+    icon: '🤝',
+    color: '#f59e0b',
+    gradient: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+    features: ['협력사 관리', '리스팅 관리', '비즈니스 설정'],
+  },
 ];
 
-const monthlyRevenue = [
-  { label: 'Jan', value: 8200000 },
-  { label: 'Feb', value: 9400000 },
-  { label: 'Mar', value: 11000000 },
-  { label: 'Apr', value: 10500000 },
-  { label: 'May', value: 13200000 },
-  { label: 'Jun', value: 14200000 },
-];
-
-const categoryRevenue = [
-  { label: '레스토랑', value: 5800000, color: '#6366f1' },
-  { label: '웰니스', value: 4200000, color: '#8b5cf6' },
-  { label: '액티비티', value: 3100000, color: '#10b981' },
-  { label: '트래블 팁', value: 1100000, color: '#f59e0b' },
-];
-
-const recentActivity = [
-  { time: '10분 전', text: '새 예약 — 경복궁 투어 (2명)', type: 'booking' },
-  { time: '32분 전', text: '김서연 연차 승인됨', type: 'leave' },
-  { time: '1시간 전', text: '협력사 "한옥스테이" 리스팅 등록', type: 'partner' },
-  { time: '2시간 전', text: '매출 정산 완료 — ₩2,340,000', type: 'finance' },
-  { time: '3시간 전', text: '신규 직원 등록 — 이민호', type: 'hr' },
-];
-
-const activityColors: Record<string, string> = {
-  booking: '#6366f1',
-  leave: '#8b5cf6',
-  partner: '#f59e0b',
-  finance: '#10b981',
-  hr: '#f43f5e',
-};
-
-export default function OpsDashboard() {
+export default function OpsHub() {
   return (
-    <OpsShell>
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">통합 대시보드</h1>
-        <p className="mt-1 text-[14px] text-gray-400">
-          무궁 경영 현황을 한눈에 확인하세요.
-        </p>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {kpis.map((kpi) => (
-          <StatsCard key={kpi.label} {...kpi} />
-        ))}
-      </div>
-
-      {/* Charts Row */}
-      <div className="mb-8 grid gap-6 lg:grid-cols-5">
+    <div
+      className="min-h-screen"
+      style={{
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f172a 100%)',
+      }}
+    >
+      {/* Hero */}
+      <div className="relative overflow-hidden">
+        {/* Glow */}
         <div
-          className="rounded-2xl p-6 lg:col-span-3"
+          className="absolute left-1/2 top-0 -translate-x-1/2 rounded-full blur-[150px]"
           style={{
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            width: '600px',
+            height: '400px',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%)',
           }}
-        >
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-[15px] font-bold text-gray-900">월별 매출 추이</h2>
-              <p className="text-[12px] text-gray-400">최근 6개월</p>
-            </div>
-            <div
-              className="rounded-lg px-3 py-1.5 text-[12px] font-semibold"
-              style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}
-            >
-              ↑ 12.5%
-            </div>
-          </div>
-          <Chart type="line" data={monthlyRevenue} color="#6366f1" height={220} />
-        </div>
+        />
 
-        <div
-          className="rounded-2xl p-6 lg:col-span-2"
-          style={{
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-          }}
-        >
-          <div className="mb-4">
-            <h2 className="text-[15px] font-bold text-gray-900">카테고리별 매출</h2>
-            <p className="text-[12px] text-gray-400">이번 달 분포</p>
-          </div>
-          <Chart type="donut" data={categoryRevenue} height={220} />
-        </div>
-      </div>
-
-      {/* Activity + Quick Access */}
-      <div className="mb-8 grid gap-6 lg:grid-cols-3">
-        {/* Recent Activity */}
-        <div
-          className="rounded-2xl p-6 lg:col-span-1"
-          style={{
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-          }}
-        >
-          <h2 className="mb-4 text-[15px] font-bold text-gray-900">최근 활동</h2>
-          <div className="space-y-4">
-            {recentActivity.map((a, i) => (
-              <div key={i} className="flex gap-3">
-                <div className="relative flex flex-col items-center">
-                  <div
-                    className="h-2.5 w-2.5 rounded-full"
-                    style={{ background: activityColors[a.type], marginTop: '5px' }}
-                  />
-                  {i < recentActivity.length - 1 && (
-                    <div className="w-px flex-1" style={{ background: '#e2e8f0', marginTop: '4px' }} />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1 pb-4">
-                  <p className="text-[13px] font-medium text-gray-700">{a.text}</p>
-                  <p className="text-[11px] text-gray-400">{a.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Quick Access */}
-        <div className="lg:col-span-2">
+        <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-20 text-center">
+          {/* Logo */}
           <div
-            className="rounded-2xl p-6"
+            className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white"
             style={{
-              background: '#ffffff',
-              border: '1px solid #e2e8f0',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              boxShadow: '0 8px 32px rgba(99,102,241,0.3)',
             }}
           >
-            <h2 className="mb-4 text-[15px] font-bold text-gray-900">빠른 실행</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {[
-                { href: '/ops/hr', label: '직원 관리', desc: '직원 추가 및 정보 관리', icon: '👤', color: '#8b5cf6' },
-                { href: '/ops/finance', label: '매출 확인', desc: '오늘의 매출 현황 보기', icon: '💰', color: '#10b981' },
-                { href: '/ops/partners', label: '협력사 관리', desc: '협력사 승인 및 관리', icon: '🤝', color: '#f59e0b' },
-                { href: '/ops/hr/calendar', label: '캘린더', desc: '일정 및 휴가 확인', icon: '📅', color: '#6366f1' },
-              ].map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="group flex items-center gap-4 rounded-xl border border-gray-100 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded-xl text-lg transition-transform group-hover:scale-110"
-                    style={{ background: item.color + '15' }}
-                  >
-                    {item.icon}
-                  </div>
-                  <div>
-                    <p className="text-[13px] font-semibold text-gray-800">{item.label}</p>
-                    <p className="text-[11px] text-gray-400">{item.desc}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
+            M
           </div>
+          <h1 className="mb-2 text-3xl font-bold text-white">MUGOONG OPS</h1>
+          <p className="text-[15px]" style={{ color: '#64748b' }}>
+            경영관리 통합 플랫폼
+          </p>
+        </div>
+      </div>
+
+      {/* Module Cards */}
+      <div className="mx-auto -mt-4 max-w-6xl px-6 pb-12">
+        <div className="grid gap-6 md:grid-cols-3">
+          {modules.map((mod) => (
+            <Link
+              key={mod.href}
+              href={mod.href}
+              className="group relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2"
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                backdropFilter: 'blur(12px)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = mod.color + '40';
+                e.currentTarget.style.boxShadow = `0 20px 40px ${mod.color}15`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              {/* Top gradient accent */}
+              <div className="h-1" style={{ background: mod.gradient }} />
+
+              <div className="p-8">
+                {/* Icon */}
+                <div
+                  className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl text-2xl transition-transform duration-300 group-hover:scale-110"
+                  style={{ background: mod.color + '15' }}
+                >
+                  {mod.icon}
+                </div>
+
+                {/* Title */}
+                <h2 className="mb-2 text-xl font-bold text-white">{mod.title}</h2>
+                <p className="mb-6 text-[13px]" style={{ color: '#94a3b8' }}>
+                  {mod.desc}
+                </p>
+
+                {/* Features */}
+                <div className="space-y-2">
+                  {mod.features.map((f) => (
+                    <div key={f} className="flex items-center gap-2">
+                      <div
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ background: mod.color }}
+                      />
+                      <span className="text-[12px]" style={{ color: '#64748b' }}>
+                        {f}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Arrow */}
+                <div className="mt-6 flex items-center gap-2 text-[13px] font-semibold" style={{ color: mod.color }}>
+                  접속하기
+                  <svg
+                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
 
       {/* Site Map */}
-      <SiteMap />
-    </OpsShell>
+      <div className="mx-auto max-w-6xl px-6 pb-16">
+        <SiteMap />
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-white/5 py-6 text-center">
+        <p className="text-[12px]" style={{ color: '#475569' }}>
+          © 2026 Blossom Mugoong. All rights reserved.
+        </p>
+      </div>
+    </div>
   );
 }

@@ -28,7 +28,7 @@ export default function PartnerSettingsPage() {
   };
 
   return (
-    <OpsShell>
+    <OpsShell module="partners">
       <div className="mb-8">
         <span
           className="mb-2 inline-block rounded-lg px-2 py-1 text-[10px] font-bold uppercase"

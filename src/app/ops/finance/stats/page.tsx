@@ -52,7 +52,7 @@ const keyMetrics = [
 
 export default function StatsPage() {
   return (
-    <OpsShell>
+    <OpsShell module="finance">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">통계</h1>
         <p className="mt-1 text-[14px] text-gray-400">재무/회계 — 상세 통계 및 분석</p>

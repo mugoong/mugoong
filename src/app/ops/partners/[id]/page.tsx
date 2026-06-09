@@ -31,7 +31,7 @@ export default function PartnerDetailPage() {
   ];
 
   return (
-    <OpsShell>
+    <OpsShell module="partners">
       <div className="mb-6">
         <a href="/ops/partners" className="text-[13px] font-medium text-indigo-500 hover:text-indigo-700">
           ← 협력사 목록

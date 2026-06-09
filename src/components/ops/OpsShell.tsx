@@ -1,11 +1,17 @@
 'use client';
 
 import OpsSidebar from '@/components/ops/OpsSidebar';
+import type { OpsModule } from '@/components/ops/OpsSidebar';
 
-export default function OpsShell({ children }: { children: React.ReactNode }) {
+interface OpsShellProps {
+  module: OpsModule;
+  children: React.ReactNode;
+}
+
+export default function OpsShell({ module, children }: OpsShellProps) {
   return (
     <div className="min-h-screen" style={{ background: '#f8fafc' }}>
-      <OpsSidebar />
+      <OpsSidebar module={module} />
 
       {/* Header */}
       <header
@@ -43,7 +49,6 @@ export default function OpsShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Notification Bell */}
           <button
             className="relative rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
             title="알림"
@@ -61,8 +66,6 @@ export default function OpsShell({ children }: { children: React.ReactNode }) {
               style={{ background: '#ef4444' }}
             />
           </button>
-
-          {/* Date */}
           <span className="text-[13px] font-medium text-gray-400">
             {new Date().toLocaleDateString('ko-KR', {
               year: 'numeric',

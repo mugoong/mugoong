@@ -17,7 +17,7 @@ const demoEvents: CalendarEvent[] = [
 
 export default function CalendarPage() {
   return (
-    <OpsShell>
+    <OpsShell module="hr">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">캘린더</h1>

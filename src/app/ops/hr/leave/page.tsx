@@ -36,7 +36,7 @@ export default function LeavePage() {
   const totalDays = demoLeaves.filter((l) => l.status === 'approved').reduce((s, l) => s + l.days, 0);
 
   return (
-    <OpsShell>
+    <OpsShell module="hr">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">연차 관리</h1>
         <p className="mt-1 text-[14px] text-gray-400">인사/노무 — 연차/휴가 신청 관리</p>

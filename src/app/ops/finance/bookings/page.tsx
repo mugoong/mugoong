@@ -78,7 +78,7 @@ export default function BookingsFinancePage() {
   ];
 
   return (
-    <OpsShell>
+    <OpsShell module="finance">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">예약 매출</h1>
         <p className="mt-1 text-[14px] text-gray-400">재무/회계 — 예약 기반 매출 내역</p>
