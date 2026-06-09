@@ -16,30 +16,38 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
     
     const data = await res.json();
     if (!Array.isArray(data) || data.length === 0) return sampleListings;
-    
-    return data.map((row: any) => ({
-      id: row.id,
-      slug: row.slug,
-      category: row.category,
-      subcategory: row.subcategory,
-      city: row.city,
-      title: row.title,
-      description: row.description,
-      content: row.content || '',
-      image: row.image_url || 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&q=80',
-      price: row.price,
-      currency: row.currency,
-      rating: parseFloat(row.rating) || 0,
-      reviewCount: row.review_count || 0,
-      gallery: row.gallery || [],
-      tags: row.tags || [],
-      featured: row.featured || false,
-      address: row.address || '',
-      phone: row.phone || '',
-      operating_hours: row.operating_hours || '',
-      menu_items: row.menu_items || [],
-      notes: row.notes || '',
-    }));
+
+    // Slug lookup: if a DB row has no notes, merge enriched data from sampleListings
+    const sampleBySlug = Object.fromEntries(sampleListings.map(s => [s.slug, s]));
+
+    return data.map((row: any) => {
+      const notes = row.notes || '';
+      const menuItems = row.menu_items || [];
+      const sample = (!notes && sampleBySlug[row.slug]) ? sampleBySlug[row.slug] : null;
+      return {
+        id: row.id,
+        slug: row.slug,
+        category: row.category,
+        subcategory: row.subcategory,
+        city: row.city,
+        title: row.title,
+        description: row.description,
+        content: row.content || '',
+        image: row.image_url || 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&q=80',
+        price: row.price,
+        currency: row.currency,
+        rating: parseFloat(row.rating) || 0,
+        reviewCount: row.review_count || 0,
+        gallery: row.gallery || [],
+        tags: row.tags || [],
+        featured: row.featured || false,
+        address: row.address || '',
+        phone: row.phone || '',
+        operating_hours: row.operating_hours || '',
+        menu_items: menuItems.length ? menuItems : (sample?.menu_items ?? []),
+        notes: notes || (sample?.notes ?? ''),
+      };
+    });
   } catch (e) {
     console.error('Supabase fetch failed, returning sample listings fallback', e);
     return sampleListings;
