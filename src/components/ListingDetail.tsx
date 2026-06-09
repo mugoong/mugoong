@@ -236,7 +236,7 @@ export default function ListingDetail({
 
       {/* ══ MAIN CONTENT: 8:2 layout ══ */}
       <div className="container-main mt-8 pb-16">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[8fr_2fr]">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[13fr_7fr]">
 
           {/* ── LEFT 8: all page content ── */}
           <div ref={contentRef}>
@@ -463,7 +463,7 @@ export default function ListingDetail({
             {!isTips && (
               <div ref={bookingRef} className="mt-10 scroll-mt-8 border-t border-gray-100 pt-8">
                 <h2 className="mb-6 text-2xl font-bold text-gray-900">{t('booking.title')}</h2>
-                <div className="max-w-lg">
+                <div>
                   <BookingForm listing={listing} />
                 </div>
               </div>
@@ -481,13 +481,13 @@ export default function ListingDetail({
                 {td('moreDetails')}
               </button>
 
-              {/* Select Dates → scroll to booking */}
+              {/* Book Now → scroll to booking */}
               {!isTips && (
                 <button
                   onClick={() => scrollTo(bookingRef)}
                   className="w-full rounded-xl bg-primary-500 py-3 text-sm font-bold text-white shadow-md shadow-primary-200 transition hover:bg-primary-600 active:scale-95"
                 >
-                  {td('selectDates')}
+                  BOOK NOW
                 </button>
               )}
 
@@ -528,7 +528,7 @@ export default function ListingDetail({
               {td('moreDetails')}
             </button>
             <button onClick={() => scrollTo(bookingRef)} className="flex-1 rounded-lg bg-primary-500 py-3 text-sm font-bold text-white">
-              {td('selectDates')}
+              BOOK NOW
             </button>
           </div>
         )}
