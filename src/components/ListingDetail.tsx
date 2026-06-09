@@ -876,7 +876,9 @@ export default function ListingDetail({
           {/* Right: Booking form (not for tips) */}
           {!isTips && (
             <div className="lg:col-span-1">
-              <BookingForm listing={listing} />
+              <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl">
+                <BookingForm listing={listing} />
+              </div>
             </div>
           )}
         </div>

@@ -277,7 +277,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
   /* ── Success state ── */
   if (submitted) {
     return (
-      <div className="sticky top-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg text-center">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg text-center">
         <div className="mb-4 text-5xl">🎉</div>
         <h3 className="text-lg font-bold text-gray-900">{t('requestSent')}</h3>
         <p className="mt-2 text-sm text-gray-500">
@@ -300,7 +300,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="sticky top-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
       {/* Header price display */}
       <h3 className="mb-1 text-lg font-bold text-gray-900">{t('title')}</h3>
       <div className="mb-5 flex items-baseline gap-1.5">
