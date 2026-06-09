@@ -133,6 +133,96 @@ function Lightbox({ images, idx, onClose, setIdx }: { images: string[]; idx: num
   );
 }
 
+/* ── Mobile Swipe Gallery ── */
+function MobileGallery({ images, tags, onOpen }: {
+  images: string[];
+  tags: string[];
+  onOpen: (idx: number) => void;
+}) {
+  const [idx, setIdx] = useState(0);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [slideW, setSlideW] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const update = () => { if (containerRef.current) setSlideW(containerRef.current.offsetWidth); };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  const goTo = (n: number) => setIdx(Math.max(0, Math.min(images.length - 1, n)));
+
+  return (
+    <div ref={containerRef} className="relative aspect-[4/3] overflow-hidden">
+      {/* Sliding track */}
+      <div
+        className="flex h-full"
+        style={{
+          transform: slideW ? `translateX(${-idx * slideW + dragX}px)` : undefined,
+          transition: dragging ? 'none' : 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94)',
+          willChange: 'transform',
+        }}
+        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; setDragging(true); }}
+        onTouchMove={(e) => { if (touchStartX.current === null) return; setDragX(e.touches[0].clientX - touchStartX.current); }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null) return;
+          const diff = e.changedTouches[0].clientX - touchStartX.current;
+          setDragging(false);
+          setDragX(0);
+          if (Math.abs(diff) > 40) goTo(diff < 0 ? idx + 1 : idx - 1);
+          touchStartX.current = null;
+        }}
+      >
+        {images.map((src, i) => (
+          <div
+            key={i}
+            className="relative h-full flex-shrink-0"
+            style={{ width: slideW || '100vw' }}
+            onClick={() => { if (Math.abs(dragX) < 5) onOpen(i); }}
+          >
+            <Image src={src} alt="" fill className="object-cover" sizes="100vw" priority={i === 0} />
+          </div>
+        ))}
+      </div>
+
+      {/* Tags */}
+      {tags.length > 0 && (
+        <div className="pointer-events-none absolute left-3 top-3 flex gap-1.5">
+          {tags.map(tag => (
+            <span key={tag} className={
+              tag === 'HOT' ? 'badge-hot' :
+              tag === 'BEST' ? 'badge-best' :
+              tag === 'NEW' ? 'badge-new' :
+              'rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-medium text-gray-700'
+            }>{tag}</span>
+          ))}
+        </div>
+      )}
+
+      {images.length > 1 && (
+        <>
+          {/* Counter */}
+          <div className="absolute right-3 top-3 rounded-full bg-black/40 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+            {idx + 1} / {images.length}
+          </div>
+          {/* Dots */}
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+            {images.map((_, i) => (
+              <div
+                key={i}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ════════════════════════════════════════════ */
 export default function ListingDetail({
   listing, category, subcategory,
@@ -189,8 +279,15 @@ export default function ListingDetail({
         </div>
       </div>
 
-      {/* ══ GALLERY — full container width, main + 2×2 grid ══ */}
-      <div className="container-main pt-6">
+      {/* ══ GALLERY — mobile: swipe carousel / desktop: main + 2×2 grid ══ */}
+
+      {/* Mobile swipe carousel */}
+      <div className="lg:hidden">
+        <MobileGallery images={allImages} tags={listing.tags} onOpen={(i) => setLbIdx(i)} />
+      </div>
+
+      {/* Desktop grid */}
+      <div className="container-main hidden pt-6 lg:block">
         <div className="grid grid-cols-[3fr_2fr] gap-2 overflow-hidden rounded-2xl">
 
           {/* Main image */}
