@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useState, useRef, useEffect } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import type { Listing } from '@/types';
 
 function parseExtra(notes?: string): Record<string, any> {
@@ -9,16 +9,148 @@ function parseExtra(notes?: string): Record<string, any> {
   try { const p = JSON.parse(notes); return p.__extra ?? {}; } catch { return {}; }
 }
 
-function fmtDate(dateStr: string): string {
+const LOCALE_MAP: Record<string, string> = {
+  en: 'en-GB', de: 'de-DE', es: 'es-ES',
+  fr: 'fr-FR', ja: 'ja-JP', zh: 'zh-CN', ko: 'ko-KR',
+};
+
+function toIntl(locale: string): string {
+  return LOCALE_MAP[locale] ?? 'en-GB';
+}
+
+function fmtDate(dateStr: string, locale: string): string {
   if (!dateStr) return '';
   try {
     const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    return d.toLocaleDateString(toIntl(locale), {
+      year: 'numeric', month: 'long', day: 'numeric',
+    });
   } catch { return dateStr; }
 }
 
+/* ── Inline calendar popup ── */
+function CalendarPicker({
+  value, onChange, minDate, placeholder, locale,
+}: {
+  value: string; onChange: (v: string) => void;
+  minDate: string; placeholder: string; locale: string;
+}) {
+  const today = new Date();
+  const [open, setOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const ref = useRef<HTMLDivElement>(null);
+  const intl = toIntl(locale);
+
+  useEffect(() => {
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, []);
+
+  const monthLabel = new Intl.DateTimeFormat(intl, { month: 'long', year: 'numeric' })
+    .format(new Date(viewYear, viewMonth));
+
+  /* Monday-first weekday headers */
+  const dayHeaders = [1, 2, 3, 4, 5, 6, 0].map(n =>
+    new Intl.DateTimeFormat(intl, { weekday: 'short' }).format(new Date(2024, 0, 7 + n))
+  );
+
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const rawFirstDay = new Date(viewYear, viewMonth, 1).getDay(); // 0=Sun
+  const offset = (rawFirstDay + 6) % 7; // convert to Monday=0
+
+  const minObj = new Date(minDate + 'T00:00:00');
+  const todayStr = today.toISOString().split('T')[0];
+
+  function prevMonth() {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+  }
+  function nextMonth() {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
+  }
+  function selectDay(day: number) {
+    const d = new Date(viewYear, viewMonth, day);
+    if (d < minObj) return;
+    const str = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    onChange(str);
+    setOpen(false);
+  }
+
+  return (
+    <div ref={ref} className="relative">
+      {/* Trigger button */}
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className={`flex w-full items-center justify-between rounded-lg border px-4 py-3 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary-100 ${
+          value ? 'border-primary-300 text-gray-900' : 'border-gray-200 text-gray-400'
+        }`}
+      >
+        <span>{value ? fmtDate(value, locale) : placeholder}</span>
+        <svg className="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </button>
+
+      {/* Calendar dropdown */}
+      {open && (
+        <div className="absolute left-0 top-full z-50 mt-1 w-72 rounded-xl border border-gray-200 bg-white p-4 shadow-xl">
+          {/* Month nav */}
+          <div className="mb-3 flex items-center justify-between">
+            <button type="button" onClick={prevMonth}
+              className="rounded-lg p-1.5 text-lg text-gray-500 hover:bg-gray-100 leading-none">‹</button>
+            <span className="text-sm font-semibold capitalize text-gray-800">{monthLabel}</span>
+            <button type="button" onClick={nextMonth}
+              className="rounded-lg p-1.5 text-lg text-gray-500 hover:bg-gray-100 leading-none">›</button>
+          </div>
+
+          {/* Weekday headers */}
+          <div className="mb-1 grid grid-cols-7 text-center">
+            {dayHeaders.map(d => (
+              <span key={d} className="py-1 text-xs font-medium text-gray-400">{d}</span>
+            ))}
+          </div>
+
+          {/* Day cells */}
+          <div className="grid grid-cols-7 text-center">
+            {Array.from({ length: offset }).map((_, i) => <span key={`e${i}`} />)}
+            {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
+              const ds = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+              const disabled = new Date(viewYear, viewMonth, day) < minObj;
+              const selected = ds === value;
+              const isToday = ds === todayStr;
+              return (
+                <button key={day} type="button" disabled={disabled} onClick={() => selectDay(day)}
+                  className={[
+                    'rounded-lg py-1.5 text-sm transition-colors',
+                    selected ? 'bg-primary-500 font-semibold text-white' : '',
+                    !selected && isToday ? 'font-bold text-primary-600' : '',
+                    !selected && !disabled ? 'hover:bg-primary-50 text-gray-700' : '',
+                    disabled ? 'cursor-not-allowed text-gray-300' : '',
+                  ].join(' ')}
+                >
+                  {day}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════ */
+
 export default function BookingForm({ listing }: { listing: Listing }) {
   const t = useTranslations('booking');
+  const locale = useLocale();
 
   const extra = parseExtra(listing.notes);
   const menuItems: any[] = listing.menu_items ?? [];
@@ -92,6 +224,8 @@ export default function BookingForm({ listing }: { listing: Listing }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!date) { setError('Please select a date.'); return; }
+    if (!time) { setError('Please select a time.'); return; }
     setError('');
     setSubmitting(true);
     try {
@@ -150,7 +284,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
           {bookingType === 'free' ? t('requestReceivedFor') : t('bookingReceivedFor')} <strong>{listing.title}</strong>.
         </p>
         <div className="mt-4 rounded-lg bg-primary-50 p-4 text-left text-sm space-y-1">
-          <p><strong>{t('dateLabel')}:</strong> {fmtDate(date)}</p>
+          <p><strong>{t('dateLabel')}:</strong> {fmtDate(date, locale)}</p>
           <p><strong>{t('timeLabel')}:</strong> {time}</p>
           {bookingType !== 'free' && total > 0 && <p><strong>{t('amountLabel')}:</strong> ₩{total.toLocaleString()}</p>}
           {bookingType === 'free' && <p className="text-green-600 font-medium">{t('noPaymentRequired')}</p>}
@@ -205,26 +339,16 @@ export default function BookingForm({ listing }: { listing: Listing }) {
           <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder={t('phonePlaceholder')} />
         </div>
 
-        {/* Date — custom wrapper hides browser locale format (e.g. 연도-월-일) */}
+        {/* Date — custom calendar picker */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('selectDate')} *</label>
-          <div className="relative">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              min={minDate}
-              required
-              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-              style={{ zIndex: 2 }}
-            />
-            <div className={`flex w-full items-center justify-between rounded-lg border px-4 py-3 text-sm transition-colors ${date ? 'border-primary-300 text-gray-900' : 'border-gray-200 text-gray-400'}`}>
-              <span>{date ? fmtDate(date) : t('selectDate')}</span>
-              <svg className="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          </div>
+          <CalendarPicker
+            value={date}
+            onChange={setDate}
+            minDate={minDate}
+            placeholder={t('selectDate')}
+            locale={locale}
+          />
         </div>
 
         {/* Time */}
