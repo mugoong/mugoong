@@ -205,11 +205,26 @@ export default function BookingForm({ listing }: { listing: Listing }) {
           <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder={t('phonePlaceholder')} />
         </div>
 
-        {/* Date */}
+        {/* Date — custom wrapper hides browser locale format (e.g. 연도-월-일) */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('selectDate')} *</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} min={minDate} required className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" />
-          {date && <p className="mt-1 text-xs text-primary-600">{fmtDate(date)}</p>}
+          <div className="relative">
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              min={minDate}
+              required
+              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              style={{ zIndex: 2 }}
+            />
+            <div className={`flex w-full items-center justify-between rounded-lg border px-4 py-3 text-sm transition-colors ${date ? 'border-primary-300 text-gray-900' : 'border-gray-200 text-gray-400'}`}>
+              <span>{date ? fmtDate(date) : t('selectDate')}</span>
+              <svg className="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         {/* Time */}
