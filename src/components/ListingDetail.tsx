@@ -1,11 +1,20 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import type { Listing, CategoryConfig, SubCategory } from '@/types';
 import BookingForm from './BookingForm';
+import {
+  PinIcon, PhoneIcon, ClockIcon, CoffeeIcon, ClosedIcon, PersonIcon,
+  TimerIcon, PeopleIcon, DifficultyIcon, AgeIcon, FlagIcon,
+  MoneyIcon, BathIcon, DoctorIcon, ScissorsIcon, TreatmentIcon,
+  FacilitiesIcon, ProgramIcon, IncludedIcon, ExcludedIcon,
+  BackpackIcon, InfoCircleIcon, WarningIcon, RefreshIcon,
+  LightbulbIcon, MapIcon, StarIconOutline, ActivityIcon,
+  SaunaIcon, MassageServiceIcon, VenueIcon, MenuPriceIcon,
+} from './DetailIcons';
 
 /* ── helpers ── */
 function parseExtra(notes?: string): Record<string, any> {
@@ -28,16 +37,29 @@ function Check({ children }: { children: React.ReactNode }) {
   );
 }
 
-function InfoRow({ icon, label, value }: { icon: string; label: string; value?: string }) {
+function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value?: string }) {
   if (!value) return null;
   return (
     <div className="flex items-start gap-3 py-2">
-      <span className="text-lg">{icon}</span>
+      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center text-primary-500">
+        {icon}
+      </span>
       <div>
-        <p className="text-xs font-medium text-gray-400 uppercase">{label}</p>
+        <p className="text-xs font-medium uppercase text-gray-400">{label}</p>
         <p className="text-sm text-gray-700">{value}</p>
       </div>
     </div>
+  );
+}
+
+function SectionHeader({ icon, title, className = '' }: { icon: React.ReactNode; title: string; className?: string }) {
+  return (
+    <h2 className={`mb-4 flex items-center gap-3 text-xl font-bold text-gray-900 ${className}`}>
+      <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+        {icon}
+      </span>
+      {title}
+    </h2>
   );
 }
 
@@ -45,9 +67,9 @@ function MapLinks({ extra }: { extra: Record<string, any> }) {
   if (!extra.naver_map_url && !extra.kakao_map_url && !extra.google_map_url) return null;
   return (
     <div className="mt-4 flex flex-wrap gap-2">
-      {extra.naver_map_url && <a href={extra.naver_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100 transition">🗺️ Naver Map</a>}
-      {extra.kakao_map_url && <a href={extra.kakao_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 transition">🗺️ Kakao Map</a>}
-      {extra.google_map_url && <a href={extra.google_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">🗺️ Google Map</a>}
+      {extra.naver_map_url && <a href={extra.naver_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100 transition"><MapIcon className="h-4 w-4" /> Naver Map</a>}
+      {extra.kakao_map_url && <a href={extra.kakao_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 transition"><MapIcon className="h-4 w-4" /> Kakao Map</a>}
+      {extra.google_map_url && <a href={extra.google_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition"><MapIcon className="h-4 w-4" /> Google Map</a>}
     </div>
   );
 }
@@ -308,9 +330,7 @@ export default function ListingDetail({
 
             {/* Story / Description */}
             <div className="mt-8">
-              <h2 className="mb-4 text-xl font-bold text-gray-900">
-                {isRestaurant ? '🍽️ The Story Behind the Table' : isTips ? '📝 Article' : t('listing.aboutThis')}
-              </h2>
+              <h2 className="mb-4 text-xl font-bold text-gray-900">{isRestaurant ? 'The Story Behind the Table' : isTips ? 'Article' : t('listing.aboutThis')}</h2>
               <p className="leading-relaxed text-gray-600">{listing.description}</p>
               {listing.content && (
                 <div className="mt-4 whitespace-pre-line leading-relaxed text-gray-600">{listing.content}</div>
@@ -323,7 +343,7 @@ export default function ListingDetail({
                 {/* Tip Points */}
                 {extra.tips?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">💡 Key Tip Points</h2>
+                    <SectionHeader icon={<LightbulbIcon className="h-5 w-5" />} title="Key Tip Points" />
                     <div className="space-y-4">
                       {extra.tips.map((tip: { title: string; content: string }, i: number) => (
                         <div key={i} className="rounded-xl border-l-4 border-primary-400 bg-primary-50 px-5 py-4">
@@ -338,7 +358,7 @@ export default function ListingDetail({
                 {/* YouTube Embed */}
                 {extra.youtube_url && getYouTubeId(extra.youtube_url) && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">▶️ Watch Video</h2>
+                    <h2 className="mb-4 text-xl font-bold text-gray-900">Watch Video</h2>
                     <div className="relative aspect-video overflow-hidden rounded-2xl bg-black">
                       <iframe
                         src={`https://www.youtube.com/embed/${getYouTubeId(extra.youtube_url)}`}
@@ -372,7 +392,10 @@ export default function ListingDetail({
                 {/* Map Section */}
                 {(extra.map_description || extra.naver_map_url || extra.kakao_map_url || extra.google_map_url) && (
                   <div className="mt-8 rounded-xl border border-gray-100 p-5">
-                    <h2 className="mb-3 text-lg font-bold text-gray-900">📍 Location Info</h2>
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="text-primary-500"><PinIcon className="h-5 w-5" /></span>
+                      <h2 className="text-lg font-bold text-gray-900">Location Info</h2>
+                    </div>
                     {extra.map_description && <p className="mb-3 text-sm text-gray-600">{extra.map_description}</p>}
                     <MapLinks extra={extra} />
                     {extra.google_map_url && (
@@ -393,14 +416,14 @@ export default function ListingDetail({
                 {/* Menu */}
                 {menuItems.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">📋 Menu</h2>
+                    <SectionHeader icon={<ProgramIcon className="h-5 w-5" />} title="Menu" />
                     {['main', 'side', 'drink'].map(cat => {
                       const items = menuItems.filter(i => (i.category || 'main') === cat);
                       if (items.length === 0) return null;
                       return (
                         <div key={cat} className="mb-6">
                           <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-gray-400">
-                            {cat === 'main' ? '🥩 Main Menu' : cat === 'side' ? '🥗 Side Dishes' : '🍺 Drinks & Alcohol'}
+                            {cat === 'main' ? 'Main Dishes' : cat === 'side' ? 'Side Dishes' : 'Drinks & Alcohol'}
                           </h3>
                           <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
                             {items.map((item, i) => (
@@ -428,30 +451,33 @@ export default function ListingDetail({
 
                 {/* Location & Maps */}
                 <div className="mt-8 rounded-xl border border-gray-100 p-5">
-                  <h2 className="mb-3 text-lg font-bold text-gray-900">📍 Location & Info</h2>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="text-primary-500"><PinIcon className="h-5 w-5" /></span>
+                    <h2 className="text-lg font-bold text-gray-900">Location & Info</h2>
+                  </div>
                   <div className="grid gap-1 sm:grid-cols-2">
-                    <InfoRow icon="📍" label="Address" value={listing.address} />
-                    <InfoRow icon="📞" label="Phone" value={listing.phone} />
-                    <InfoRow icon="🕐" label="Hours" value={listing.operating_hours} />
-                    <InfoRow icon="☕" label="Break Time" value={extra.break_time} />
-                    <InfoRow icon="🚫" label="Closed" value={extra.holidays} />
+                    <InfoRow icon={<PinIcon />} label="Address" value={listing.address} />
+                    <InfoRow icon={<PhoneIcon />} label="Phone" value={listing.phone} />
+                    <InfoRow icon={<ClockIcon />} label="Hours" value={listing.operating_hours} />
+                    <InfoRow icon={<CoffeeIcon />} label="Break Time" value={extra.break_time} />
+                    <InfoRow icon={<ClosedIcon />} label="Closed" value={extra.holidays} />
                   </div>
                   {/* Map buttons */}
                   {(extra.naver_map_url || extra.kakao_map_url || extra.google_map_url) && (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {extra.naver_map_url && (
                         <a href={extra.naver_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100 transition">
-                          🗺️ Naver Map
+                          <MapIcon className="h-4 w-4" /> Naver Map
                         </a>
                       )}
                       {extra.kakao_map_url && (
                         <a href={extra.kakao_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 transition">
-                          🗺️ Kakao Map
+                          <MapIcon className="h-4 w-4" /> Kakao Map
                         </a>
                       )}
                       {extra.google_map_url && (
                         <a href={extra.google_map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">
-                          🗺️ Google Map
+                          <MapIcon className="h-4 w-4" /> Google Map
                         </a>
                       )}
                     </div>
@@ -471,11 +497,11 @@ export default function ListingDetail({
                 {/* Reservation Notices */}
                 {extra.reservation_notices?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">📋 Reservation Info</h2>
+                    <SectionHeader icon={<InfoCircleIcon className="h-5 w-5" />} title="Reservation Info" />
                     <div className="space-y-2">
                       {extra.reservation_notices.map((notice: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg bg-blue-50 p-3">
-                          <span className="mt-0.5 text-blue-500 font-bold text-sm">{i + 1}</span>
+                          <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-700">{i + 1}</span>
                           <span className="text-sm text-gray-700">{notice}</span>
                         </div>
                       ))}
@@ -486,11 +512,11 @@ export default function ListingDetail({
                 {/* Cancellation & Refund Policy */}
                 {extra.cancellation_policy?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">🔄 Cancellation & Refund Policy</h2>
+                    <SectionHeader icon={<RefreshIcon className="h-5 w-5" />} title="Cancellation & Refund Policy" />
                     <div className="space-y-2">
                       {extra.cancellation_policy.map((policy: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                          <span className="mt-0.5 text-gray-400">•</span>
+                          <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-400" />
                           <span className="text-sm text-gray-700">{policy}</span>
                         </div>
                       ))}
@@ -501,11 +527,11 @@ export default function ListingDetail({
                 {/* Important Things to Know */}
                 {extra.important_notes?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">⚠️ Things to Know</h2>
+                    <SectionHeader icon={<WarningIcon className="h-5 w-5" />} title="Things to Know" />
                     <div className="grid gap-2 sm:grid-cols-2">
                       {extra.important_notes.map((note: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg border border-amber-100 bg-amber-50 p-3">
-                          <span className="text-amber-500">⚡</span>
+                          <span className="mt-0.5 flex-shrink-0 text-amber-500"><WarningIcon className="h-4 w-4" /></span>
                           <span className="text-sm text-gray-700">{note}</span>
                         </div>
                       ))}
@@ -522,14 +548,19 @@ export default function ListingDetail({
               <>
                 {/* Location & Map */}
                 <div className="mt-8 rounded-xl border border-gray-100 p-5">
-                  <h2 className="mb-3 text-lg font-bold text-gray-900">✨ {listing.subcategory === 'sauna' ? 'Sauna Info' : listing.subcategory === 'hair-salon' ? 'Salon Info' : listing.subcategory === 'skin-clinic' ? 'Clinic Info' : 'Venue Info'}</h2>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="text-primary-500">
+                      {listing.subcategory === 'sauna' ? <SaunaIcon className="h-5 w-5" /> : listing.subcategory === 'massage' ? <MassageServiceIcon className="h-5 w-5" /> : <VenueIcon className="h-5 w-5" />}
+                    </span>
+                    <h2 className="text-lg font-bold text-gray-900">{listing.subcategory === 'sauna' ? 'Sauna Info' : listing.subcategory === 'hair-salon' ? 'Salon Info' : listing.subcategory === 'skin-clinic' ? 'Clinic Info' : 'Venue Info'}</h2>
+                  </div>
                   <div className="grid gap-1 sm:grid-cols-2">
-                    <InfoRow icon="📍" label="Address" value={listing.address} />
-                    <InfoRow icon="📞" label="Phone" value={listing.phone} />
-                    <InfoRow icon="🕐" label="Hours" value={listing.operating_hours} />
-                    <InfoRow icon="☕" label="Break Time" value={extra.break_time} />
-                    <InfoRow icon="🚫" label="Closed" value={extra.holidays} />
-                    <InfoRow icon="👤" label="Gender Policy" value={extra.gender_policy} />
+                    <InfoRow icon={<PinIcon />} label="Address" value={listing.address} />
+                    <InfoRow icon={<PhoneIcon />} label="Phone" value={listing.phone} />
+                    <InfoRow icon={<ClockIcon />} label="Hours" value={listing.operating_hours} />
+                    <InfoRow icon={<CoffeeIcon />} label="Break Time" value={extra.break_time} />
+                    <InfoRow icon={<ClosedIcon />} label="Closed" value={extra.holidays} />
+                    <InfoRow icon={<PersonIcon />} label="Gender Policy" value={extra.gender_policy} />
                   </div>
                   {extra.english_staff && <div className="mt-3"><Check>English-speaking staff available</Check></div>}
                   <MapLinks extra={extra} />
@@ -543,7 +574,7 @@ export default function ListingDetail({
                 {/* Sauna: Adult/Child Pricing */}
                 {listing.subcategory === 'sauna' && (extra.adult_price || extra.child_price) && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">💰 Admission Pricing</h2>
+                    <SectionHeader icon={<MoneyIcon className="h-5 w-5" />} title="Admission Pricing" />
                     <p className="mb-3 text-xs text-gray-400">Child = Elementary school and below (age ≤ 12) · Adult = Middle school and above (age 13+)</p>
                     <div className="grid gap-3 sm:grid-cols-2">
                       {extra.adult_price > 0 && (
@@ -565,7 +596,7 @@ export default function ListingDetail({
                 {/* Sauna: Facilities */}
                 {listing.subcategory === 'sauna' && extra.facilities?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">🛁 Facilities & Amenities</h2>
+                    <SectionHeader icon={<FacilitiesIcon className="h-5 w-5" />} title="Facilities & Amenities" />
                     <div className="grid gap-2 sm:grid-cols-2">
                       {extra.facilities.map((f: string, i: number) => (
                         <Check key={i}>{f}</Check>
@@ -577,16 +608,19 @@ export default function ListingDetail({
                 {/* Staff Cards (skin-clinic / hair-salon) */}
                 {extra.staff?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">
-                      {listing.subcategory === 'skin-clinic' ? '👨‍⚕️ Our Doctors' : '✂️ Our Hair Designers'}
-                    </h2>
+                    <SectionHeader
+                      icon={listing.subcategory === 'skin-clinic' ? <DoctorIcon className="h-5 w-5" /> : <ScissorsIcon className="h-5 w-5" />}
+                      title={listing.subcategory === 'skin-clinic' ? 'Our Doctors' : 'Our Hair Designers'}
+                    />
                     <div className="grid gap-4 sm:grid-cols-2">
                       {extra.staff.map((member: { name: string; title: string; photo: string; bio: string }, i: number) => (
                         <div key={i} className="flex gap-4 rounded-xl border border-gray-100 p-4">
                           {member.photo ? (
                             <img src={member.photo} alt={member.name} className="h-16 w-16 flex-shrink-0 rounded-full object-cover" />
                           ) : (
-                            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary-100 text-2xl">{listing.subcategory === 'skin-clinic' ? '👨‍⚕️' : '💇'}</div>
+                            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600">
+                              {listing.subcategory === 'skin-clinic' ? <DoctorIcon className="h-8 w-8" /> : <ScissorsIcon className="h-8 w-8" />}
+                            </div>
                           )}
                           <div className="min-w-0">
                             <p className="font-semibold text-gray-800">{member.name}</p>
@@ -602,9 +636,10 @@ export default function ListingDetail({
                 {/* Treatment / Service Menu */}
                 {menuItems.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">
-                      {listing.subcategory === 'skin-clinic' ? '💉 Treatment Menu & Prices' : listing.subcategory === 'hair-salon' ? '✂️ Service Menu & Prices' : listing.subcategory === 'sauna' ? '🍜 Add-ons & Cafeteria' : '💆 Massage Options & Prices'}
-                    </h2>
+                    <SectionHeader
+                      icon={<MenuPriceIcon className="h-5 w-5" />}
+                      title={listing.subcategory === 'skin-clinic' ? 'Treatments & Prices' : listing.subcategory === 'hair-salon' ? 'Services & Prices' : listing.subcategory === 'sauna' ? 'Add-ons & Cafeteria' : 'Massage Options & Prices'}
+                    />
                     <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
                       {menuItems.map((item, i) => (
                         <div key={i} className="flex items-start gap-3 px-4 py-3">
@@ -624,11 +659,11 @@ export default function ListingDetail({
                 {/* Reservation Notices */}
                 {extra.reservation_notices?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">📋 Reservation Info</h2>
+                    <SectionHeader icon={<InfoCircleIcon className="h-5 w-5" />} title="Reservation Info" />
                     <div className="space-y-2">
                       {extra.reservation_notices.map((notice: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg bg-blue-50 p-3">
-                          <span className="mt-0.5 text-sm font-bold text-blue-500">{i + 1}</span>
+                          <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-700">{i + 1}</span>
                           <span className="text-sm text-gray-700">{notice}</span>
                         </div>
                       ))}
@@ -639,11 +674,11 @@ export default function ListingDetail({
                 {/* Cancellation Policy */}
                 {extra.cancellation_policy?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">🔄 Cancellation & Refund Policy</h2>
+                    <SectionHeader icon={<RefreshIcon className="h-5 w-5" />} title="Cancellation & Refund Policy" />
                     <div className="space-y-2">
                       {extra.cancellation_policy.map((policy: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                          <span className="mt-0.5 text-gray-400">•</span>
+                          <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-400" />
                           <span className="text-sm text-gray-700">{policy}</span>
                         </div>
                       ))}
@@ -654,11 +689,11 @@ export default function ListingDetail({
                 {/* Important Notes */}
                 {extra.important_notes?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">⚠️ Things to Know</h2>
+                    <SectionHeader icon={<WarningIcon className="h-5 w-5" />} title="Things to Know" />
                     <div className="grid gap-2 sm:grid-cols-2">
                       {extra.important_notes.map((note: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg border border-amber-100 bg-amber-50 p-3">
-                          <span className="text-amber-500">⚡</span>
+                          <span className="mt-0.5 flex-shrink-0 text-amber-500"><WarningIcon className="h-4 w-4" /></span>
                           <span className="text-sm text-gray-700">{note}</span>
                         </div>
                       ))}
@@ -675,16 +710,19 @@ export default function ListingDetail({
               <>
                 {/* Activity Info */}
                 <div className="mt-8 rounded-xl border border-gray-100 p-5">
-                  <h2 className="mb-3 text-lg font-bold text-gray-900">🎯 Activity Details</h2>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="text-primary-500"><ActivityIcon className="h-5 w-5" /></span>
+                    <h2 className="text-lg font-bold text-gray-900">Activity Details</h2>
+                  </div>
                   <div className="grid gap-1 sm:grid-cols-2">
-                    <InfoRow icon="⏱️" label="Duration" value={extra.duration} />
-                    <InfoRow icon="👥" label="Group Size" value={extra.group_size} />
-                    <InfoRow icon="📊" label="Difficulty" value={extra.difficulty} />
-                    <InfoRow icon="🎂" label="Age Requirement" value={extra.age_requirement} />
-                    <InfoRow icon="🕐" label="Start Time" value={extra.start_time} />
-                    <InfoRow icon="🕓" label="End Time" value={extra.end_time} />
-                    <InfoRow icon="📍" label="Meeting Point" value={extra.meeting_point} />
-                    <InfoRow icon="🏁" label="End / Dropoff" value={extra.end_point} />
+                    <InfoRow icon={<TimerIcon />} label="Duration" value={extra.duration} />
+                    <InfoRow icon={<PeopleIcon />} label="Group Size" value={extra.group_size} />
+                    <InfoRow icon={<DifficultyIcon />} label="Difficulty" value={extra.difficulty} />
+                    <InfoRow icon={<AgeIcon />} label="Age Requirement" value={extra.age_requirement} />
+                    <InfoRow icon={<ClockIcon />} label="Start Time" value={extra.start_time} />
+                    <InfoRow icon={<ClockIcon />} label="End Time" value={extra.end_time} />
+                    <InfoRow icon={<PinIcon />} label="Meeting Point" value={extra.meeting_point} />
+                    <InfoRow icon={<FlagIcon />} label="End / Dropoff" value={extra.end_point} />
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {extra.english_guide && <Check>English-speaking guide</Check>}
@@ -696,7 +734,7 @@ export default function ListingDetail({
                 {/* Age-based Pricing Table */}
                 {extra.age_pricing?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">💰 Pricing by Age</h2>
+                    <SectionHeader icon={<MoneyIcon className="h-5 w-5" />} title="Pricing by Age" />
                     <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
                       {extra.age_pricing.map((tier: { label: string; price: number }, i: number) => (
                         <div key={i} className="flex items-center justify-between px-4 py-3">
@@ -711,19 +749,19 @@ export default function ListingDetail({
                 {/* Included / Excluded / What to Bring */}
                 {extra.included?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">✅ What's Included</h2>
+                    <SectionHeader icon={<IncludedIcon className="h-5 w-5" />} title="What's Included" />
                     <ListBadges items={extra.included} green />
                   </div>
                 )}
                 {extra.excluded?.length > 0 && (
                   <div className="mt-6">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">❌ Not Included</h2>
+                    <SectionHeader icon={<ExcludedIcon className="h-5 w-5" />} title="Not Included" />
                     <ListBadges items={extra.excluded} />
                   </div>
                 )}
                 {extra.what_to_bring?.length > 0 && (
                   <div className="mt-6">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">🎒 What to Bring</h2>
+                    <SectionHeader icon={<BackpackIcon className="h-5 w-5" />} title="What to Bring" />
                     <ListBadges items={extra.what_to_bring} />
                   </div>
                 )}
@@ -731,7 +769,7 @@ export default function ListingDetail({
                 {/* Program Options */}
                 {menuItems.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">📋 Program Options</h2>
+                    <SectionHeader icon={<ProgramIcon className="h-5 w-5" />} title="Program Options" />
                     <div className="divide-y divide-gray-100 rounded-xl border border-gray-100">
                       {menuItems.map((item, i) => (
                         <div key={i} className="flex items-start justify-between px-4 py-3">
@@ -749,11 +787,14 @@ export default function ListingDetail({
                 {/* Location & Map */}
                 {(listing.address || listing.phone || extra.naver_map_url || extra.kakao_map_url || extra.google_map_url) && (
                   <div className="mt-8 rounded-xl border border-gray-100 p-5">
-                    <h2 className="mb-3 text-lg font-bold text-gray-900">📍 Contact & Location</h2>
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="text-primary-500"><PinIcon className="h-5 w-5" /></span>
+                      <h2 className="text-lg font-bold text-gray-900">Contact & Location</h2>
+                    </div>
                     <div className="grid gap-1 sm:grid-cols-2">
-                      <InfoRow icon="📍" label="Address" value={listing.address} />
-                      <InfoRow icon="📞" label="Phone" value={listing.phone} />
-                      <InfoRow icon="🕐" label="Schedule" value={listing.operating_hours} />
+                      <InfoRow icon={<PinIcon />} label="Address" value={listing.address} />
+                      <InfoRow icon={<PhoneIcon />} label="Phone" value={listing.phone} />
+                      <InfoRow icon={<ClockIcon />} label="Schedule" value={listing.operating_hours} />
                     </div>
                     <MapLinks extra={extra} />
                     {extra.google_map_url && (
@@ -767,11 +808,11 @@ export default function ListingDetail({
                 {/* Reservation Notices */}
                 {extra.reservation_notices?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">📋 Reservation Info</h2>
+                    <SectionHeader icon={<InfoCircleIcon className="h-5 w-5" />} title="Reservation Info" />
                     <div className="space-y-2">
                       {extra.reservation_notices.map((notice: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg bg-blue-50 p-3">
-                          <span className="mt-0.5 text-sm font-bold text-blue-500">{i + 1}</span>
+                          <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-700">{i + 1}</span>
                           <span className="text-sm text-gray-700">{notice}</span>
                         </div>
                       ))}
@@ -782,11 +823,11 @@ export default function ListingDetail({
                 {/* Cancellation Policy */}
                 {extra.cancellation_policy?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">🔄 Cancellation & Refund Policy</h2>
+                    <SectionHeader icon={<RefreshIcon className="h-5 w-5" />} title="Cancellation & Refund Policy" />
                     <div className="space-y-2">
                       {extra.cancellation_policy.map((policy: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                          <span className="mt-0.5 text-gray-400">•</span>
+                          <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-400" />
                           <span className="text-sm text-gray-700">{policy}</span>
                         </div>
                       ))}
@@ -797,11 +838,11 @@ export default function ListingDetail({
                 {/* Important Notes */}
                 {extra.important_notes?.length > 0 && (
                   <div className="mt-8">
-                    <h2 className="mb-4 text-xl font-bold text-gray-900">⚠️ Things to Know</h2>
+                    <SectionHeader icon={<WarningIcon className="h-5 w-5" />} title="Things to Know" />
                     <div className="grid gap-2 sm:grid-cols-2">
                       {extra.important_notes.map((note: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 rounded-lg border border-amber-100 bg-amber-50 p-3">
-                          <span className="text-amber-500">⚡</span>
+                          <span className="mt-0.5 flex-shrink-0 text-amber-500"><WarningIcon className="h-4 w-4" /></span>
                           <span className="text-sm text-gray-700">{note}</span>
                         </div>
                       ))}
@@ -814,7 +855,7 @@ export default function ListingDetail({
             {/* ── External Reviews ── */}
             {extra.external_reviews?.length > 0 && (
               <div className="mt-8">
-                <h2 className="mb-4 text-xl font-bold text-gray-900">⭐ Reviews ({extra.external_reviews.length})</h2>
+                <SectionHeader icon={<StarIconOutline className="h-5 w-5" />} title={`Reviews (${extra.external_reviews.length})`} />
                 <div className="space-y-3">
                   {extra.external_reviews.map((review: any, i: number) => (
                     <ReviewCard key={i} review={review} />

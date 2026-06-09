@@ -182,6 +182,253 @@ const MQB = (p = 6000): MenuItemJson[] => [
   { category: 'side', name: 'Japchae (Glass Noodles)', price: 4000, description: 'Stir-fried sweet potato noodles' },
 ];
 
+/* ─── Small photo helper (200px staff/profile images) ──────────── */
+const ps = (id: string) => `https://images.unsplash.com/photo-${id}?w=200&q=80`;
+
+/* ─── Staff pools ─────────────────────────────────────────────────── */
+const SDOC = [
+  { name: 'Dr. Kim Jiyeon', title: 'Chief Dermatologist · Board-certified, 15 yrs exp.', photo: ps('1612349317150-e413f6a5b16d'), bio: 'Specialises in laser treatments and anti-aging. Published researcher in Korean Dermatology Journal.' },
+  { name: 'Dr. Park Seunghyun', title: 'Dermatologist · Skin Microbiome Specialist', photo: ps('1560066984-138daaa70c8f'), bio: 'Expert in acne and pigmentation treatments. 10 years of clinical experience.' },
+  { name: 'Dr. Choi Hyejin', title: 'Aesthetic Dermatologist · Laser & Lifting Expert', photo: ps('1598440947619-2c35fc9aa908'), bio: 'Trained at Seoul National University Hospital. Specialises in V-line and rejuvenation procedures.' },
+  { name: 'Dr. Lee Sooyoung', title: 'Dermatologist · Anti-Aging Specialist', photo: ps('1519494026892-80bbd2d6fd0d'), bio: 'Overseas-trained specialist. Expert in fillers, Botox, and non-invasive skin lifting.' },
+];
+const SHAIR = [
+  { name: 'Jisoo Kwon', title: 'Head Designer · K-Pop Colour Specialist', photo: ps('1522337360788-8b13dee7a37e'), bio: 'Trained in Seoul and Paris. Specialises in bleach and creative colour techniques.' },
+  { name: 'Mirae Yoon', title: 'Senior Designer · Balayage & Ombré Expert', photo: ps('1540555700478-4be289fbecef'), bio: 'Balayage and ombré specialist with 8 years at top Seoul salons.' },
+  { name: 'Sora Han', title: 'Designer · Perm & Texture Specialist', photo: ps('1545579133-99bb5ad189be'), bio: 'Master of Korean digital perms and natural waves. Brings out texture beautifully.' },
+  { name: 'Minjun Lee', title: 'Designer · Cut & Style Artist', photo: ps('1544161515-4ab6ce6db874'), bio: 'Precision cuts and editorial styling. Works with models and content creators.' },
+];
+
+/* ─── Wellness service menu pools ────────────────────────────────── */
+const WTREAT = (): MenuItemJson[] => [
+  { name: 'Hydrafacial Premium', price: 180000, description: 'Deep cleanse + hydration + LED (60 min)' },
+  { name: 'IPL Photofacial', price: 220000, description: 'Light therapy for pigmentation & redness (45 min)' },
+  { name: 'Micro-needling', price: 280000, description: 'Collagen induction therapy (60 min)' },
+  { name: 'Laser Toning', price: 150000, description: 'Brightening & pore-tightening laser (30 min)' },
+  { name: 'PRP Skin Rejuvenation', price: 350000, description: 'Platelet-rich plasma facial (90 min)' },
+];
+const WHAIR = (): MenuItemJson[] => [
+  { name: 'Haircut & Blow-dry', price: 60000, description: 'Shampoo + precision cut + style (60 min)' },
+  { name: 'Full Colour (roots to tips)', price: 120000, description: 'Single process + care treatment (90 min)' },
+  { name: 'Balayage / Ombré', price: 180000, description: 'Hand-painted highlights, natural gradient (3+ hrs)' },
+  { name: 'Korean Digital Perm', price: 150000, description: 'Volume and wave without damage (3 hrs)' },
+  { name: 'Protein Treatment', price: 80000, description: 'Strengthen & restore shine (45 min)' },
+];
+const WMASSAGE = (): MenuItemJson[] => [
+  { name: 'Full Body Massage (60 min)', price: 55000, description: 'Relaxing full-body session using aromatherapy oils' },
+  { name: 'Deep Tissue (90 min)', price: 80000, description: 'Targeted muscle tension release, firm pressure' },
+  { name: 'Hot Stone Therapy (75 min)', price: 70000, description: 'Volcanic basalt stones + Swedish technique' },
+  { name: 'Foot & Leg Reflexology (45 min)', price: 35000, description: 'Pressure-point therapy for tired legs' },
+  { name: 'Couples Room (90 min)', price: 130000, description: 'Side-by-side massage in private room (per couple)' },
+];
+const WSAUNA = (): MenuItemJson[] => [
+  { name: 'Sikhye (Sweet Rice Drink)', price: 3000, description: 'Classic post-sauna digestive drink' },
+  { name: 'Ramen Set', price: 5000, description: 'Instant noodle — jjimjilbang staple' },
+  { name: 'Snack Set', price: 4000, description: 'Eggs + sikhye + crackers' },
+  { name: 'Body Scrub (Italy Towel)', price: 20000, description: '45-min full body exfoliation service' },
+];
+const SAUNA_FACILITIES_ALL = [
+  'Dry Sauna (80°C)', 'Steam Room (45°C)', 'Jade Room', 'Salt Room', 'Pine Wood Sauna',
+  'Cold Plunge Pool', 'Outdoor Jacuzzi', 'Relaxation Lounge', 'TV Sleeping Zone',
+  'Food Court', 'Fitness Area', 'Hanji Sleeping Room',
+];
+const SAUNA_PRICES = [12000, 15000, 18000, 20000, 25000, 28000];
+
+/* ─── Activity program menus ─────────────────────────────────────── */
+const ALOCALEXP = (): MenuItemJson[] => [
+  { name: 'Standard Tour (2.5 hrs)', price: 45000, description: 'Guided walk + cultural storytelling + photo stops' },
+  { name: 'Premium Tour (4 hrs)', price: 70000, description: 'Adds hanbok rental + traditional workshop' },
+  { name: 'Private Group (up to 4)', price: 120000, description: 'Exclusive guide, fully customisable route' },
+];
+const ACOOKING = (): MenuItemJson[] => [
+  { name: 'Standard Class (3 hrs)', price: 55000, description: 'Market intro + cook 3 dishes + eat together' },
+  { name: 'Premium Class (4.5 hrs)', price: 85000, description: 'Adds makgeolli brewing + tteok dessert' },
+  { name: 'Private Class (up to 4 pax)', price: 180000, description: 'Dedicated chef + custom menu selection' },
+];
+const ACULTURAL = (): MenuItemJson[] => [
+  { name: 'Half-Day Tour (3 hrs)', price: 50000, description: 'Guided heritage walk with expert commentary' },
+  { name: 'Full-Day Tour (6 hrs)', price: 85000, description: 'Adds lunch + hands-on traditional craft activity' },
+  { name: 'Private Tour', price: 150000, description: 'Historian guide, no group, private transport' },
+];
+const ASPORTS = (): MenuItemJson[] => [
+  { name: 'Beginner Session (2 hrs)', price: 65000, description: 'Equipment + safety briefing + instruction' },
+  { name: 'Intermediate Session (3 hrs)', price: 85000, description: 'Skills training + guided experience' },
+  { name: 'Full-Day Adventure', price: 130000, description: 'Complete day program with lunch included' },
+];
+
+/* ─── Activity detail pools ──────────────────────────────────────── */
+const AGE_TIERS = [
+  [{ label: 'Adult (13+)', price: 45000 }, { label: 'Youth (8–12)', price: 30000 }, { label: 'Child (4–7)', price: 20000 }, { label: 'Infant (0–3)', price: 0 }],
+  [{ label: 'Adult (13+)', price: 55000 }, { label: 'Child (4–12)', price: 35000 }, { label: 'Infant (0–3)', price: 0 }],
+  [{ label: 'Adult (13+)', price: 65000 }, { label: 'Youth (8–12)', price: 45000 }, { label: 'Child (4–7)', price: 30000 }],
+  [{ label: 'Adult (15+)', price: 85000 }, { label: 'Teen (10–14)', price: 65000 }, { label: 'Child (5–9)', price: 45000 }],
+];
+const MEETING_POINTS = [
+  'Exit 1, Gyeongbokgung Station (Line 3)', 'Exit 5, Insadong Station (Line 1)',
+  'Exit 3, Haeundae Station (Line 2)', 'Tourist Info Center, Jeju Airport Arrivals',
+  'Gamcheon Village Main Entrance', 'Seomyeon Station Exit 7 (Line 1)',
+];
+const WHAT_INCLUDED = [
+  ['English-speaking guide', 'Admission tickets', 'Traditional snack set', 'Rain poncho'],
+  ['Professional guide', 'All equipment & materials', 'Insurance coverage', 'Photo souvenir'],
+  ['Local expert guide', 'Round-trip transport from meeting point', 'Bottled water', 'Certificate of completion'],
+  ['Bilingual guide', 'Entrance fees', 'Traditional lunch', 'Cultural activity props'],
+];
+const WHAT_EXCLUDED = [
+  ['Personal travel insurance', 'Hotel pick-up', 'Tips (discretionary)'],
+  ['Personal expenses', 'Extra food & beverages', 'Parking fees'],
+  ['Gratuities', 'Optional souvenirs', 'Medical expenses'],
+];
+const WHAT_BRING = [
+  ['Comfortable walking shoes', 'Sunscreen & hat', 'Valid ID', 'Camera'],
+  ['Weather-appropriate clothing', 'Comfortable footwear', 'Small backpack', 'Snacks (optional)'],
+  ['Sunglasses', 'Cash for personal purchases', 'Water bottle', 'Phone fully charged'],
+];
+
+/* ─── Tips content pools ─────────────────────────────────────────── */
+const TIPS_TRANSPORT = [
+  { title: 'Get a T-money Card', content: 'Buy a T-money card at any convenience store (GS25, CU, 7-Eleven) for ₩2,500 + deposit. Works on all metro, buses, and even some taxis in Korea.' },
+  { title: 'Download Naver Map', content: 'Google Maps often lacks real-time Korean transit data. Naver Map is the local standard — tap the blue circle for your location and search in English.' },
+  { title: 'Avoid Peak Hours', content: 'Rush hour is 7:30–9:00 and 17:30–19:30. If possible, travel between 10:00–16:00 for a much more comfortable ride.' },
+  { title: 'Free Bus-Metro Transfers', content: 'Within Seoul, you get free transfers between metro and bus if you tap out of the metro and tap onto a bus within 30 minutes.' },
+];
+const TIPS_TRAVEL = [
+  { title: 'Best Time to Visit', content: 'Spring (April–May) for cherry blossoms and autumn (October–November) for foliage are peak seasons. Book accommodation well in advance.' },
+  { title: 'Use Naver Map, Not Google', content: 'Locals use Naver Map for accurate transit directions and up-to-date business hours. Download it before your trip.' },
+  { title: 'Eat Like a Local', content: 'Eating at local restaurants away from tourist streets saves 30–40%. Look for gimbap shops and bunsik eateries for great meals under ₩10,000.' },
+  { title: 'Must-Have App: KakaoTaxi', content: 'KakaoTaxi is the essential ride app. Set pickup via map even without Korean — drivers accept all app bookings.' },
+];
+const TIPS_FOOD = [
+  { title: 'Table Manners', content: 'Wait for the eldest at the table to eat first. Do not stick chopsticks upright in rice (a funeral custom). Refilling others\' drinks before your own is considered polite.' },
+  { title: 'Free Side Dishes', content: 'Banchan (side dishes) are always complimentary and freely refillable — just ask the server. You are only charged for the main dishes you order.' },
+  { title: 'Best Meal Timing', content: 'Koreans typically eat lunch 12:00–13:00 and dinner from 18:00–19:30. Arriving just before peak avoids queues at popular spots.' },
+  { title: 'Ordering Without Korean', content: 'Most restaurants have picture menus or food models outside. Point-and-order works everywhere. Many places now have QR code menus in English.' },
+];
+const TIPS_TREND = [
+  { title: 'Why It\'s Trending', content: 'Social media has put a spotlight on this experience — expect queues at weekends. Booking ahead online is strongly recommended.' },
+  { title: 'Best Photo Spots', content: 'Golden hour (1 hour before sunset) gives the best light. Many Instagram-worthy corners are less crowded early morning on weekdays.' },
+  { title: 'Local vs Tourist Price', content: 'Walk 5–10 minutes from the main tourist street to find authentic experiences at local prices — often 30–40% cheaper.' },
+  { title: 'Dress Code', content: 'Smart casual is appreciated at most venues. Avoid sportswear at traditional cultural spaces. Some temples require covered shoulders.' },
+];
+const TIPS_SMOKE = [
+  { title: 'Strict Fines', content: 'Korea strictly enforces no-smoking zones. Fines start from ₩50,000 and can reach ₩100,000 near tourist and cultural heritage sites.' },
+  { title: 'Designated Zones Only', content: 'Only smoke in clearly marked designated areas (지정 흡연구역). Look for the orange cigarette sign on grey bollards or designated booths.' },
+  { title: 'Find Zones on Naver Map', content: 'Search "흡연구역" (heub-yeon-gu-yeok) in Naver Map to find the nearest designated smoking zone near your location.' },
+  { title: 'Near Heritage Sites', content: 'Smoking within 10m of UNESCO World Heritage Sites, palaces, and temples is always prohibited and heavily fined.' },
+];
+
+/* ─── Wellness notes builder ─────────────────────────────────────── */
+function wn(sub: string, seed: number): string {
+  const bookingType = sub === 'skin-clinic' ? 'free' : sub === 'hair-salon' ? 'deposit' : 'full_payment';
+  const genders = ['All welcome', 'Women only', 'Mixed (separate floors)'];
+  const breakTimes = ['12:00–13:00', '13:00–14:00', '14:00–15:00'];
+  const holidaysList = ['Every Sunday', 'Every Monday', '1st & 3rd Sunday'];
+  const s = seed % 3;
+  const extra: Record<string, any> = {
+    booking_type: bookingType,
+    english_staff: s !== 1,
+    gender_policy: genders[s],
+    break_time: breakTimes[s],
+    holidays: holidaysList[s],
+    naver_map_url: '', kakao_map_url: '', google_map_url: '',
+    reservation_notices: [
+      'Please arrive 10 minutes before your appointment.',
+      'Consultation is included — no prior skin analysis required.',
+    ],
+    cancellation_policy: C48,
+    important_notes: [
+      'Sunscreen required after laser or light treatments.',
+      'Please bring a list of any current medications.',
+    ],
+    external_reviews: [RP[seed % RP.length], RP[(seed + 2) % RP.length]],
+  };
+  if (sub === 'skin-clinic') {
+    extra.staff = [SDOC[seed % SDOC.length], SDOC[(seed + 1) % SDOC.length]];
+  } else if (sub === 'hair-salon') {
+    extra.staff = [SHAIR[seed % SHAIR.length], SHAIR[(seed + 1) % SHAIR.length]];
+    extra.booking_deposit = [20000, 30000, 40000][s];
+    extra.reservation_notices = ['Deposit required to confirm your appointment.', 'Walk-ins subject to availability — booking recommended.'];
+  } else if (sub === 'sauna') {
+    extra.adult_price = SAUNA_PRICES[seed % SAUNA_PRICES.length];
+    extra.child_price = Math.round(extra.adult_price * 0.6);
+    extra.facilities = SAUNA_FACILITIES_ALL.filter((_, i) => (i + seed) % 3 !== 0);
+    extra.reservation_notices = ['Admission sold at the counter — no advance booking required.', 'Towel and gown rental available at the entrance.'];
+    extra.important_notes = ['No tattoos above 10cm in most facilities — check the notice board.', 'Children under 12 must be accompanied by an adult at all times.'];
+  } else {
+    extra.reservation_notices = ['Book in advance — sessions fill up fast, especially weekends.', 'Please arrive 5 minutes early to change and prepare.'];
+    extra.important_notes = ['Shower before and after your massage session.', 'Arrive well-hydrated for best results.'];
+  }
+  return JSON.stringify({ __plain: '', __extra: extra });
+}
+
+/* ─── Activities notes builder ──────────────────────────────────── */
+function an(sub: string, seed: number): string {
+  const durations = ['2.5 hours', '3 hours', '4 hours', '3–4 hours', '5–6 hours', 'Full day (7 hrs)'];
+  const groupSizes = ['Max 8', 'Max 10', 'Max 12', 'Max 6 (private feel)', 'Max 15'];
+  const difficulties = ['Easy', 'Easy to Moderate', 'Moderate', 'Moderate — some walking'];
+  const ageReqs = ['4+', '5+', '7+', '10+', 'No age limit'];
+  const startTimes = ['09:00', '09:30', '10:00', '10:30', '14:00'];
+  const endTimes = ['12:00', '13:00', '13:30', '17:30', '18:00'];
+  return JSON.stringify({ __plain: '', __extra: {
+    duration: durations[seed % durations.length],
+    group_size: groupSizes[seed % groupSizes.length],
+    difficulty: difficulties[seed % difficulties.length],
+    age_requirement: ageReqs[seed % ageReqs.length],
+    start_time: startTimes[seed % startTimes.length],
+    end_time: endTimes[seed % endTimes.length],
+    meeting_point: MEETING_POINTS[seed % MEETING_POINTS.length],
+    end_point: seed % 2 === 0 ? 'Same as meeting point' : 'City centre transport hub',
+    english_guide: seed % 4 !== 3,
+    pickup_available: seed % 3 === 0,
+    dropoff_available: seed % 3 === 0,
+    age_pricing: AGE_TIERS[seed % AGE_TIERS.length],
+    included: WHAT_INCLUDED[seed % WHAT_INCLUDED.length],
+    excluded: WHAT_EXCLUDED[seed % WHAT_EXCLUDED.length],
+    what_to_bring: WHAT_BRING[seed % WHAT_BRING.length],
+    naver_map_url: '', kakao_map_url: '', google_map_url: '',
+    reservation_notices: [
+      'Booking closes 24 hours before the activity start time.',
+      'Activities run in light rain — check the weather and dress accordingly.',
+    ],
+    cancellation_policy: C48,
+    important_notes: [
+      'The guide will contact you with final meeting point confirmation 24h before.',
+      'Group size is limited — reserve early to secure your spot.',
+    ],
+    external_reviews: [RP[seed % RP.length], RP[(seed + 3) % RP.length]],
+  }});
+}
+
+/* ─── Tips notes builder ─────────────────────────────────────────── */
+function tn(sub: string, seed: number): string {
+  const pool = sub === 'public-transportation' ? TIPS_TRANSPORT
+    : sub === 'smoking-spots' ? TIPS_SMOKE
+    : sub === 'trend-now' ? TIPS_TREND
+    : sub === 'travel-tips' ? TIPS_TRAVEL
+    : TIPS_FOOD;
+  const s = seed % pool.length;
+  return JSON.stringify({ __plain: '', __extra: {
+    tips: [pool[s], pool[(s + 1) % pool.length], pool[(s + 2) % pool.length]],
+    map_description: '', naver_map_url: '', kakao_map_url: '', google_map_url: '',
+    youtube_url: '', instagram_url: '', source_url: '', last_verified: '2026-05-01',
+  }});
+}
+
+/* ─── Menu getter per subcategory ────────────────────────────────── */
+function wm(sub: string): MenuItemJson[] {
+  if (sub === 'skin-clinic') return WTREAT();
+  if (sub === 'hair-salon') return WHAIR();
+  if (sub === 'massage') return WMASSAGE();
+  if (sub === 'sauna') return WSAUNA();
+  return [];
+}
+function am(sub: string): MenuItemJson[] {
+  if (sub === 'cooking-classes') return ACOOKING();
+  if (sub === 'traditional-cultural-tours') return ACULTURAL();
+  if (sub === 'sports') return ASPORTS();
+  return ALOCALEXP();
+}
+
 /* ─── External review pool ───────────────────────────────────────── */
 const RP = [
   { source: 'Google', reviewer: 'Emma L.', rating: 5, text: 'Absolutely authentic — tasted just like homemade Korean food!', date: '2026-04-10' },
@@ -197,7 +444,7 @@ const RP = [
 ];
 const rv = (n: number) => [RP[n % RP.length]];
 
-export const sampleListings: Listing[] = [
+const rawSampleListings: Listing[] = [
 
   /* ════════════════════════════════════════════════════════════════
      🍽️  RESTAURANTS — full detail listings (existing)
@@ -254,7 +501,16 @@ export const sampleListings: Listing[] = [
       { name: 'Glass Skin Package', price: 250000, description: 'Micro-needling + Growth Factor (90 min)' },
       { name: 'Hydrafacial Premium', price: 180000, description: 'Deep cleansing + hydration (60 min)' },
     ],
-    notes: JSON.stringify({ __plain: '', __extra: { english_staff: true, gender_policy: 'All welcome', duration: '60–120 minutes' } }),
+    notes: JSON.stringify({ __plain: '', __extra: {
+      booking_type: 'free', english_staff: true, gender_policy: 'All welcome',
+      break_time: '13:00–14:00', holidays: 'Every Sunday',
+      staff: [SDOC[0], SDOC[1]],
+      naver_map_url: '', kakao_map_url: '', google_map_url: 'https://maps.google.com/?q=412+Gangnam-daero+Gangnam+Seoul',
+      reservation_notices: ['First consultation is complimentary.', 'Please arrive 10 minutes early for skin analysis.'],
+      cancellation_policy: C48,
+      important_notes: ['Avoid sun exposure 48h before laser treatments.', 'Bring a list of current medications and skincare products.'],
+      external_reviews: [RP[0], RP[4]],
+    } }),
   },
 
   {
@@ -271,7 +527,22 @@ export const sampleListings: Listing[] = [
       { name: 'Standard Class (3 hrs)', price: 55000, description: 'Market tour + 3 dishes + meal' },
       { name: 'Premium Class (4 hrs)', price: 85000, description: 'Adds tteokbokki + makgeolli' },
     ],
-    notes: JSON.stringify({ __plain: '', __extra: { duration: '3–4 hours', group_size: 'Max 8', difficulty: 'Easy', english_guide: true } }),
+    notes: JSON.stringify({ __plain: '', __extra: {
+      duration: '3–4 hours', group_size: 'Max 8', difficulty: 'Easy',
+      age_requirement: '5+', start_time: '10:00', end_time: '14:00',
+      meeting_point: 'Exit 6, Anguk Station (Line 3) — look for the orange Mugoong flag',
+      end_point: 'Same as meeting point',
+      english_guide: true, pickup_available: false, dropoff_available: false,
+      age_pricing: [{ label: 'Adult (13+)', price: 55000 }, { label: 'Child (5–12)', price: 40000 }],
+      included: ['English-speaking chef instructor', 'All ingredients & cooking equipment', 'Recipe card to take home', 'Full meal after class'],
+      excluded: ['Personal travel insurance', 'Transport to/from venue', 'Alcoholic beverages (available to purchase)'],
+      what_to_bring: ['Comfortable clothing you don\'t mind getting dirty', 'Camera', 'Empty stomach'],
+      naver_map_url: '', kakao_map_url: '', google_map_url: 'https://maps.google.com/?q=15+Insadong-gil+Jongno+Seoul',
+      reservation_notices: ['Booking closes 24 hours before the class.', 'Please notify us of any food allergies when booking.'],
+      cancellation_policy: C48,
+      important_notes: ['Class is conducted in English — no Korean required.', 'Classes run regardless of weather — rain or shine.'],
+      external_reviews: [RP[1], RP[6]],
+    } }),
   },
 
   {
@@ -282,7 +553,18 @@ export const sampleListings: Listing[] = [
     image: I('1517154421773-0529f29ea451'),
     gallery: [I('1555993539-1732b0258235'), I('1581262208435-41726149a759'), I('1544620347-c4fd4a3d5957'), I('1559825481-12a05cc00344'), I('1565043589221-1a6fd9ae45c7'), I('1554041839-bc64b14f30a5'), I('1530521954074-e64f6810b32d')],
     price: 0, currency: 'USD', rating: 0, reviewCount: 0, tags: ['Guide', 'Essential'], featured: false,
-    address: '', phone: '', operating_hours: '', menu_items: [], notes: '',
+    address: '', phone: '', operating_hours: '', menu_items: [],
+    notes: JSON.stringify({ __plain: '', __extra: {
+      tips: [
+        { title: 'Get a T-money Card First', content: 'Buy a T-money card at any convenience store (GS25, CU, 7-Eleven) for ₩2,500 + deposit. Works on all metro lines, buses, and even some taxis across Korea.' },
+        { title: 'Use Naver Map, Not Google', content: 'Naver Map shows real-time metro delays, exact exit numbers, and underground mall connections that Google Maps misses. Download it before you arrive.' },
+        { title: 'Avoid Rush Hour', content: 'Peak hours are 7:30–9:00 and 17:30–19:30. If you can, travel between 10:00 and 16:00 for a vastly more comfortable ride with available seats.' },
+        { title: 'Free Transfers', content: 'Transfer between metro and bus for free if you tap onto the bus within 30 minutes of tapping out of the metro. This works city-wide in Seoul.' },
+      ],
+      map_description: 'Seoul Metro has 23 lines and 300+ stations. Most tourist sites are within a 10-minute walk of a station.',
+      naver_map_url: '', kakao_map_url: '', google_map_url: '',
+      youtube_url: '', instagram_url: '', source_url: '', last_verified: '2026-05-01',
+    } }),
   },
 
   /* ════════════════════════════════════════════════════════════════
@@ -1108,3 +1390,12 @@ export const sampleListings: Listing[] = [
   q('t-pt-jo-1','jeonju-ktx-terminal-guide','jeonju','tips-and-trend','public-transportation','Jeonju KTX & Bus Terminal Guide','All transport options from Seoul to Jeonju — KTX to Jeonju Station, express buses, costs.',m(178),sg(17),0,0,0,['KTX','Guide']),
   q('t-pt-jo-2','jeonju-hanok-village-transport','jeonju','tips-and-trend','public-transportation','Getting Around Jeonju Hanok Village','Walking is best, but here\'s the bus and taxi guide for Jeonju city including the hanok village.',m(179),sg(17),0,0,0,['Walking','Guide']),
 ];
+
+export const sampleListings: Listing[] = rawSampleListings.map((l, i) => {
+  if (l.notes !== '' && l.notes != null) return l;
+  const seed = i;
+  if (l.category === 'wellness') return { ...l, notes: wn(l.subcategory ?? '', seed), menu_items: wm(l.subcategory ?? '') };
+  if (l.category === 'activities') return { ...l, notes: an(l.subcategory ?? '', seed), menu_items: am(l.subcategory ?? '') };
+  if (l.category === 'tips-and-trend') return { ...l, notes: tn(l.subcategory ?? '', seed) };
+  return l;
+});
