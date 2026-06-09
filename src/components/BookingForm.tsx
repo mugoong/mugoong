@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import type { Listing } from '@/types';
 
 function parseExtra(notes?: string): Record<string, any> {
@@ -9,17 +9,16 @@ function parseExtra(notes?: string): Record<string, any> {
   try { const p = JSON.parse(notes); return p.__extra ?? {}; } catch { return {}; }
 }
 
-function fmtDate(dateStr: string, locale: string): string {
+function fmtDate(dateStr: string): string {
   if (!dateStr) return '';
   try {
     const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   } catch { return dateStr; }
 }
 
 export default function BookingForm({ listing }: { listing: Listing }) {
   const t = useTranslations('booking');
-  const locale = useLocale();
 
   const extra = parseExtra(listing.notes);
   const menuItems: any[] = listing.menu_items ?? [];
@@ -146,21 +145,21 @@ export default function BookingForm({ listing }: { listing: Listing }) {
     return (
       <div className="sticky top-24 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg text-center">
         <div className="mb-4 text-5xl">🎉</div>
-        <h3 className="text-lg font-bold text-gray-900">Booking Request Sent!</h3>
+        <h3 className="text-lg font-bold text-gray-900">{t('requestSent')}</h3>
         <p className="mt-2 text-sm text-gray-500">
-          We've received your {bookingType === 'free' ? 'reservation request' : 'booking'} for <strong>{listing.title}</strong>.
+          {bookingType === 'free' ? t('requestReceivedFor') : t('bookingReceivedFor')} <strong>{listing.title}</strong>.
         </p>
         <div className="mt-4 rounded-lg bg-primary-50 p-4 text-left text-sm space-y-1">
-          <p><strong>Date:</strong> {fmtDate(date, locale)}</p>
-          <p><strong>Time:</strong> {time}</p>
-          {bookingType !== 'free' && total > 0 && <p><strong>Amount:</strong> ₩{total.toLocaleString()}</p>}
-          {bookingType === 'free' && <p className="text-green-600 font-medium">No payment required</p>}
+          <p><strong>{t('dateLabel')}:</strong> {fmtDate(date)}</p>
+          <p><strong>{t('timeLabel')}:</strong> {time}</p>
+          {bookingType !== 'free' && total > 0 && <p><strong>{t('amountLabel')}:</strong> ₩{total.toLocaleString()}</p>}
+          {bookingType === 'free' && <p className="text-green-600 font-medium">{t('noPaymentRequired')}</p>}
         </div>
         <p className="mt-4 text-xs text-gray-400">
-          A confirmation will be sent to <strong>{email}</strong> within 24 hours.
+          {t('confirmationSentTo')} <strong>{email}</strong> {t('within24Hours')}
         </p>
         <button onClick={() => { setSubmitted(false); setSelectedItems(new Set()); setAgeCounts(agePricing.map(() => 0)); }} className="mt-4 text-sm font-medium text-primary-600 hover:text-primary-700">
-          Make another booking
+          {t('makeAnotherBooking')}
         </button>
       </div>
     );
@@ -172,17 +171,17 @@ export default function BookingForm({ listing }: { listing: Listing }) {
       <h3 className="mb-1 text-lg font-bold text-gray-900">{t('title')}</h3>
       <div className="mb-5 flex items-baseline gap-1.5">
         {bookingType === 'free' ? (
-          <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">Free Booking Request</span>
+          <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">{t('freeRequest')}</span>
         ) : bookingType === 'deposit' ? (
           <>
-            <span className="text-sm text-gray-500">Booking Fee</span>
+            <span className="text-sm text-gray-500">{t('bookingFeeLabel')}</span>
             <span className="text-3xl font-bold text-primary-600">₩{(isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0)).toLocaleString()}</span>
           </>
         ) : (
           <>
-            <span className="text-sm text-gray-500">From</span>
+            <span className="text-sm text-gray-500">{t('fromLabel')}</span>
             <span className="text-3xl font-bold text-primary-600">₩{listing.price.toLocaleString()}</span>
-            <span className="text-sm text-gray-500">/ person</span>
+            <span className="text-sm text-gray-500">{t('perPersonLabel')}</span>
           </>
         )}
       </div>
@@ -190,27 +189,27 @@ export default function BookingForm({ listing }: { listing: Listing }) {
       <div className="space-y-4">
         {/* Name */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">Your Name *</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder="Full name" />
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('yourName')} *</label>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder={t('yourNamePlaceholder')} />
         </div>
 
         {/* Email */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">Email *</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder="your@email.com" />
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('emailLabel')} *</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder={t('emailPlaceholder')} />
         </div>
 
         {/* Phone */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">Phone (optional)</label>
-          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder="+82-10-XXXX-XXXX" />
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('phoneLabel')}</label>
+          <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder={t('phonePlaceholder')} />
         </div>
 
         {/* Date */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('selectDate')} *</label>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} min={minDate} required className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" />
-          {date && <p className="mt-1 text-xs text-primary-600">{fmtDate(date, locale)}</p>}
+          {date && <p className="mt-1 text-xs text-primary-600">{fmtDate(date)}</p>}
         </div>
 
         {/* Time */}
@@ -238,17 +237,17 @@ export default function BookingForm({ listing }: { listing: Listing }) {
         {/* ── Sauna: Adult / Child counters ── */}
         {isSaunaMode && (
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">Number of Guests</label>
-            <p className="mb-3 text-xs text-gray-400">Adult (13+) · Child (≤ 12, elementary school and below)</p>
+            <label className="mb-2 block text-sm font-medium text-gray-700">{t('guests')}</label>
+            <p className="mb-3 text-xs text-gray-400">{t('childSaunaNote')}</p>
             <div className="space-y-3">
               {[
-                { label: `Adult (13+)`, price: extra.adult_price ?? 0, count: adults, setCount: setAdults },
-                { label: `Child (≤ 12)`, price: extra.child_price ?? 0, count: children, setCount: setChildren },
+                { label: t('adultAge'), price: extra.adult_price ?? 0, count: adults, setCount: setAdults },
+                { label: t('childAge'), price: extra.child_price ?? 0, count: children, setCount: setChildren },
               ].map(({ label, price, count, setCount }) => (
                 <div key={label} className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3">
                   <div>
                     <p className="text-sm font-medium text-gray-700">{label}</p>
-                    <p className="text-xs text-primary-600">₩{price.toLocaleString()} / person</p>
+                    <p className="text-xs text-primary-600">₩{price.toLocaleString()} {t('perPersonLabel')}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <button type="button" onClick={() => setCount(Math.max(0, count - 1))} className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:border-primary-500 hover:text-primary-600">−</button>
@@ -264,13 +263,13 @@ export default function BookingForm({ listing }: { listing: Listing }) {
         {/* ── Age-based pricing (activities) ── */}
         {isAgePricingMode && (
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">Number of Participants</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">{t('numberOfParticipants')}</label>
             <div className="space-y-3">
               {agePricing.map((tier, i) => (
                 <div key={i} className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3">
                   <div>
                     <p className="text-sm font-medium text-gray-700">{tier.label}</p>
-                    <p className="text-xs text-primary-600">₩{tier.price.toLocaleString()} / person</p>
+                    <p className="text-xs text-primary-600">₩{tier.price.toLocaleString()} {t('perPersonLabel')}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <button type="button" onClick={() => setAgeCount(i, -1)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:border-primary-500 hover:text-primary-600">−</button>
@@ -287,7 +286,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
         {menuItems.length > 0 && !isRestaurant && !isSaunaMode && !isAgePricingMode && (
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
-              {bookingType === 'free' ? 'Interested In (optional)' : 'Select Services'}
+              {bookingType === 'free' ? t('interestedIn') : t('selectServices')}
             </label>
             <div className="divide-y divide-gray-100 rounded-xl border border-gray-200">
               {menuItems.map((item, i) => (
@@ -306,22 +305,22 @@ export default function BookingForm({ listing }: { listing: Listing }) {
 
         {/* Notes */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700">Special Requests (optional)</label>
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder="Dietary restrictions, allergies, or special requests…" />
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('specialRequests')}</label>
+          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-700 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" placeholder={t('specialRequestsPlaceholder')} />
         </div>
 
         {/* Total Summary */}
         <div className="rounded-lg bg-gray-50 p-4">
           {bookingType === 'free' ? (
             <div className="text-center">
-              <p className="text-sm font-medium text-gray-600">No payment required</p>
-              <p className="mt-0.5 text-xs text-gray-400">We will confirm your booking by email</p>
+              <p className="text-sm font-medium text-gray-600">{t('noPaymentRequired')}</p>
+              <p className="mt-0.5 text-xs text-gray-400">{t('confirmByEmail')}</p>
             </div>
           ) : bookingType === 'deposit' ? (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-700">Booking Fee</p>
-                <p className="text-xs text-gray-400">Balance due at venue</p>
+                <p className="text-sm font-medium text-gray-700">{t('bookingFeeLabel')}</p>
+                <p className="text-xs text-gray-400">{t('balanceDueAtVenue')}</p>
               </div>
               <span className="text-xl font-bold text-gray-900">₩{total.toLocaleString()}</span>
             </div>
@@ -329,8 +328,8 @@ export default function BookingForm({ listing }: { listing: Listing }) {
             <div className="space-y-1">
               {isSaunaMode && (
                 <>
-                  {adults > 0 && <div className="flex justify-between text-sm text-gray-600"><span>Adult × {adults}</span><span>₩{(adults * (extra.adult_price ?? 0)).toLocaleString()}</span></div>}
-                  {children > 0 && <div className="flex justify-between text-sm text-gray-600"><span>Child × {children}</span><span>₩{(children * (extra.child_price ?? 0)).toLocaleString()}</span></div>}
+                  {adults > 0 && <div className="flex justify-between text-sm text-gray-600"><span>{t('adultAge')} × {adults}</span><span>₩{(adults * (extra.adult_price ?? 0)).toLocaleString()}</span></div>}
+                  {children > 0 && <div className="flex justify-between text-sm text-gray-600"><span>{t('childAge')} × {children}</span><span>₩{(children * (extra.child_price ?? 0)).toLocaleString()}</span></div>}
                 </>
               )}
               {isAgePricingMode && agePricing.map((tier, i) => ageCounts[i] > 0 && (
@@ -352,7 +351,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
                 </div>
               ))}
               <div className="flex items-center justify-between border-t border-gray-200 pt-2 mt-1">
-                <span className="font-semibold text-gray-700">Total</span>
+                <span className="font-semibold text-gray-700">{t('total')}</span>
                 <span className="text-xl font-bold text-gray-900">₩{total.toLocaleString()}</span>
               </div>
             </div>
@@ -363,7 +362,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
 
         {/* Submit */}
         <button type="submit" disabled={submitting || (isSaunaMode && adults + children === 0) || (isAgePricingMode && ageCounts.reduce((s, c) => s + c, 0) === 0)} className="w-full rounded-lg bg-primary-500 py-4 text-base font-semibold text-white transition-all hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50">
-          {submitting ? 'Submitting…' : bookingType === 'free' ? 'Request Booking' : bookingType === 'deposit' ? `Pay Booking Fee ₩${total.toLocaleString()}` : `Book Now ₩${total.toLocaleString()}`}
+          {submitting ? t('submitting') : bookingType === 'free' ? t('requestBooking') : bookingType === 'deposit' ? `${t('payBookingFee')} ₩${total.toLocaleString()}` : `${t('bookNowBtn')} ₩${total.toLocaleString()}`}
         </button>
 
         {/* Trust signals */}
@@ -375,13 +374,13 @@ export default function BookingForm({ listing }: { listing: Listing }) {
           {bookingType === 'free' && (
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-              No payment required — pay at venue
+              {t('noPaymentAtVenue')}
             </div>
           )}
           {bookingType === 'deposit' && (
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>
-              Booking fee applied to your final bill
+              {t('bookingFeeApplied')}
             </div>
           )}
         </div>

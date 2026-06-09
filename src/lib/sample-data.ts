@@ -369,6 +369,7 @@ function an(sub: string, seed: number): string {
   const ageReqs = ['4+', '5+', '7+', '10+', 'No age limit'];
   const startTimes = ['09:00', '09:30', '10:00', '10:30', '14:00'];
   const endTimes = ['12:00', '13:00', '13:30', '17:30', '18:00'];
+  const meetingPoint = MEETING_POINTS[seed % MEETING_POINTS.length];
   return JSON.stringify({ __plain: '', __extra: {
     duration: durations[seed % durations.length],
     group_size: groupSizes[seed % groupSizes.length],
@@ -376,7 +377,7 @@ function an(sub: string, seed: number): string {
     age_requirement: ageReqs[seed % ageReqs.length],
     start_time: startTimes[seed % startTimes.length],
     end_time: endTimes[seed % endTimes.length],
-    meeting_point: MEETING_POINTS[seed % MEETING_POINTS.length],
+    meeting_point: meetingPoint,
     end_point: seed % 2 === 0 ? 'Same as meeting point' : 'City centre transport hub',
     english_guide: seed % 4 !== 3,
     pickup_available: seed % 3 === 0,
@@ -385,7 +386,8 @@ function an(sub: string, seed: number): string {
     included: WHAT_INCLUDED[seed % WHAT_INCLUDED.length],
     excluded: WHAT_EXCLUDED[seed % WHAT_EXCLUDED.length],
     what_to_bring: WHAT_BRING[seed % WHAT_BRING.length],
-    naver_map_url: '', kakao_map_url: '', google_map_url: '',
+    naver_map_url: '', kakao_map_url: '',
+    google_map_url: `https://maps.google.com/?q=${encodeURIComponent(meetingPoint)}`,
     reservation_notices: [
       'Booking closes 24 hours before the activity start time.',
       'Activities run in light rain — check the weather and dress accordingly.',
