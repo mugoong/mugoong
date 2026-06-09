@@ -208,6 +208,15 @@
     "moreDetails": "More Details",
     "selectDates": "Select Dates",
     "inquiry": "Inquiry",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "aboutSkinClinic": "About This Skin Clinic",
+    "aboutHairSalon": "About This Hair Salon",
+    "aboutSauna": "About This Sauna",
+    "aboutMassage": "About This Massage",
+    "aboutLocalExperience": "About This Experience",
+    "aboutCookingClass": "About This Cooking Class",
+    "aboutTour": "About This Cultural Tour",
+    "aboutSports": "About This Activity",
+    "aboutExperience": "About This"
   }
 }

@@ -294,7 +294,23 @@ export default function ListingDetail({
 
             {/* ── Description ── */}
             <h2 className="mb-4 text-xl font-bold text-gray-900">
-              {isRestaurant ? td('storyTitle') : isTips ? td('articleTitle') : t('listing.aboutThis')}
+              {isRestaurant ? td('storyTitle') : isTips ? td('articleTitle') : (() => {
+                const wellnessMap: Record<string, string> = {
+                  'skin-clinic': td('aboutSkinClinic'),
+                  'hair-salon': td('aboutHairSalon'),
+                  'sauna': td('aboutSauna'),
+                  'massage': td('aboutMassage'),
+                };
+                const activitiesMap: Record<string, string> = {
+                  'local-experience': td('aboutLocalExperience'),
+                  'cooking-classes': td('aboutCookingClass'),
+                  'traditional-cultural-tours': td('aboutTour'),
+                  'sports': td('aboutSports'),
+                };
+                if (cat === 'wellness') return wellnessMap[listing.subcategory] ?? td('aboutExperience');
+                if (cat === 'activities') return activitiesMap[listing.subcategory] ?? td('aboutExperience');
+                return td('aboutExperience');
+              })()}
             </h2>
             <p className="leading-relaxed text-gray-700">{listing.description}</p>
             {listing.content && <div className="mt-4 whitespace-pre-line leading-relaxed text-gray-600">{listing.content}</div>}

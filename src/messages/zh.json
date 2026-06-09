@@ -208,6 +208,15 @@
     "moreDetails": "查看详情",
     "selectDates": "选择日期",
     "inquiry": "咨询",
-    "viewAll": "查看全部"
+    "viewAll": "查看全部",
+    "aboutSkinClinic": "关于这家皮肤诊所",
+    "aboutHairSalon": "关于这家美发沙龙",
+    "aboutSauna": "关于这家桑拿",
+    "aboutMassage": "关于这家按摩服务",
+    "aboutLocalExperience": "关于这个体验",
+    "aboutCookingClass": "关于这个烹饪课",
+    "aboutTour": "关于这个文化之旅",
+    "aboutSports": "关于这个运动活动",
+    "aboutExperience": "关于此项目"
   }
 }

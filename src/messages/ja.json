@@ -208,6 +208,15 @@
     "moreDetails": "詳細を見る",
     "selectDates": "日程を選択",
     "inquiry": "お問い合わせ",
-    "viewAll": "すべて見る"
+    "viewAll": "すべて見る",
+    "aboutSkinClinic": "このクリニックについて",
+    "aboutHairSalon": "このヘアサロンについて",
+    "aboutSauna": "このサウナについて",
+    "aboutMassage": "このマッサージについて",
+    "aboutLocalExperience": "このアクティビティについて",
+    "aboutCookingClass": "この料理教室について",
+    "aboutTour": "このツアーについて",
+    "aboutSports": "このスポーツ体験について",
+    "aboutExperience": "このサービスについて"
   }
 }

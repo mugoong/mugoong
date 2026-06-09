@@ -208,6 +208,15 @@
     "moreDetails": "Plus de détails",
     "selectDates": "Choisir les dates",
     "inquiry": "Renseignement",
-    "viewAll": "Tout voir"
+    "viewAll": "Tout voir",
+    "aboutSkinClinic": "À propos de cette clinique esthétique",
+    "aboutHairSalon": "À propos de ce salon de coiffure",
+    "aboutSauna": "À propos de ce sauna",
+    "aboutMassage": "À propos de ce service de massage",
+    "aboutLocalExperience": "À propos de cette expérience",
+    "aboutCookingClass": "À propos de ce cours de cuisine",
+    "aboutTour": "À propos de ce circuit culturel",
+    "aboutSports": "À propos de cette activité",
+    "aboutExperience": "À propos"
   }
 }
