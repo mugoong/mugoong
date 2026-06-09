@@ -302,7 +302,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
       {/* Header price display */}
-      <h3 className="mb-1 text-lg font-bold text-gray-900">{t('title')}</h3>
+      <h3 className="mb-1 text-lg font-bold text-gray-900">Book With MUGOONG</h3>
       <div className="mb-5 flex items-baseline gap-1.5">
         {bookingType === 'free' ? (
           <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">{t('freeRequest')}</span>
