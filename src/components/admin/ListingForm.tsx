@@ -330,13 +330,73 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         </h2>
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Short Description *</label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Short Description * <span className="text-xs font-normal text-gray-400">(English — default)</span></label>
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className={inputCls} placeholder={cfg.descriptionPlaceholder} />
           </div>
+          {/* Description Translations */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">{cfg.contentLabel}</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">Description Translations <span className="text-xs font-normal text-gray-400">(shown when user switches language)</span></label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {([
+                { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+                { code: 'de', flag: '🇩🇪', label: 'German' },
+                { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+                { code: 'fr', flag: '🇫🇷', label: 'French' },
+                { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+                { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+              ] as const).map(({ code, flag, label }) => (
+                <div key={code} className="flex items-start gap-2">
+                  <span className="mt-3 w-20 shrink-0 text-sm text-gray-500">{flag} {label}</span>
+                  <textarea
+                    rows={2}
+                    value={(form.extra.description_translations as Record<string, string> | undefined)?.[code] ?? ''}
+                    onChange={(e) => {
+                      const t = { ...(form.extra.description_translations ?? {}), [code]: e.target.value };
+                      if (!e.target.value) delete t[code];
+                      setForm({ ...form, extra: { ...form.extra, description_translations: t } });
+                    }}
+                    className={inputCls}
+                    placeholder={`${label} description...`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">{cfg.contentLabel} <span className="text-xs font-normal text-gray-400">(English — default)</span></label>
             <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={form.category === 'tips-and-trend' ? 16 : 8} className={inputCls} placeholder={cfg.contentPlaceholder} />
           </div>
+          {/* Content Translations */}
+          {form.category !== 'tips-and-trend' && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Content Translations <span className="text-xs font-normal text-gray-400">(shown when user switches language)</span></label>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {([
+                  { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+                  { code: 'de', flag: '🇩🇪', label: 'German' },
+                  { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+                  { code: 'fr', flag: '🇫🇷', label: 'French' },
+                  { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+                  { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+                ] as const).map(({ code, flag, label }) => (
+                  <div key={code} className="flex items-start gap-2">
+                    <span className="mt-3 w-20 shrink-0 text-sm text-gray-500">{flag} {label}</span>
+                    <textarea
+                      rows={4}
+                      value={(form.extra.content_translations as Record<string, string> | undefined)?.[code] ?? ''}
+                      onChange={(e) => {
+                        const t = { ...(form.extra.content_translations ?? {}), [code]: e.target.value };
+                        if (!e.target.value) delete t[code];
+                        setForm({ ...form, extra: { ...form.extra, content_translations: t } });
+                      }}
+                      className={inputCls}
+                      placeholder={`${label} content...`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

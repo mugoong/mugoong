@@ -29,7 +29,9 @@ export interface Listing {
   title: string;
   title_translations?: Record<string, string>;
   description: string;
+  description_translations?: Record<string, string>;
   content: string;
+  content_translations?: Record<string, string>;
   image: string;
   price: number;
   currency: string;

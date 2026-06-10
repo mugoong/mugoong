@@ -233,6 +233,8 @@ export default function ListingDetail({
   const td = useTranslations('detail');
   const locale = useLocale();
   const displayTitle = listing.title_translations?.[locale] ?? listing.title;
+  const displayDescription = (listing as any).description_translations?.[locale] ?? listing.description;
+  const displayContent = (listing as any).content_translations?.[locale] ?? listing.content;
   const mName = (item: any) => item.name_translations?.[locale] ?? item.name;
   const mDesc = (item: any) => item.description_translations?.[locale] ?? item.description;
   const [lbIdx, setLbIdx] = useState<number | null>(null);
@@ -413,8 +415,8 @@ export default function ListingDetail({
                 return td('aboutExperience');
               })()}
             </h2>
-            <p className="leading-relaxed text-gray-700">{listing.description}</p>
-            {listing.content && <div className="mt-4 whitespace-pre-line leading-relaxed text-gray-600">{listing.content}</div>}
+            <p className="leading-relaxed text-gray-700">{displayDescription}</p>
+            {displayContent && <div className="mt-4 whitespace-pre-line leading-relaxed text-gray-600">{displayContent}</div>}
 
             {/* ── TIPS ── */}
             {isTips && (
@@ -640,7 +642,7 @@ export default function ListingDetail({
 
         {/* Mobile: floating bottom bar */}
         {!isTips && (
-          <div className="fixed bottom-0 left-0 right-0 z-50 flex gap-3 border-t border-gray-200 bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
+          <div className="fixed bottom-0 left-0 right-0 z-40 flex gap-3 border-t border-gray-200 bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
             <button onClick={() => scrollTo(contentRef)} className="flex-1 rounded-lg border-2 border-gray-800 py-3 text-sm font-bold text-gray-800">
               {td('moreDetails')}
             </button>

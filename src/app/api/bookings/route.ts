@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
-const BUSINESS_EMAILS = ['Eastorykr@gmail.com', 'Dakota@mugoong.com'];
+const BUSINESS_EMAILS = ['Eastorykr@gmail.com', 'Dakota@mugoong.com', 'sendainoodle@gmail.com'];
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,40 +31,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const supabase = await createServerSupabaseClient();
-
-    const bookingNotes = JSON.stringify({
-      customer_notes: notes ?? '',
-      booking_type: booking_type ?? 'free',
-      selected_items: selected_items ?? [],
-      age_pricing_breakdown: age_pricing_breakdown ?? [],
-      adults: adults ?? null,
-      children: children ?? null,
-      listing_category: listing_category ?? '',
-      listing_subcategory: listing_subcategory ?? '',
-    });
-
-    const { data, error } = await supabase.from('bookings').insert({
-      listing_id: listing_id ?? null,
-      listing_title,
-      customer_name,
-      customer_email,
-      customer_phone: customer_phone ?? '',
-      booking_date,
-      booking_time,
-      guests: guests ?? 1,
-      total_price: total_price ?? 0,
-      currency: 'KRW',
-      status: 'pending',
-      notes: bookingNotes,
-      admin_notes: '',
-    }).select().single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    /* ── Send email notification (non-blocking) ── */
+    /* ── Send email first (non-blocking, always runs) ── */
     sendBookingEmail({
       listing_title,
       listing_category: listing_category ?? '',
@@ -84,7 +51,42 @@ export async function POST(request: NextRequest) {
       children: children ?? null,
     }).catch((err) => console.error('[Email] Failed to send booking notification:', err));
 
-    return NextResponse.json({ success: true, booking: data });
+    /* ── Try to save to DB (non-fatal if table missing) ── */
+    let savedBooking: any = null;
+    try {
+      const supabase = await createServerSupabaseClient();
+      const bookingNotes = JSON.stringify({
+        customer_notes: notes ?? '',
+        booking_type: booking_type ?? 'free',
+        selected_items: selected_items ?? [],
+        age_pricing_breakdown: age_pricing_breakdown ?? [],
+        adults: adults ?? null,
+        children: children ?? null,
+        listing_category: listing_category ?? '',
+        listing_subcategory: listing_subcategory ?? '',
+      });
+      const { data, error } = await supabase.from('bookings').insert({
+        listing_id: listing_id ?? null,
+        listing_title,
+        customer_name,
+        customer_email,
+        customer_phone: customer_phone ?? '',
+        booking_date,
+        booking_time,
+        guests: guests ?? 1,
+        total_price: total_price ?? 0,
+        currency: 'KRW',
+        status: 'pending',
+        notes: bookingNotes,
+        admin_notes: '',
+      }).select().single();
+      if (error) console.error('[DB] Booking insert failed:', error.message);
+      else savedBooking = data;
+    } catch (dbErr: any) {
+      console.error('[DB] Booking insert error:', dbErr.message);
+    }
+
+    return NextResponse.json({ success: true, booking: savedBooking });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
