@@ -1,6 +1,58 @@
 'use client';
 
+import { useState } from 'react';
 import type { MenuItemJson } from '@/lib/supabase/types';
+
+const LANGS = [
+  { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+  { code: 'de', flag: '🇩🇪', label: 'German' },
+  { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+  { code: 'fr', flag: '🇫🇷', label: 'French' },
+  { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+  { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+] as const;
+
+function MenuItemTranslations({ item, onUpdate }: { item: MenuItemJson; onUpdate: (field: string, value: any) => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-1.5">
+      <button type="button" onClick={() => setOpen(!open)} className="text-xs text-blue-500 hover:text-blue-700">
+        🌐 Translations {open ? '▲' : '▼'}
+      </button>
+      {open && (
+        <div className="mt-2 rounded-lg border border-blue-100 bg-blue-50/40 p-2 space-y-1.5">
+          {LANGS.map(({ code, flag, label }) => (
+            <div key={code} className="grid grid-cols-[90px_1fr_1fr] items-center gap-1.5">
+              <span className="text-xs text-gray-500">{flag} {label}</span>
+              <input
+                type="text"
+                value={(item.name_translations as any)?.[code] ?? ''}
+                onChange={e => {
+                  const t = { ...(item.name_translations ?? {}), [code]: e.target.value };
+                  if (!e.target.value) delete (t as any)[code];
+                  onUpdate('name_translations', Object.keys(t).length ? t : undefined);
+                }}
+                className="rounded border border-gray-200 px-2 py-1 text-xs outline-none"
+                placeholder={`Name in ${label}`}
+              />
+              <input
+                type="text"
+                value={(item.description_translations as any)?.[code] ?? ''}
+                onChange={e => {
+                  const t = { ...(item.description_translations ?? {}), [code]: e.target.value };
+                  if (!e.target.value) delete (t as any)[code];
+                  onUpdate('description_translations', Object.keys(t).length ? t : undefined);
+                }}
+                className="rounded border border-gray-200 px-2 py-1 text-xs outline-none"
+                placeholder={`Desc in ${label}`}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface StaffMember { name: string; title: string; photo: string; bio: string; }
 
@@ -233,13 +285,16 @@ export default function WellnessFormFields({
         ) : (
           <div className="space-y-3">
             {menuItems.map((item, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                <div className="flex-1 grid gap-2 sm:grid-cols-3">
-                  <input type="text" value={item.name} onChange={(e) => updMenuItem(i, 'name', e.target.value)} placeholder="Name" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
-                  <input type="number" value={item.price} onChange={(e) => updMenuItem(i, 'price', Number(e.target.value))} placeholder="Price (₩)" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
-                  <input type="text" value={item.description ?? ''} onChange={(e) => updMenuItem(i, 'description', e.target.value)} placeholder="Duration / Details" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
+              <div key={i} className="rounded-lg bg-gray-50 p-3">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 grid gap-2 sm:grid-cols-3">
+                    <input type="text" value={item.name} onChange={(e) => updMenuItem(i, 'name', e.target.value)} placeholder="Name" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
+                    <input type="number" value={item.price} onChange={(e) => updMenuItem(i, 'price', Number(e.target.value))} placeholder="Price (₩)" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
+                    <input type="text" value={item.description ?? ''} onChange={(e) => updMenuItem(i, 'description', e.target.value)} placeholder="Duration / Details" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
+                  </div>
+                  <button type="button" onClick={() => setMenuItems(menuItems.filter((_, idx) => idx !== i))} className="rounded-lg p-2 text-red-400 hover:bg-red-50">✕</button>
                 </div>
-                <button type="button" onClick={() => setMenuItems(menuItems.filter((_, idx) => idx !== i))} className="rounded-lg p-2 text-red-400 hover:bg-red-50">✕</button>
+                <MenuItemTranslations item={item} onUpdate={(field, value) => updMenuItem(i, field as any, value as any)} />
               </div>
             ))}
           </div>

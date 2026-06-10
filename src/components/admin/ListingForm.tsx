@@ -260,8 +260,37 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         <h2 className="mb-4 text-lg font-semibold text-gray-900">Basic Information</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Title *</label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Title * <span className="text-xs font-normal text-gray-400">(English — used as default)</span></label>
             <input type="text" value={form.title} onChange={(e) => handleTitleChange(e.target.value)} required className={inputCls} placeholder={cfg.titlePlaceholder} />
+          </div>
+          {/* Title translations per language */}
+          <div className="sm:col-span-2">
+            <label className="mb-2 block text-sm font-medium text-gray-700">Title Translations <span className="text-xs font-normal text-gray-400">(shown to users when they switch language)</span></label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {([
+                { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+                { code: 'de', flag: '🇩🇪', label: 'German' },
+                { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+                { code: 'fr', flag: '🇫🇷', label: 'French' },
+                { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+                { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+              ] as const).map(({ code, flag, label }) => (
+                <div key={code} className="flex items-center gap-2">
+                  <span className="w-20 shrink-0 text-sm text-gray-500">{flag} {label}</span>
+                  <input
+                    type="text"
+                    value={(form.extra.title_translations as Record<string, string> | undefined)?.[code] ?? ''}
+                    onChange={(e) => {
+                      const translations = { ...(form.extra.title_translations ?? {}), [code]: e.target.value };
+                      if (!e.target.value) delete translations[code];
+                      setForm({ ...form, extra: { ...form.extra, title_translations: translations } });
+                    }}
+                    className={inputCls}
+                    placeholder={`${label} title...`}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
           <div className="sm:col-span-2">
             <label className="mb-1.5 block text-sm font-medium text-gray-700">URL Slug</label>
