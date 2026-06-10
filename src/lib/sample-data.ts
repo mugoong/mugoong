@@ -454,6 +454,7 @@ const rawSampleListings: Listing[] = [
   {
     id: '1', slug: 'gwangjang-market-food-tour', category: 'restaurants', subcategory: 'classic-korean',
     city: 'seoul', title: 'Gwangjang Market Food Tour',
+    title_translations: { ko: '광장시장 푸드 투어', ja: '広蔵市場フードツアー', zh: '广藏市场美食之旅', de: 'Gwangjang-Markt Foodtour', es: 'Tour gastronómico por el Mercado Gwangjang', fr: 'Visite gastronomique du marché Gwangjang' },
     description: 'Experience the oldest traditional market in Seoul. Taste bindaetteok, mayak gimbap, and more authentic Korean street food from vendors who have been serving for decades.',
     content: 'Gwangjang Market has been Seoul\'s beating culinary heart since 1905.',
     image: I('1590301157890-4810ed352733'),
@@ -474,6 +475,7 @@ const rawSampleListings: Listing[] = [
   {
     id: '2', slug: 'gangnam-korean-bbq', category: 'restaurants', subcategory: 'korean-bbq',
     city: 'seoul', title: 'Premium Hanwoo BBQ in Gangnam',
+    title_translations: { ko: '강남 프리미엄 한우 BBQ', ja: '江南プレミアム韓牛バーベキュー', zh: '江南顶级韩牛烤肉', de: 'Premium Hanwoo BBQ in Gangnam', es: 'BBQ Premium Hanwoo en Gangnam', fr: 'BBQ Premium Hanwoo à Gangnam' },
     description: 'Savor the finest Korean beef at a top-rated Gangnam BBQ restaurant. Premium 1++ grade Hanwoo with expert grilling service.',
     content: 'Not your average Korean BBQ — 1++ grade Hanwoo in the heart of Gangnam.',
     image: I('1544025162-d76694265947'),
@@ -492,6 +494,7 @@ const rawSampleListings: Listing[] = [
   {
     id: '5', slug: 'gangnam-skin-clinic', category: 'wellness', subcategory: 'skin-clinic',
     city: 'seoul', title: 'Gangnam Premium Dermatology Clinic',
+    title_translations: { ko: '강남 프리미엄 피부과 클리닉', ja: '江南プレミアム皮膚科クリニック', zh: '江南顶级皮肤科诊所', de: 'Premium Dermatologie-Klinik Gangnam', es: 'Clínica Dermatológica Premium Gangnam', fr: 'Clinique Dermatologique Premium Gangnam' },
     description: 'World-class skin treatments at Korea\'s most renowned dermatology clinic. Consultation included with English-speaking dermatologists.',
     content: 'Korea\'s global capital of skincare. AI-powered skin analysis + board-certified dermatologist.',
     image: I('1629909613654-28e377c37b09'),
@@ -518,6 +521,7 @@ const rawSampleListings: Listing[] = [
   {
     id: '9', slug: 'korean-cooking-class', category: 'activities', subcategory: 'cooking-classes',
     city: 'seoul', title: 'Learn to Make Kimchi & Bibimbap',
+    title_translations: { ko: '김치 & 비빔밥 만들기 클래스', ja: 'キムチ＆ビビンバ料理教室', zh: '学做泡菜和拌饭', de: 'Kimchi & Bibimbap selber machen', es: 'Aprende a hacer Kimchi y Bibimbap', fr: 'Atelier Kimchi & Bibimbap' },
     description: 'Hands-on Korean cooking class in a traditional kitchen. Learn kimchi, bibimbap, and pancakes from a local chef.',
     content: 'Led by Chef Minji with 20 years of experience.',
     image: I('1583224994076-0a5a4e3384c7'),
@@ -550,6 +554,7 @@ const rawSampleListings: Listing[] = [
   {
     id: '13', slug: 'seoul-metro-guide', category: 'tips-and-trend', subcategory: 'public-transportation',
     city: 'seoul', title: 'How to Use the Seoul Metro Like a Local',
+    title_translations: { ko: '현지인처럼 서울 지하철 이용하기', ja: 'ソウル地下鉄を地元民のように使う', zh: '像首尔本地人一样乘地铁', de: 'Die Seouler U-Bahn wie ein Einheimischer', es: 'Usa el metro de Seúl como un local', fr: 'Le métro de Séoul comme un habitant' },
     description: 'Everything you need to know about navigating Seoul\'s subway — T-money cards, transfers, and pro tips.',
     content: '🎫 T-money Card: Buy at any convenience store ₩2,500\n📱 Apps: Naver Map, KakaoMetro\n🚇 Rush hour: 7:30–9:00 & 17:30–19:00',
     image: I('1517154421773-0529f29ea451'),

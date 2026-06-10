@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import type { Listing, CategoryConfig, SubCategory } from '@/types';
@@ -231,6 +231,8 @@ export default function ListingDetail({
 }) {
   const t = useTranslations();
   const td = useTranslations('detail');
+  const locale = useLocale();
+  const displayTitle = listing.title_translations?.[locale] ?? listing.title;
   const [lbIdx, setLbIdx] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const bookingRef = useRef<HTMLDivElement>(null);
@@ -274,7 +276,7 @@ export default function ListingDetail({
             <span>/</span>
             <Link href={`/${category.slug}/${subcategory.slug}`} className="hover:text-primary-600">{t(subcategory.labelKey)}</Link>
             <span>/</span>
-            <span className="truncate text-gray-800">{listing.title}</span>
+            <span className="truncate text-gray-800">{displayTitle}</span>
           </nav>
         </div>
       </div>
@@ -293,7 +295,7 @@ export default function ListingDetail({
           {/* Main image */}
           <div className="relative cursor-pointer overflow-hidden" style={{ aspectRatio: '4/3' }}
             onClick={() => setLbIdx(0)}>
-            <Image src={allImages[0]} alt={listing.title} fill className="object-cover transition-transform duration-500 hover:scale-105" priority sizes="60vw" />
+            <Image src={allImages[0]} alt={displayTitle} fill className="object-cover transition-transform duration-500 hover:scale-105" priority sizes="60vw" />
             <div className="absolute left-4 top-4 flex gap-2">
               {listing.tags.map(tag => (
                 <span key={tag} className={tag === 'HOT' ? 'badge-hot' : tag === 'BEST' ? 'badge-best' : tag === 'NEW' ? 'badge-new' : 'rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-700'}>
@@ -345,7 +347,7 @@ export default function ListingDetail({
             </div>
 
             {/* Title */}
-            <h1 className="mt-3 text-2xl font-bold text-gray-900 lg:text-3xl">{listing.title}</h1>
+            <h1 className="mt-3 text-2xl font-bold text-gray-900 lg:text-3xl">{displayTitle}</h1>
 
             {/* Rating */}
             {!isTips && (
@@ -620,7 +622,7 @@ export default function ListingDetail({
 
                 {/* Real-time inquiry */}
                 <a
-                  href={`mailto:hello@mugoong.com?subject=${encodeURIComponent('Inquiry: ' + listing.title)}`}
+                  href={`mailto:hello@mugoong.com?subject=${encodeURIComponent('Inquiry: ' + displayTitle)}`}
                   className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-gray-600 transition hover:bg-primary-50 hover:text-primary-700"
                 >
                   <svg className="h-4 w-4 flex-shrink-0 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

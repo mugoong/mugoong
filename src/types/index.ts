@@ -27,6 +27,7 @@ export interface Listing {
   subcategory: string;
   city: City;
   title: string;
+  title_translations?: Record<string, string>;
   description: string;
   content: string;
   image: string;

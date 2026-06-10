@@ -24,6 +24,11 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
       const notes = row.notes || '';
       const menuItems = row.menu_items || [];
       const sample = (!notes && sampleBySlug[row.slug]) ? sampleBySlug[row.slug] : null;
+      let titleTranslations: Record<string, string> | undefined;
+      try {
+        const parsed = JSON.parse(notes);
+        if (parsed?.__extra?.title_translations) titleTranslations = parsed.__extra.title_translations;
+      } catch {}
       return {
         id: row.id,
         slug: row.slug,
@@ -31,6 +36,7 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
         subcategory: row.subcategory,
         city: row.city,
         title: row.title,
+        title_translations: titleTranslations ?? sample?.title_translations,
         description: row.description,
         content: row.content || '',
         image: row.image_url || 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&q=80',

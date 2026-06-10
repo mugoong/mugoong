@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Listing } from '@/types';
@@ -19,6 +19,8 @@ function getBadgeClass(tag: string) {
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   const t = useTranslations();
+  const locale = useLocale();
+  const displayTitle = listing.title_translations?.[locale] ?? listing.title;
 
   const isTips = listing.category === 'tips-and-trend';
   const overlayTags = listing.tags.filter((tag) => BADGE_TAGS.has(tag.toUpperCase()));
@@ -59,7 +61,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
         <div>
           {/* Title */}
           <h3 className="mb-1 line-clamp-2 sm:line-clamp-1 text-sm font-semibold leading-tight text-gray-900 transition-colors group-hover:text-primary-600">
-            {listing.title}
+            {displayTitle}
           </h3>
 
           {/* Location */}
