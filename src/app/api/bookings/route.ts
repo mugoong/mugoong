@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import nodemailer from 'nodemailer';
 
 const BUSINESS_EMAILS = ['Eastorykr@gmail.com', 'Dakota@mugoong.com', 'sendainoodle@gmail.com'];
 
@@ -110,25 +111,22 @@ async function sendBookingEmail(booking: {
   adults: number | null;
   children: number | null;
 }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.log('[Email] RESEND_API_KEY not set — skipping email. Booking details:', JSON.stringify(booking, null, 2));
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_APP_PASSWORD;
+
+  if (!gmailUser || !gmailPass) {
+    console.log('[Email] GMAIL_USER or GMAIL_APP_PASSWORD not set — skipping. Booking:', JSON.stringify(booking, null, 2));
     return;
   }
-
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev';
 
   const fmtDate = (d: string) => {
     try { return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch { return d; }
   };
-
   const fmtKRW = (n: number) => `₩${n.toLocaleString()}`;
-
   const paymentLabel = booking.booking_type === 'free' ? 'Booking Request (No Payment)'
     : booking.booking_type === 'deposit' ? 'Booking Fee (Deposit)'
     : 'Full Payment';
 
-  /* ── Build guest/pricing rows ── */
   let guestRows = '';
   if (booking.adults !== null && booking.children !== null) {
     if (booking.adults > 0) guestRows += `<tr><td style="padding:8px 12px;color:#374151;">Adult (13+)</td><td style="padding:8px 12px;text-align:right;color:#374151;">${booking.adults} person(s)</td></tr>`;
@@ -161,20 +159,14 @@ async function sendBookingEmail(booking: {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#F3F4F6;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
-
-        <!-- Header -->
         <tr><td style="background:#4F46E5;border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
           <p style="margin:0 0 4px;color:rgba(255,255,255,0.7);font-size:13px;letter-spacing:0.08em;text-transform:uppercase;">Mugoong Platform</p>
           <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:700;">New Booking Received</h1>
           <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:15px;">${booking.listing_title}</p>
         </td></tr>
-
-        <!-- Status badge -->
         <tr><td style="background:#ffffff;padding:20px 40px 0;text-align:center;">
           <span style="display:inline-block;background:${booking.booking_type === 'free' ? '#D1FAE5' : booking.booking_type === 'deposit' ? '#FEF3C7' : '#DBEAFE'};color:${booking.booking_type === 'free' ? '#065F46' : booking.booking_type === 'deposit' ? '#92400E' : '#1E40AF'};border-radius:999px;padding:6px 18px;font-size:13px;font-weight:600;">${paymentLabel}</span>
         </td></tr>
-
-        <!-- Booking details table -->
         <tr><td style="background:#ffffff;padding:24px 40px;">
           <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
             <tr style="background:#F9FAFB;"><th style="padding:12px;text-align:left;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;">Field</th><th style="padding:12px;text-align:right;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;">Detail</th></tr>
@@ -184,8 +176,6 @@ async function sendBookingEmail(booking: {
             <tr style="border-top:1px solid #F3F4F6;background:#F9FAFB;"><td style="padding:10px 12px;color:#6B7280;font-size:13px;">Time</td><td style="padding:10px 12px;text-align:right;color:#374151;">${booking.booking_time}</td></tr>
           </table>
         </td></tr>
-
-        <!-- Guest breakdown -->
         <tr><td style="background:#ffffff;padding:0 40px 24px;">
           <p style="margin:0 0 12px;font-weight:600;color:#374151;">Guest Breakdown</p>
           <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
@@ -194,8 +184,6 @@ async function sendBookingEmail(booking: {
             ${booking.total_price > 0 ? `<tr style="background:#EEF2FF;border-top:2px solid #E5E7EB;"><td style="padding:12px;font-weight:700;color:#4F46E5;font-size:15px;">Total Amount</td><td style="padding:12px;text-align:right;font-weight:700;color:#4F46E5;font-size:15px;">${fmtKRW(booking.total_price)}</td></tr>` : `<tr style="background:#D1FAE5;"><td colspan="2" style="padding:12px;font-weight:600;color:#065F46;text-align:center;">No payment required — request only</td></tr>`}
           </table>
         </td></tr>
-
-        <!-- Customer info -->
         <tr><td style="background:#ffffff;padding:0 40px 24px;">
           <p style="margin:0 0 12px;font-weight:600;color:#374151;">Customer Information</p>
           <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
@@ -205,42 +193,30 @@ async function sendBookingEmail(booking: {
             ${booking.notes ? `<tr style="background:#F9FAFB;border-top:1px solid #F3F4F6;"><td style="padding:10px 12px;color:#6B7280;font-size:13px;vertical-align:top;">Special Requests</td><td style="padding:10px 12px;color:#374151;">${booking.notes}</td></tr>` : ''}
           </table>
         </td></tr>
-
-        <!-- CTA -->
         <tr><td style="background:#ffffff;padding:0 40px 32px;text-align:center;">
           <p style="color:#6B7280;font-size:14px;margin:0 0 16px;">Please confirm this booking in your admin dashboard.</p>
           <a href="https://mugoong.com/admin/bookings" style="display:inline-block;background:#4F46E5;color:#ffffff;text-decoration:none;border-radius:10px;padding:14px 32px;font-weight:600;font-size:15px;">View in Admin Dashboard →</a>
         </td></tr>
-
-        <!-- Footer -->
         <tr><td style="background:#F9FAFB;border-radius:0 0 16px 16px;padding:20px 40px;text-align:center;border-top:1px solid #E5E7EB;">
           <p style="margin:0;font-size:12px;color:#9CA3AF;">This is an automated notification from <strong>Mugoong</strong> — Korea's Local Experience Platform</p>
           <p style="margin:4px 0 0;font-size:11px;color:#D1D5DB;">mugoong.com</p>
         </td></tr>
-
       </table>
     </td></tr>
   </table>
 </body>
 </html>`;
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: `Mugoong Bookings <${fromEmail}>`,
-      to: BUSINESS_EMAILS,
-      reply_to: booking.customer_email,
-      subject: `[New Booking] ${booking.listing_title} — ${booking.customer_name} · ${booking.booking_date}`,
-      html,
-    }),
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: gmailUser, pass: gmailPass },
   });
 
-  if (!res.ok) {
-    const errBody = await res.text();
-    throw new Error(`Resend API error ${res.status}: ${errBody}`);
-  }
+  await transporter.sendMail({
+    from: `Mugoong Bookings <${gmailUser}>`,
+    to: BUSINESS_EMAILS,
+    replyTo: booking.customer_email,
+    subject: `[New Booking] ${booking.listing_title} — ${booking.customer_name} · ${booking.booking_date}`,
+    html,
+  });
 }
