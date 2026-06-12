@@ -27,11 +27,13 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
       let titleTranslations: Record<string, string> | undefined;
       let descTranslations: Record<string, string> | undefined;
       let contentTranslations: Record<string, string> | undefined;
+      let priceDisplayType: 'from' | 'deposit' | undefined;
       try {
         const parsed = JSON.parse(notes);
         if (parsed?.__extra?.title_translations) titleTranslations = parsed.__extra.title_translations;
         if (parsed?.__extra?.description_translations) descTranslations = parsed.__extra.description_translations;
         if (parsed?.__extra?.content_translations) contentTranslations = parsed.__extra.content_translations;
+        if (parsed?.__extra?.price_display_type) priceDisplayType = parsed.__extra.price_display_type;
       } catch {}
       return {
         id: row.id,
@@ -41,6 +43,7 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
         city: row.city,
         title: row.title,
         title_translations: titleTranslations ?? sample?.title_translations,
+        price_display_type: priceDisplayType,
         description: row.description,
         description_translations: descTranslations ?? (sample as any)?.description_translations,
         content: row.content || '',

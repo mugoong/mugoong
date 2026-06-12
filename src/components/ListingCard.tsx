@@ -17,12 +17,23 @@ function getBadgeClass(tag: string) {
   }
 }
 
+function lowestNonDrinkPrice(items: any[]): number | null {
+  const priced = (items ?? []).filter(
+    (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink'
+  );
+  if (!priced.length) return null;
+  return Math.min(...priced.map((i: any) => i.price as number));
+}
+
 export default function ListingCard({ listing }: { listing: Listing }) {
   const t = useTranslations();
   const locale = useLocale();
   const displayTitle = listing.title_translations?.[locale] ?? listing.title;
 
   const isTips = listing.category === 'tips-and-trend';
+  const isDeposit = listing.price_display_type === 'deposit';
+  const displayPrice = lowestNonDrinkPrice(listing.menu_items) ?? listing.price;
+  const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
   const overlayTags = listing.tags.filter((tag) => BADGE_TAGS.has(tag.toUpperCase()));
   const keywordTags = listing.tags.filter((tag) => !BADGE_TAGS.has(tag.toUpperCase()));
 
@@ -99,8 +110,17 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               <span className="text-[10px] text-gray-400">({listing.reviewCount})</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-gray-400">From </span>
-              <span className="text-sm font-bold text-primary-600">${listing.price}</span>
+              {isDeposit ? (
+                <>
+                  <span className="text-[10px] text-gray-400">Deposit From </span>
+                  <span className="text-sm font-bold text-primary-600">{fmtKRW(displayPrice)}</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[10px] text-gray-400">From </span>
+                  <span className="text-sm font-bold text-primary-600">{fmtKRW(displayPrice)}</span>
+                </>
+              )}
             </div>
           </div>
         ) : null}

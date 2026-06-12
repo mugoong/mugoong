@@ -409,6 +409,20 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
               <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} min="0" step="0.01" className={inputCls} />
             </div>
           )}
+          {cfg.showPrice && (
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Price Display in Listing</label>
+              <select
+                value={form.extra.price_display_type ?? 'from'}
+                onChange={(e) => setForm({ ...form, extra: { ...form.extra, price_display_type: e.target.value } })}
+                className={inputCls}
+              >
+                <option value="from">From ₩X,XXX (메뉴 최저가)</option>
+                <option value="deposit">Deposit From ₩X,XXX</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">리스트 카드에 표시될 가격 형식을 선택하세요.</p>
+            </div>
+          )}
         </div>
       </section>
 

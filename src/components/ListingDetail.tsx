@@ -253,6 +253,17 @@ export default function ListingDetail({
     isRestaurant ? 'deposit' : extra.booking_type ?? 'free';
   const hasReviews = extra.external_reviews?.length > 0;
 
+  function lowestNonDrinkPrice(items: any[]): number | null {
+    const priced = (items ?? []).filter(
+      (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink'
+    );
+    if (!priced.length) return null;
+    return Math.min(...priced.map((i: any) => i.price as number));
+  }
+  const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
+  const headerPrice = lowestNonDrinkPrice(menuItems) ?? listing.price;
+  const isDepositDisplay = listing.price_display_type === 'deposit';
+
   function scrollTo(ref: React.RefObject<HTMLDivElement | null>) {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -373,8 +384,8 @@ export default function ListingDetail({
                   <span className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700">{t('booking.freeRequest')}</span>
                 ) : (
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-sm text-gray-500">{t('booking.fromLabel')}</span>
-                    <span className="text-3xl font-bold text-primary-600">₩{listing.price.toLocaleString()}</span>
+                    <span className="text-sm text-gray-500">{isDepositDisplay ? 'Deposit From' : t('booking.fromLabel')}</span>
+                    <span className="text-3xl font-bold text-primary-600">{fmtKRW(headerPrice)}</span>
                     <span className="text-sm text-gray-500">{t('booking.perPersonLabel')}</span>
                   </div>
                 )}
@@ -477,7 +488,7 @@ export default function ListingDetail({
                                 {item.image_url && <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg"><Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="56px" /></div>}
                                 <div className="flex flex-1 items-center justify-between">
                                   <div><p className="font-medium text-gray-800">{mName(item)}</p>{mDesc(item) && <p className="text-xs text-gray-500">{mDesc(item)}</p>}</div>
-                                  <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString()}</span>
+                                  <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">{fmtKRW(item.price ?? 0)}</span>
                                 </div>
                               </div>
                             ))}

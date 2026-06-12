@@ -286,7 +286,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
         <div className="mt-4 rounded-lg bg-primary-50 p-4 text-left text-sm space-y-1">
           <p><strong>{t('dateLabel')}:</strong> {fmtDate(date, locale)}</p>
           <p><strong>{t('timeLabel')}:</strong> {time}</p>
-          {bookingType !== 'free' && total > 0 && <p><strong>{t('amountLabel')}:</strong> ₩{total.toLocaleString()}</p>}
+          {bookingType !== 'free' && total > 0 && <p><strong>{t('amountLabel')}:</strong> ₩{total.toLocaleString('ko-KR')}</p>}
           {bookingType === 'free' && <p className="text-green-600 font-medium">{t('noPaymentRequired')}</p>}
         </div>
         <p className="mt-4 text-xs text-gray-400">
@@ -309,12 +309,12 @@ export default function BookingForm({ listing }: { listing: Listing }) {
         ) : bookingType === 'deposit' ? (
           <>
             <span className="text-sm text-gray-500">{t('bookingFeeLabel')}</span>
-            <span className="text-3xl font-bold text-primary-600">₩{(isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0)).toLocaleString()}</span>
+            <span className="text-3xl font-bold text-primary-600">₩{(isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0)).toLocaleString('ko-KR')}</span>
           </>
         ) : (
           <>
             <span className="text-sm text-gray-500">{t('fromLabel')}</span>
-            <span className="text-3xl font-bold text-primary-600">₩{listing.price.toLocaleString()}</span>
+            <span className="text-3xl font-bold text-primary-600">₩{listing.price.toLocaleString('ko-KR')}</span>
             <span className="text-sm text-gray-500">{t('perPersonLabel')}</span>
           </>
         )}
@@ -386,7 +386,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
                 <div key={label} className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3">
                   <div>
                     <p className="text-sm font-medium text-gray-700">{label}</p>
-                    <p className="text-xs text-primary-600">₩{price.toLocaleString()} {t('perPersonLabel')}</p>
+                    <p className="text-xs text-primary-600">₩{price.toLocaleString('ko-KR')} {t('perPersonLabel')}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <button type="button" onClick={() => setCount(Math.max(0, count - 1))} className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:border-primary-500 hover:text-primary-600">−</button>
@@ -408,7 +408,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
                 <div key={i} className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3">
                   <div>
                     <p className="text-sm font-medium text-gray-700">{tier.label}</p>
-                    <p className="text-xs text-primary-600">₩{tier.price.toLocaleString()} {t('perPersonLabel')}</p>
+                    <p className="text-xs text-primary-600">₩{tier.price.toLocaleString('ko-KR')} {t('perPersonLabel')}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <button type="button" onClick={() => setAgeCount(i, -1)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:border-primary-500 hover:text-primary-600">−</button>
@@ -435,7 +435,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
                     <p className="text-sm font-medium text-gray-800">{item.name}</p>
                     {item.description && <p className="text-xs text-gray-500">{item.description}</p>}
                   </div>
-                  <span className="text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString()}</span>
+                  <span className="text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString('ko-KR')}</span>
                 </label>
               ))}
             </div>
@@ -461,37 +461,37 @@ export default function BookingForm({ listing }: { listing: Listing }) {
                 <p className="text-sm font-medium text-gray-700">{t('bookingFeeLabel')}</p>
                 <p className="text-xs text-gray-400">{t('balanceDueAtVenue')}</p>
               </div>
-              <span className="text-xl font-bold text-gray-900">₩{total.toLocaleString()}</span>
+              <span className="text-xl font-bold text-gray-900">₩{total.toLocaleString('ko-KR')}</span>
             </div>
           ) : (
             <div className="space-y-1">
               {isSaunaMode && (
                 <>
-                  {adults > 0 && <div className="flex justify-between text-sm text-gray-600"><span>{t('adultAge')} × {adults}</span><span>₩{(adults * (extra.adult_price ?? 0)).toLocaleString()}</span></div>}
-                  {children > 0 && <div className="flex justify-between text-sm text-gray-600"><span>{t('childAge')} × {children}</span><span>₩{(children * (extra.child_price ?? 0)).toLocaleString()}</span></div>}
+                  {adults > 0 && <div className="flex justify-between text-sm text-gray-600"><span>{t('adultAge')} × {adults}</span><span>₩{(adults * (extra.adult_price ?? 0)).toLocaleString('ko-KR')}</span></div>}
+                  {children > 0 && <div className="flex justify-between text-sm text-gray-600"><span>{t('childAge')} × {children}</span><span>₩{(children * (extra.child_price ?? 0)).toLocaleString('ko-KR')}</span></div>}
                 </>
               )}
               {isAgePricingMode && agePricing.map((tier, i) => ageCounts[i] > 0 && (
                 <div key={i} className="flex justify-between text-sm text-gray-600">
                   <span>{tier.label} × {ageCounts[i]}</span>
-                  <span>₩{(ageCounts[i] * tier.price).toLocaleString()}</span>
+                  <span>₩{(ageCounts[i] * tier.price).toLocaleString('ko-KR')}</span>
                 </div>
               ))}
               {!isSaunaMode && !isAgePricingMode && menuItems.length === 0 && (
                 <div className="flex justify-between text-sm text-gray-600">
-                  <span>₩{listing.price.toLocaleString()} × {guests}</span>
-                  <span>₩{total.toLocaleString()}</span>
+                  <span>₩{listing.price.toLocaleString('ko-KR')} × {guests}</span>
+                  <span>₩{total.toLocaleString('ko-KR')}</span>
                 </div>
               )}
               {!isSaunaMode && !isAgePricingMode && selectedItems.size > 0 && Array.from(selectedItems).map(i => (
                 <div key={i} className="flex justify-between text-sm text-gray-600">
                   <span>{menuItems[i].name}</span>
-                  <span>₩{menuItems[i].price?.toLocaleString()}</span>
+                  <span>₩{menuItems[i].price?.toLocaleString('ko-KR')}</span>
                 </div>
               ))}
               <div className="flex items-center justify-between border-t border-gray-200 pt-2 mt-1">
                 <span className="font-semibold text-gray-700">{t('total')}</span>
-                <span className="text-xl font-bold text-gray-900">₩{total.toLocaleString()}</span>
+                <span className="text-xl font-bold text-gray-900">₩{total.toLocaleString('ko-KR')}</span>
               </div>
             </div>
           )}
@@ -501,7 +501,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
 
         {/* Submit */}
         <button type="submit" disabled={submitting || (isSaunaMode && adults + children === 0) || (isAgePricingMode && ageCounts.reduce((s, c) => s + c, 0) === 0)} className="w-full rounded-lg bg-primary-500 py-4 text-base font-semibold text-white transition-all hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50">
-          {submitting ? t('submitting') : bookingType === 'free' ? t('requestBooking') : bookingType === 'deposit' ? `${t('payBookingFee')} ₩${total.toLocaleString()}` : `${t('bookNowBtn')} ₩${total.toLocaleString()}`}
+          {submitting ? t('submitting') : bookingType === 'free' ? t('requestBooking') : bookingType === 'deposit' ? `${t('payBookingFee')} ₩${total.toLocaleString('ko-KR')}` : `${t('bookNowBtn')} ₩${total.toLocaleString('ko-KR')}`}
         </button>
 
         {/* Trust signals */}
