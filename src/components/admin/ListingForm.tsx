@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+
+const DRAFT_KEY = 'mugoong_admin_listing_draft';
 import { categories, cities } from '@/lib/categories';
 import { getCategoryFormConfig } from '@/lib/categoryFormConfig';
 import type { ListingRow, MenuItemJson } from '@/lib/supabase/types';
@@ -62,6 +64,8 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [draftBanner, setDraftBanner] = useState(false);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [form, setForm] = useState<FormData>({
     title: existing?.title ?? '',
@@ -85,6 +89,44 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
     notes: parsePlainNotes(existing?.notes ?? ''),
     extra: parseExtra(existing?.notes ?? ''),
   });
+
+  /* ── Draft: load on mount (new listings only) ── */
+  useEffect(() => {
+    if (existing) return;
+    try {
+      const saved = localStorage.getItem(DRAFT_KEY);
+      if (saved) setDraftBanner(true);
+    } catch {}
+  }, [existing]);
+
+  /* ── Draft: auto-save on form change (debounced 800ms) ── */
+  useEffect(() => {
+    if (existing) return;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      try {
+        const { gallery, ...rest } = form;
+        const saveable = { ...rest, gallery: gallery.map(g => ({ url: g.url })) };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(saveable));
+      } catch {}
+    }, 800);
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
+  }, [form, existing]);
+
+  const loadDraft = () => {
+    try {
+      const saved = localStorage.getItem(DRAFT_KEY);
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      setForm(f => ({ ...f, ...parsed }));
+      setDraftBanner(false);
+    } catch {}
+  };
+
+  const clearDraft = () => {
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    setDraftBanner(false);
+  };
 
   const cfg = getCategoryFormConfig(form.category);
   const selectedCategory = categories.find((c) => c.slug === form.category);
@@ -131,13 +173,17 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const uploadImage = async (): Promise<string> => {
     if (!imageFile) return form.image_url;
-    const supabase = createClient();
-    const ext = imageFile.name.split('.').pop();
-    const fileName = `${form.slug}-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from('listings').upload(fileName, imageFile, { upsert: true });
-    if (error) throw error;
-    const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
-    return data.publicUrl;
+    try {
+      const supabase = createClient();
+      const ext = imageFile.name.split('.').pop();
+      const fileName = `${form.slug}-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from('listings').upload(fileName, imageFile, { upsert: true });
+      if (error) throw error;
+      const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
+      return data.publicUrl;
+    } catch {
+      return form.image_url;
+    }
   };
 
   const uploadGallery = async (): Promise<string[]> => {
@@ -147,12 +193,16 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         .filter((g) => g.url || g.file)
         .map(async (g) => {
           if (!g.file) return g.url;
-          const ext = g.file.name.split('.').pop();
-          const fileName = `${form.slug}-gallery-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-          const { error } = await supabase.storage.from('listings').upload(fileName, g.file, { upsert: true });
-          if (error) throw error;
-          const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
-          return data.publicUrl;
+          try {
+            const ext = g.file.name.split('.').pop();
+            const fileName = `${form.slug}-gallery-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+            const { error } = await supabase.storage.from('listings').upload(fileName, g.file, { upsert: true });
+            if (error) throw error;
+            const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
+            return data.publicUrl;
+          } catch {
+            return g.url;
+          }
         })
     );
   };
@@ -206,6 +256,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         const { error } = await supabase.from('listings').insert(payload);
         if (error) throw error;
       }
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
       router.push('/admin/listings');
     } catch (err: any) {
       alert(`Error: ${err.message}`);
@@ -219,6 +270,19 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-4xl space-y-8">
+      {/* Draft banner */}
+      {draftBanner && !existing && (
+        <div className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-5 py-3">
+          <p className="text-sm text-amber-800">💾 저장된 임시 초안이 있습니다. 이어서 작성하시겠어요?</p>
+          <div className="flex gap-2">
+            <button type="button" onClick={loadDraft} className="rounded-lg bg-amber-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-amber-600">불러오기</button>
+            <button type="button" onClick={clearDraft} className="rounded-lg border border-amber-300 px-4 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100">무시</button>
+          </div>
+        </div>
+      )}
+      {!existing && (
+        <p className="text-right text-xs text-gray-400">✏️ 자동 임시저장 중</p>
+      )}
       {/* Category Selector Tabs */}
       <div className="flex flex-wrap gap-2">
         {categories.map((cat) => {

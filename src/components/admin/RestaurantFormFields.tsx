@@ -82,7 +82,7 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
   allItems: MenuItemJson[]; setAllItems: (items: MenuItemJson[]) => void;
 }) {
   const add = () => {
-    if (items.length >= 5) return;
+    if (items.length >= 10) return;
     setAllItems([...allItems, { category: cat as any, name: '', price: 0, description: '' }]);
   };
   const update = (idx: number, field: string, value: string | number) => {
@@ -107,8 +107,8 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">{emoji} {title} ({items.length}/5)</h4>
-        {items.length < 5 && (
+        <h4 className="text-sm font-semibold text-gray-700">{emoji} {title} ({items.length}/10)</h4>
+        {items.length < 10 && (
           <button type="button" onClick={add} className="text-xs text-primary-600 hover:underline">+ Add</button>
         )}
       </div>
@@ -264,12 +264,12 @@ export default function RestaurantFormFields({ menuItems, setMenuItems, extra, s
 
       {/* ── Reservation Notices ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <ArraySection title="Reservation Info & Notices" emoji="📋" items={extra.reservation_notices || []} max={5} onChange={v => setExtra('reservation_notices', v)} />
+        <ArraySection title="Reservation Info & Notices" emoji="📋" items={extra.reservation_notices || []} max={10} onChange={v => setExtra('reservation_notices', v)} />
       </section>
 
       {/* ── Cancellation & Refund Policy ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <ArraySection title="Cancellation & Refund Policy" emoji="🔄" items={extra.cancellation_policy || []} max={5} onChange={v => setExtra('cancellation_policy', v)} />
+        <ArraySection title="Cancellation & Refund Policy" emoji="🔄" items={extra.cancellation_policy || []} max={10} onChange={v => setExtra('cancellation_policy', v)} />
       </section>
 
       {/* ── Important Notes ── */}
