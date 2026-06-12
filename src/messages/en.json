@@ -107,6 +107,8 @@
     "noPaymentRequired": "No payment required",
     "confirmByEmail": "We will confirm your booking by email",
     "balanceDueAtVenue": "Balance due at venue",
+    "depositFeeNote": "This amount will be deducted from your final bill at the venue.",
+    "reserveFeeNote": "This is a non-refundable booking fee and is not applied to your final bill.",
     "submitting": "Submitting…",
     "requestBooking": "Request Booking",
     "payBookingFee": "Pay Booking Fee",

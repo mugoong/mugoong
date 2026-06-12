@@ -107,6 +107,8 @@
     "noPaymentRequired": "Aucun paiement requis",
     "confirmByEmail": "Nous confirmerons votre réservation par e-mail",
     "balanceDueAtVenue": "Solde à régler sur place",
+    "depositFeeNote": "Ce montant sera déduit de votre facture finale sur place.",
+    "reserveFeeNote": "Il s'agit de frais de réservation non remboursables et non déduits de votre facture finale.",
     "submitting": "Envoi en cours…",
     "requestBooking": "Demander une Réservation",
     "payBookingFee": "Payer les Frais de Réservation",

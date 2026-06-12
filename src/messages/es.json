@@ -107,6 +107,8 @@
     "noPaymentRequired": "Sin pago requerido",
     "confirmByEmail": "Confirmaremos tu reserva por correo",
     "balanceDueAtVenue": "Saldo a pagar en el lugar",
+    "depositFeeNote": "Este importe se descontará de su factura final en el local.",
+    "reserveFeeNote": "Esta es una tarifa de reserva no reembolsable y no se descuenta de su factura final.",
     "submitting": "Enviando…",
     "requestBooking": "Solicitar Reserva",
     "payBookingFee": "Pagar Tarifa de Reserva",

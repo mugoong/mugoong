@@ -243,8 +243,9 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.extra.price_display_type === 'deposit' && !(form.extra.booking_deposit > 0)) {
-      alert('Deposit From 모드에서는 아래 Deposit Amount를 반드시 입력해야 합니다.');
+    const needsFee = form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve';
+    if (needsFee && !(form.extra.booking_deposit > 0)) {
+      alert('Deposit From / Reserve From 모드에서는 아래 Deposit Amount를 반드시 입력해야 합니다.');
       return;
     }
     setSaving(true);
@@ -417,11 +418,11 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
                 onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
                 min="0"
                 step="0.01"
-                disabled={form.extra.price_display_type === 'deposit'}
-                className={inputCls + (form.extra.price_display_type === 'deposit' ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
+                disabled={form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve'}
+                className={inputCls + ((form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve') ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
               />
-              {form.extra.price_display_type === 'deposit' && (
-                <p className="mt-1 text-xs text-gray-400">Deposit From 모드에서는 아래 Deposit Amount 값이 사용됩니다.</p>
+              {(form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve') && (
+                <p className="mt-1 text-xs text-gray-400">이 모드에서는 아래 Deposit Amount 값이 리스트 가격으로 표시됩니다.</p>
               )}
             </div>
           )}
@@ -434,7 +435,8 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
                 className={inputCls}
               >
                 <option value="from">From ₩X,XXX (메뉴 최저가)</option>
-                <option value="deposit">Deposit From ₩X,XXX</option>
+                <option value="deposit">Deposit From ₩X,XXX (현장 차감)</option>
+                <option value="reserve">Reserve From ₩X,XXX (예약 수수료, 별도)</option>
               </select>
               <p className="mt-1 text-xs text-gray-400">리스트 카드에 표시될 가격 형식을 선택하세요.</p>
             </div>

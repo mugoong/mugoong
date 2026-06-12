@@ -303,12 +303,14 @@ export default function BookingForm({ listing }: { listing: Listing }) {
     <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg">
       {/* Header price display */}
       <h3 className="mb-1 text-lg font-bold text-gray-900">Book With MUGOONG</h3>
-      <div className="mb-5 flex items-baseline gap-1.5">
+      <div className="mb-1 flex items-baseline gap-1.5">
         {bookingType === 'free' ? (
           <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">{t('freeRequest')}</span>
         ) : bookingType === 'deposit' ? (
           <>
-            <span className="text-sm text-gray-500">{t('bookingFeeLabel')}</span>
+            <span className="text-sm text-gray-500">
+              {listing.price_display_type === 'reserve' ? 'Reserve From' : t('bookingFeeLabel')}
+            </span>
             <span className="text-3xl font-bold text-primary-600">₩{(isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0)).toLocaleString('ko-KR')}</span>
           </>
         ) : (
@@ -319,6 +321,12 @@ export default function BookingForm({ listing }: { listing: Listing }) {
           </>
         )}
       </div>
+      {bookingType === 'deposit' && listing.price_display_type === 'deposit' && (
+        <p className="mb-4 text-xs text-blue-600">{t('depositFeeNote')}</p>
+      )}
+      {bookingType === 'deposit' && listing.price_display_type === 'reserve' && (
+        <p className="mb-4 text-xs text-amber-600">{t('reserveFeeNote')}</p>
+      )}
 
       <div className="space-y-4">
         {/* Name */}
@@ -458,8 +466,12 @@ export default function BookingForm({ listing }: { listing: Listing }) {
           ) : bookingType === 'deposit' ? (
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-700">{t('bookingFeeLabel')}</p>
-                <p className="text-xs text-gray-400">{t('balanceDueAtVenue')}</p>
+                <p className="text-sm font-medium text-gray-700">
+                  {listing.price_display_type === 'reserve' ? 'Reserve From' : t('bookingFeeLabel')}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {listing.price_display_type === 'reserve' ? t('reserveFeeNote') : t('depositFeeNote')}
+                </p>
               </div>
               <span className="text-xl font-bold text-gray-900">₩{total.toLocaleString('ko-KR')}</span>
             </div>

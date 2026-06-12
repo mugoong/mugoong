@@ -261,10 +261,15 @@ export default function ListingDetail({
     return Math.min(...priced.map((i: any) => i.price as number));
   }
   const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
-  const isDepositDisplay = listing.price_display_type === 'deposit';
-  const headerPrice = isDepositDisplay
+  const isPaidFeeDisplay = listing.price_display_type === 'deposit' || listing.price_display_type === 'reserve';
+  const headerPrice = isPaidFeeDisplay
     ? (listing.booking_deposit ?? listing.price)
     : (lowestNonDrinkPrice(menuItems) ?? listing.price);
+  const headerPriceLabel = listing.price_display_type === 'deposit'
+    ? 'Deposit From'
+    : listing.price_display_type === 'reserve'
+      ? 'Reserve From'
+      : null;
 
   function scrollTo(ref: React.RefObject<HTMLDivElement | null>) {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -386,7 +391,7 @@ export default function ListingDetail({
                   <span className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700">{t('booking.freeRequest')}</span>
                 ) : (
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-sm text-gray-500">{isDepositDisplay ? 'Deposit From' : t('booking.fromLabel')}</span>
+                    <span className="text-sm text-gray-500">{headerPriceLabel ?? t('booking.fromLabel')}</span>
                     <span className="text-3xl font-bold text-primary-600">{fmtKRW(headerPrice)}</span>
                     <span className="text-sm text-gray-500">{t('booking.perPersonLabel')}</span>
                   </div>

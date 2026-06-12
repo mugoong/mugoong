@@ -28,7 +28,7 @@ export interface Listing {
   city: City;
   title: string;
   title_translations?: Record<string, string>;
-  price_display_type?: 'from' | 'deposit';
+  price_display_type?: 'from' | 'deposit' | 'reserve';
   booking_deposit?: number;
   description: string;
   description_translations?: Record<string, string>;

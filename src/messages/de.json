@@ -107,6 +107,8 @@
     "noPaymentRequired": "Keine Zahlung erforderlich",
     "confirmByEmail": "Wir bestätigen Ihre Buchung per E-Mail",
     "balanceDueAtVenue": "Restbetrag vor Ort fällig",
+    "depositFeeNote": "Dieser Betrag wird von Ihrer Endrechnung vor Ort abgezogen.",
+    "reserveFeeNote": "Dies ist eine nicht erstattbare Buchungsgebühr und wird nicht von Ihrer Endrechnung abgezogen.",
     "submitting": "Wird gesendet…",
     "requestBooking": "Buchung anfragen",
     "payBookingFee": "Buchungsgebühr bezahlen",
