@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
-const DRAFT_KEY = 'mugoong_admin_listing_draft';
 import { categories, cities } from '@/lib/categories';
 import { getCategoryFormConfig } from '@/lib/categoryFormConfig';
 import type { ListingRow, MenuItemJson } from '@/lib/supabase/types';
@@ -65,6 +64,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
   const [saving, setSaving] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [draftBanner, setDraftBanner] = useState(false);
+  const [draftKey, setDraftKey] = useState<string | null>(null);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [form, setForm] = useState<FormData>({
@@ -90,41 +90,46 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
     extra: parseExtra(existing?.notes ?? ''),
   });
 
-  /* ── Draft: load on mount (new listings only) ── */
+  /* ── Draft: resolve per-user key on mount ── */
   useEffect(() => {
     if (existing) return;
-    try {
-      const saved = localStorage.getItem(DRAFT_KEY);
-      if (saved) setDraftBanner(true);
-    } catch {}
+    createClient().auth.getUser().then(({ data }) => {
+      const uid = data.user?.id;
+      if (!uid) return;
+      const key = `mugoong_draft_${uid}`;
+      setDraftKey(key);
+      try {
+        if (localStorage.getItem(key)) setDraftBanner(true);
+      } catch {}
+    });
   }, [existing]);
 
   /* ── Draft: auto-save on form change (debounced 800ms) ── */
   useEffect(() => {
-    if (existing) return;
+    if (existing || !draftKey) return;
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => {
       try {
         const { gallery, ...rest } = form;
         const saveable = { ...rest, gallery: gallery.map(g => ({ url: g.url })) };
-        localStorage.setItem(DRAFT_KEY, JSON.stringify(saveable));
+        localStorage.setItem(draftKey, JSON.stringify(saveable));
       } catch {}
     }, 800);
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
-  }, [form, existing]);
+  }, [form, existing, draftKey]);
 
   const loadDraft = () => {
+    if (!draftKey) return;
     try {
-      const saved = localStorage.getItem(DRAFT_KEY);
+      const saved = localStorage.getItem(draftKey);
       if (!saved) return;
-      const parsed = JSON.parse(saved);
-      setForm(f => ({ ...f, ...parsed }));
+      setForm(f => ({ ...f, ...JSON.parse(saved) }));
       setDraftBanner(false);
     } catch {}
   };
 
   const clearDraft = () => {
-    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
     setDraftBanner(false);
   };
 
@@ -256,7 +261,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         const { error } = await supabase.from('listings').insert(payload);
         if (error) throw error;
       }
-      try { localStorage.removeItem(DRAFT_KEY); } catch {}
+      if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
       router.push('/admin/listings');
     } catch (err: any) {
       alert(`Error: ${err.message}`);
