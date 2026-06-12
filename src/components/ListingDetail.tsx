@@ -250,7 +250,10 @@ export default function ListingDetail({
   const menuItems = listing.menu_items || [];
   const dietary = extra.dietary || {};
   const bookingType: 'free' | 'deposit' | 'full_payment' =
-    isRestaurant ? 'deposit' : extra.booking_type ?? 'free';
+    listing.price_display_type === 'from' ? 'free'
+    : (listing.price_display_type === 'deposit' || listing.price_display_type === 'reserve') ? 'deposit'
+    : isRestaurant ? 'deposit'
+    : extra.booking_type ?? 'free';
   const hasReviews = extra.external_reviews?.length > 0;
 
   function lowestNonDrinkPrice(items: any[]): number | null {

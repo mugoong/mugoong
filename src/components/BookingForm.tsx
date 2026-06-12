@@ -161,7 +161,10 @@ export default function BookingForm({ listing }: { listing: Listing }) {
   const isSaunaMode = isSauna && (extra.adult_price > 0 || extra.child_price > 0);
 
   const bookingType: 'free' | 'deposit' | 'full_payment' =
-    isRestaurant ? 'deposit' : extra.booking_type ?? 'free';
+    listing.price_display_type === 'from' ? 'free'
+    : (listing.price_display_type === 'deposit' || listing.price_display_type === 'reserve') ? 'deposit'
+    : isRestaurant ? 'deposit'
+    : extra.booking_type ?? 'free';
 
   /* ── form state ── */
   const [date, setDate] = useState('');
