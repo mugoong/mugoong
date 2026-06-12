@@ -139,12 +139,6 @@ export default function WellnessFormFields({
             </label>
           ))}
         </div>
-        {bookingType === 'deposit' && (
-          <div className="mt-4 max-w-xs">
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Deposit Amount (₩)</label>
-            <input type="number" value={extra.booking_deposit ?? ''} onChange={(e) => setExtra('booking_deposit', Number(e.target.value))} className={cls} placeholder="e.g. 30000" />
-          </div>
-        )}
       </section>
 
       {/* ── Location & Contact ── */}

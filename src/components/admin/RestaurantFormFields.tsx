@@ -172,18 +172,6 @@ export default function RestaurantFormFields({ menuItems, setMenuItems, extra, s
 
   return (
     <>
-      {/* ── Booking Deposit ── */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">💰 Booking Deposit</h2>
-        <p className="mb-3 text-xs text-gray-500">This is the deposit amount charged when a customer books this restaurant. The remaining balance is paid at the restaurant.</p>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Deposit Amount (₩) *</label>
-            <input type="number" value={extra.booking_deposit || 0} onChange={e => setExtra('booking_deposit', Number(e.target.value))} min="0" className={inputCls} placeholder="e.g., 30000" />
-          </div>
-        </div>
-      </section>
-
       {/* ── Structured Menu ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="mb-4 text-lg font-semibold text-gray-900">🍽️ Menu</h2>
