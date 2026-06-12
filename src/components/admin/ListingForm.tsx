@@ -65,7 +65,9 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [draftBanner, setDraftBanner] = useState(false);
   const [draftKey, setDraftKey] = useState<string | null>(null);
+  const [draftLoaded, setDraftLoaded] = useState(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const draftReadyRef = useRef(false);
 
   const [form, setForm] = useState<FormData>({
     title: existing?.title ?? '',
@@ -99,7 +101,11 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
       const key = `mugoong_draft_${uid}`;
       setDraftKey(key);
       try {
-        if (localStorage.getItem(key)) setDraftBanner(true);
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.title) setDraftBanner(true);
+        }
       } catch {}
     });
   }, [existing]);
@@ -107,6 +113,12 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
   /* ── Draft: auto-save on form change (debounced 800ms) ── */
   useEffect(() => {
     if (existing || !draftKey) return;
+    // Skip the first run triggered by draftKey becoming available — prevents overwriting existing draft
+    if (!draftReadyRef.current) {
+      draftReadyRef.current = true;
+      return;
+    }
+    if (!form.title) return; // Don't save empty forms
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => {
       try {
@@ -123,8 +135,11 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
     try {
       const saved = localStorage.getItem(draftKey);
       if (!saved) return;
-      setForm(f => ({ ...f, ...JSON.parse(saved) }));
+      const parsed = JSON.parse(saved);
+      setForm(f => ({ ...f, ...parsed }));
       setDraftBanner(false);
+      setDraftLoaded(true);
+      setTimeout(() => setDraftLoaded(false), 3000);
     } catch {}
   };
 
@@ -278,11 +293,16 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
       {/* Draft banner */}
       {draftBanner && !existing && (
         <div className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-5 py-3">
-          <p className="text-sm text-amber-800">💾 저장된 임시 초안이 있습니다. 이어서 작성하시겠어요?</p>
+          <p className="text-sm text-amber-800">저장된 임시 초안이 있습니다. 이어서 작성하시겠어요?</p>
           <div className="flex gap-2">
             <button type="button" onClick={loadDraft} className="rounded-lg bg-amber-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-amber-600">불러오기</button>
             <button type="button" onClick={clearDraft} className="rounded-lg border border-amber-300 px-4 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100">무시</button>
           </div>
+        </div>
+      )}
+      {draftLoaded && (
+        <div className="rounded-xl border border-green-200 bg-green-50 px-5 py-3 text-sm text-green-800">
+          임시저장된 내용을 불러왔습니다.
         </div>
       )}
       {!existing && (
