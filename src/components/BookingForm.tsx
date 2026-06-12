@@ -184,7 +184,9 @@ export default function BookingForm({ listing }: { listing: Listing }) {
   let totalGuests = 0;
 
   if (bookingType === 'deposit') {
-    total = isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0);
+    total = listing.price_display_type === 'reserve'
+      ? (listing.reserve_fee ?? 0)
+      : isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0);
     totalGuests = guests;
   } else if (bookingType === 'full_payment') {
     if (isSaunaMode) {
@@ -311,7 +313,11 @@ export default function BookingForm({ listing }: { listing: Listing }) {
             <span className="text-sm text-gray-500">
               {listing.price_display_type === 'reserve' ? 'Reserve From' : t('bookingFeeLabel')}
             </span>
-            <span className="text-3xl font-bold text-primary-600">₩{(isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0)).toLocaleString('ko-KR')}</span>
+            <span className="text-3xl font-bold text-primary-600">
+              {listing.price_display_type === 'reserve'
+                ? `₩${(listing.reserve_fee ?? 0).toLocaleString('ko-KR')}`
+                : `₩${(isRestaurant ? (extra.booking_deposit ?? listing.price) : (extra.booking_deposit ?? 0)).toLocaleString('ko-KR')}`}
+            </span>
           </>
         ) : (
           <>

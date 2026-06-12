@@ -261,9 +261,9 @@ export default function ListingDetail({
     return Math.min(...priced.map((i: any) => i.price as number));
   }
   const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
-  const isPaidFeeDisplay = listing.price_display_type === 'deposit' || listing.price_display_type === 'reserve';
-  const headerPrice = isPaidFeeDisplay
-    ? (listing.booking_deposit ?? listing.price)
+  const headerPrice =
+    listing.price_display_type === 'deposit' ? (listing.booking_deposit ?? listing.price)
+    : listing.price_display_type === 'reserve' ? (listing.reserve_fee ?? listing.price)
     : (lowestNonDrinkPrice(menuItems) ?? listing.price);
   const headerPriceLabel = listing.price_display_type === 'deposit'
     ? 'Deposit From'

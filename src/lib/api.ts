@@ -27,8 +27,9 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
       let titleTranslations: Record<string, string> | undefined;
       let descTranslations: Record<string, string> | undefined;
       let contentTranslations: Record<string, string> | undefined;
-      let priceDisplayType: 'from' | 'deposit' | undefined;
+      let priceDisplayType: 'from' | 'deposit' | 'reserve' | undefined;
       let bookingDeposit: number | undefined;
+      let reserveFee: number | undefined;
       try {
         const parsed = JSON.parse(notes);
         if (parsed?.__extra?.title_translations) titleTranslations = parsed.__extra.title_translations;
@@ -36,6 +37,7 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
         if (parsed?.__extra?.content_translations) contentTranslations = parsed.__extra.content_translations;
         if (parsed?.__extra?.price_display_type) priceDisplayType = parsed.__extra.price_display_type;
         if (typeof parsed?.__extra?.booking_deposit === 'number') bookingDeposit = parsed.__extra.booking_deposit;
+        if (typeof parsed?.__extra?.reserve_fee === 'number') reserveFee = parsed.__extra.reserve_fee;
       } catch {}
       return {
         id: row.id,
@@ -47,6 +49,7 @@ export const getSupabaseListings = async (): Promise<Listing[]> => {
         title_translations: titleTranslations ?? sample?.title_translations,
         price_display_type: priceDisplayType,
         booking_deposit: bookingDeposit,
+        reserve_fee: reserveFee,
         description: row.description,
         description_translations: descTranslations ?? (sample as any)?.description_translations,
         content: row.content || '',

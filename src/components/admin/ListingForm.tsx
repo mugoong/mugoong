@@ -243,9 +243,12 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const needsFee = form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve';
-    if (needsFee && !(form.extra.booking_deposit > 0)) {
-      alert('Deposit From / Reserve From 모드에서는 아래 Deposit Amount를 반드시 입력해야 합니다.');
+    if (form.extra.price_display_type === 'deposit' && !(form.extra.booking_deposit > 0)) {
+      alert('Deposit From 모드에서는 Deposit Amount를 반드시 입력해야 합니다.');
+      return;
+    }
+    if (form.extra.price_display_type === 'reserve' && !(form.extra.reserve_fee > 0)) {
+      alert('Reserve From 모드에서는 Reserve Amount를 반드시 입력해야 합니다.');
       return;
     }
     setSaving(true);
@@ -440,6 +443,44 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
               </select>
               <p className="mt-1 text-xs text-gray-400">리스트 카드에 표시될 가격 형식을 선택하세요.</p>
             </div>
+          )}
+          {cfg.showPrice && (form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve') && (
+            <>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Deposit Amount (₩){form.extra.price_display_type === 'deposit' && ' *'}
+                </label>
+                <input
+                  type="number"
+                  value={form.extra.booking_deposit ?? ''}
+                  onChange={(e) => setForm({ ...form, extra: { ...form.extra, booking_deposit: Number(e.target.value) } })}
+                  min="0"
+                  placeholder={form.extra.price_display_type === 'deposit' ? 'e.g. 30000' : '—'}
+                  disabled={form.extra.price_display_type !== 'deposit'}
+                  className={inputCls + (form.extra.price_display_type !== 'deposit' ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
+                />
+                {form.extra.price_display_type === 'deposit' && (
+                  <p className="mt-1 text-xs text-gray-400">현장 최종 결제 금액에서 차감됩니다.</p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Reserve Amount (₩){form.extra.price_display_type === 'reserve' && ' *'}
+                </label>
+                <input
+                  type="number"
+                  value={form.extra.reserve_fee ?? ''}
+                  onChange={(e) => setForm({ ...form, extra: { ...form.extra, reserve_fee: Number(e.target.value) } })}
+                  min="0"
+                  placeholder={form.extra.price_display_type === 'reserve' ? 'e.g. 10000' : '—'}
+                  disabled={form.extra.price_display_type !== 'reserve'}
+                  className={inputCls + (form.extra.price_display_type !== 'reserve' ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
+                />
+                {form.extra.price_display_type === 'reserve' && (
+                  <p className="mt-1 text-xs text-gray-400">최종 결제와 별도로 부과되는 예약 수수료입니다.</p>
+                )}
+              </div>
+            </>
           )}
         </div>
       </section>
