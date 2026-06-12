@@ -243,6 +243,10 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.extra.price_display_type === 'deposit' && !(form.extra.booking_deposit > 0)) {
+      alert('Deposit From 모드에서는 아래 Deposit Amount를 반드시 입력해야 합니다.');
+      return;
+    }
     setSaving(true);
     try {
       const supabase = createClient();
@@ -404,9 +408,21 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
           {cfg.showPrice && (
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                {form.category === 'restaurants' ? 'Average Price Per Person (₩)' : form.category === 'wellness' ? 'Starting Price (₩)' : 'Price (₩)'} *
+                {form.category === 'restaurants' ? 'Average Price Per Person (₩)' : form.category === 'wellness' ? 'Starting Price (₩)' : 'Price (₩)'}
+                {form.extra.price_display_type !== 'deposit' && ' *'}
               </label>
-              <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} min="0" step="0.01" className={inputCls} />
+              <input
+                type="number"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                min="0"
+                step="0.01"
+                disabled={form.extra.price_display_type === 'deposit'}
+                className={inputCls + (form.extra.price_display_type === 'deposit' ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
+              />
+              {form.extra.price_display_type === 'deposit' && (
+                <p className="mt-1 text-xs text-gray-400">Deposit From 모드에서는 아래 Deposit Amount 값이 사용됩니다.</p>
+              )}
             </div>
           )}
           {cfg.showPrice && (

@@ -261,8 +261,10 @@ export default function ListingDetail({
     return Math.min(...priced.map((i: any) => i.price as number));
   }
   const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
-  const headerPrice = lowestNonDrinkPrice(menuItems) ?? listing.price;
   const isDepositDisplay = listing.price_display_type === 'deposit';
+  const headerPrice = isDepositDisplay
+    ? (listing.booking_deposit ?? listing.price)
+    : (lowestNonDrinkPrice(menuItems) ?? listing.price);
 
   function scrollTo(ref: React.RefObject<HTMLDivElement | null>) {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });

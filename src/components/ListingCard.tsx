@@ -32,7 +32,9 @@ export default function ListingCard({ listing }: { listing: Listing }) {
 
   const isTips = listing.category === 'tips-and-trend';
   const isDeposit = listing.price_display_type === 'deposit';
-  const displayPrice = lowestNonDrinkPrice(listing.menu_items) ?? listing.price;
+  const depositPrice = listing.booking_deposit ?? 0;
+  const fromPrice = lowestNonDrinkPrice(listing.menu_items) ?? listing.price;
+  const displayPrice = isDeposit ? depositPrice : fromPrice;
   const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
   const overlayTags = listing.tags.filter((tag) => BADGE_TAGS.has(tag.toUpperCase()));
   const keywordTags = listing.tags.filter((tag) => !BADGE_TAGS.has(tag.toUpperCase()));

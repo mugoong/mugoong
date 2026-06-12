@@ -29,6 +29,7 @@ export interface Listing {
   title: string;
   title_translations?: Record<string, string>;
   price_display_type?: 'from' | 'deposit';
+  booking_deposit?: number;
   description: string;
   description_translations?: Record<string, string>;
   content: string;
