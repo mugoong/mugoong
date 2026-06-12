@@ -310,7 +310,7 @@ export default function BookingForm({ listing }: { listing: Listing }) {
       <h3 className="mb-1 text-lg font-bold text-gray-900">Book With MUGOONG</h3>
       <div className="mb-1 flex items-baseline gap-1.5">
         {bookingType === 'free' ? (
-          <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">{t('freeRequest')}</span>
+          <span className="text-sm text-gray-500">{t('freeBookingDesc')}</span>
         ) : bookingType === 'deposit' ? (
           <>
             <span className="text-sm text-gray-500">

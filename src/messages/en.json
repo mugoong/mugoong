@@ -107,6 +107,7 @@
     "noPaymentRequired": "No payment required",
     "confirmByEmail": "We will confirm your booking by email",
     "balanceDueAtVenue": "Balance due at venue",
+    "freeBookingDesc": "This experience can be reserved at no extra charge — no payment required at booking.",
     "depositFeeNote": "This amount will be deducted from your final bill at the venue.",
     "reserveFeeNote": "This is a non-refundable booking fee and is not applied to your final bill.",
     "submitting": "Submitting…",

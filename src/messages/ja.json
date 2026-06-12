@@ -107,6 +107,7 @@
     "noPaymentRequired": "支払い不要",
     "confirmByEmail": "メールにて予約確認をお送りします",
     "balanceDueAtVenue": "残金は現地払い",
+    "freeBookingDesc": "この体験は追加費用なしでご予約いただけます — 予約時のお支払いは不要です。",
     "depositFeeNote": "この金額は現地での最終お支払いから差し引かれます。",
     "reserveFeeNote": "これは予約手数料であり、最終お支払い金額から差し引かれません。",
     "submitting": "送信中…",

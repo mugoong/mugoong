@@ -107,6 +107,7 @@
     "noPaymentRequired": "无需付款",
     "confirmByEmail": "我们将通过电子邮件确认您的预订",
     "balanceDueAtVenue": "余款在现场支付",
+    "freeBookingDesc": "此体验可免费预订 — 预订时无需付款。",
     "depositFeeNote": "此金额将从您在现场的最终账单中扣除。",
     "reserveFeeNote": "这是不可退款的预订手续费，不从最终账单中扣除。",
     "submitting": "提交中…",

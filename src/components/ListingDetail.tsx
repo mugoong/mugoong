@@ -390,14 +390,14 @@ export default function ListingDetail({
             {/* Price */}
             {!isTips && (
               <div className="mt-4">
-                {bookingType === 'free' ? (
-                  <span className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700">{t('booking.freeRequest')}</span>
-                ) : (
+                {headerPrice > 0 ? (
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-sm text-gray-500">{headerPriceLabel ?? t('booking.fromLabel')}</span>
                     <span className="text-3xl font-bold text-primary-600">{fmtKRW(headerPrice)}</span>
                     <span className="text-sm text-gray-500">{t('booking.perPersonLabel')}</span>
                   </div>
+                ) : (
+                  <span className="rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700">{t('booking.freeRequest')}</span>
                 )}
               </div>
             )}
