@@ -74,6 +74,7 @@ export type MenuItemJson = {
   name: string;
   name_translations?: Record<string, string>;
   price: number;
+  price_variable?: boolean;
   description?: string;
   description_translations?: Record<string, string>;
   image_url?: string;

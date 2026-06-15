@@ -190,13 +190,13 @@ function MobileGallery({ images, tags, onOpen }: {
 
       {/* Tags */}
       {tags.length > 0 && (
-        <div className="pointer-events-none absolute left-3 top-3 flex gap-1.5">
+        <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1">
           {tags.map(tag => (
             <span key={tag} className={
               tag === 'HOT' ? 'badge-hot' :
               tag === 'BEST' ? 'badge-best' :
               tag === 'NEW' ? 'badge-new' :
-              'rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-medium text-gray-700'
+              'rounded bg-black/60 backdrop-blur-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap'
             }>{tag}</span>
           ))}
         </div>
@@ -252,13 +252,14 @@ export default function ListingDetail({
   const bookingType: 'free' | 'deposit' | 'full_payment' =
     listing.price_display_type === 'from' ? 'free'
     : (listing.price_display_type === 'deposit' || listing.price_display_type === 'reserve') ? 'deposit'
-    : isRestaurant ? 'deposit'
+    : (isRestaurant && (extra.booking_deposit ?? 0) > 0) ? 'deposit'
+    : isRestaurant ? 'free'
     : extra.booking_type ?? 'free';
   const hasReviews = extra.external_reviews?.length > 0;
 
   function lowestNonDrinkPrice(items: any[]): number | null {
     const priced = (items ?? []).filter(
-      (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink'
+      (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink' && !i.price_variable
     );
     if (!priced.length) return null;
     return Math.min(...priced.map((i: any) => i.price as number));
@@ -321,9 +322,9 @@ export default function ListingDetail({
           <div className="relative cursor-pointer overflow-hidden" style={{ aspectRatio: '4/3' }}
             onClick={() => setLbIdx(0)}>
             <Image src={allImages[0]} alt={displayTitle} fill className="object-cover transition-transform duration-500 hover:scale-105" priority sizes="60vw" />
-            <div className="absolute left-4 top-4 flex gap-2">
+            <div className="absolute left-4 top-4 flex flex-wrap gap-1">
               {listing.tags.map(tag => (
-                <span key={tag} className={tag === 'HOT' ? 'badge-hot' : tag === 'BEST' ? 'badge-best' : tag === 'NEW' ? 'badge-new' : 'rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-700'}>
+                <span key={tag} className={tag === 'HOT' ? 'badge-hot' : tag === 'BEST' ? 'badge-best' : tag === 'NEW' ? 'badge-new' : 'rounded bg-black/60 backdrop-blur-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap'}>
                   {tag}
                 </span>
               ))}
@@ -498,7 +499,7 @@ export default function ListingDetail({
                                 {item.image_url && <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg"><Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="56px" /></div>}
                                 <div className="flex flex-1 items-center justify-between">
                                   <div><p className="font-medium text-gray-800">{mName(item)}</p>{mDesc(item) && <p className="text-xs text-gray-500">{mDesc(item)}</p>}</div>
-                                  <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">{fmtKRW(item.price ?? 0)}</span>
+                                  <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">{item.price_variable ? td('variablePrice') : fmtKRW(item.price ?? 0)}</span>
                                 </div>
                               </div>
                             ))}
@@ -549,7 +550,7 @@ export default function ListingDetail({
                 {listing.subcategory === 'sauna' && (extra.adult_price || extra.child_price) && <div className="mt-8"><SectionHeader icon={<MoneyIcon className="h-5 w-5" />} title={td('admissionPricing')} /><p className="mb-3 text-xs text-gray-400">{td('childAgeSauna')}</p><div className="grid gap-3 sm:grid-cols-2">{extra.adult_price > 0 && <div className="rounded-xl border border-gray-100 p-4 text-center"><p className="text-sm font-medium text-gray-500">{td('adultAgeLabel')}</p><p className="mt-1 text-2xl font-bold text-primary-600">₩{Number(extra.adult_price).toLocaleString()}</p></div>}{extra.child_price > 0 && <div className="rounded-xl border border-gray-100 p-4 text-center"><p className="text-sm font-medium text-gray-500">{td('childAgeLabel')}</p><p className="mt-1 text-2xl font-bold text-primary-600">₩{Number(extra.child_price).toLocaleString()}</p></div>}</div></div>}
                 {listing.subcategory === 'sauna' && extra.facilities?.length > 0 && <div className="mt-8"><SectionHeader icon={<FacilitiesIcon className="h-5 w-5" />} title={td('facilitiesAndAmenities')} /><div className="grid gap-2 sm:grid-cols-2">{extra.facilities.map((f: string, i: number) => <Check key={i}>{f}</Check>)}</div></div>}
                 {extra.staff?.length > 0 && <div className="mt-8"><SectionHeader icon={listing.subcategory === 'skin-clinic' ? <DoctorIcon className="h-5 w-5" /> : <ScissorsIcon className="h-5 w-5" />} title={listing.subcategory === 'skin-clinic' ? td('ourDoctors') : td('ourHairDesigners')} /><div className="grid gap-4 sm:grid-cols-2">{extra.staff.map((m: any, i: number) => <div key={i} className="flex gap-4 rounded-xl border border-gray-100 p-4">{m.photo ? <img src={m.photo} alt={m.name} className="h-16 w-16 flex-shrink-0 rounded-full object-cover" /> : <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600">{listing.subcategory === 'skin-clinic' ? <DoctorIcon className="h-8 w-8" /> : <ScissorsIcon className="h-8 w-8" />}</div>}<div className="min-w-0"><p className="font-semibold text-gray-800">{m.name}</p>{m.title && <p className="text-xs text-primary-600">{m.title}</p>}{m.bio && <p className="mt-1 text-xs leading-relaxed text-gray-500">{m.bio}</p>}</div></div>)}</div></div>}
-                {menuItems.length > 0 && <div className="mt-8"><SectionHeader icon={<MenuPriceIcon className="h-5 w-5" />} title={listing.subcategory === 'skin-clinic' ? td('treatmentsAndPrices') : listing.subcategory === 'hair-salon' ? td('servicesAndPrices') : listing.subcategory === 'sauna' ? td('addOnsAndCafeteria') : td('massageOptionsAndPrices')} /><div className="divide-y divide-gray-100 rounded-xl border border-gray-100">{menuItems.map((item, i) => <div key={i} className="flex items-start gap-3 px-4 py-3"><div className="flex flex-1 items-center justify-between"><div><p className="font-medium text-gray-800">{mName(item)}</p>{mDesc(item) && <p className="text-xs text-gray-500">{mDesc(item)}</p>}</div><span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString()}</span></div></div>)}</div></div>}
+                {menuItems.length > 0 && <div className="mt-8"><SectionHeader icon={<MenuPriceIcon className="h-5 w-5" />} title={listing.subcategory === 'skin-clinic' ? td('treatmentsAndPrices') : listing.subcategory === 'hair-salon' ? td('servicesAndPrices') : listing.subcategory === 'sauna' ? td('addOnsAndCafeteria') : td('massageOptionsAndPrices')} /><div className="divide-y divide-gray-100 rounded-xl border border-gray-100">{menuItems.map((item, i) => <div key={i} className="flex items-start gap-3 px-4 py-3"><div className="flex flex-1 items-center justify-between"><div><p className="font-medium text-gray-800">{mName(item)}</p>{mDesc(item) && <p className="text-xs text-gray-500">{mDesc(item)}</p>}</div><span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">{item.price_variable ? td('variablePrice') : fmtKRW(item.price ?? 0)}</span></div></div>)}</div></div>}
                 {extra.reservation_notices?.length > 0 && <div className="mt-8"><SectionHeader icon={<InfoCircleIcon className="h-5 w-5" />} title={td('reservationInfo')} /><div className="space-y-2">{extra.reservation_notices.map((n: string, i: number) => <div key={i} className="flex items-start gap-3 rounded-lg bg-blue-50 p-3"><span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-700">{i+1}</span><span className="text-sm text-gray-700">{n}</span></div>)}</div></div>}
                 {extra.cancellation_policy?.length > 0 && <div className="mt-8"><SectionHeader icon={<RefreshIcon className="h-5 w-5" />} title={td('cancellationPolicy')} /><div className="space-y-2">{extra.cancellation_policy.map((p: string, i: number) => <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3"><span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-400" /><span className="text-sm text-gray-700">{p}</span></div>)}</div></div>}
                 {extra.important_notes?.length > 0 && <div className="mt-8"><SectionHeader icon={<InfoCircleIcon className="h-5 w-5" />} title={td('thingsToKnow')} /><div className="grid gap-2 sm:grid-cols-2">{extra.important_notes.map((n: string, i: number) => <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3"><span className="mt-0.5 flex-shrink-0 text-primary-400"><InfoCircleIcon className="h-4 w-4" /></span><span className="text-sm text-gray-700">{n}</span></div>)}</div></div>}
@@ -581,7 +582,7 @@ export default function ListingDetail({
                 {extra.included?.length > 0 && <div className="mt-8"><SectionHeader icon={<IncludedIcon className="h-5 w-5" />} title={td('whatsIncluded')} /><ListBadges items={extra.included} green /></div>}
                 {extra.excluded?.length > 0 && <div className="mt-6"><SectionHeader icon={<ExcludedIcon className="h-5 w-5" />} title={td('notIncluded')} /><ListBadges items={extra.excluded} /></div>}
                 {extra.what_to_bring?.length > 0 && <div className="mt-6"><SectionHeader icon={<BackpackIcon className="h-5 w-5" />} title={td('whatToBring')} /><ListBadges items={extra.what_to_bring} /></div>}
-                {menuItems.length > 0 && <div className="mt-8"><SectionHeader icon={<ProgramIcon className="h-5 w-5" />} title={td('programOptions')} /><div className="divide-y divide-gray-100 rounded-xl border border-gray-100">{menuItems.map((item, i) => <div key={i} className="flex items-start justify-between px-4 py-3"><div><p className="font-medium text-gray-800">{mName(item)}</p>{mDesc(item) && <p className="text-xs text-gray-500">{mDesc(item)}</p>}</div>{item.price > 0 && <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">₩{item.price?.toLocaleString()}</span>}</div>)}</div></div>}
+                {menuItems.length > 0 && <div className="mt-8"><SectionHeader icon={<ProgramIcon className="h-5 w-5" />} title={td('programOptions')} /><div className="divide-y divide-gray-100 rounded-xl border border-gray-100">{menuItems.map((item, i) => <div key={i} className="flex items-start justify-between px-4 py-3"><div><p className="font-medium text-gray-800">{mName(item)}</p>{mDesc(item) && <p className="text-xs text-gray-500">{mDesc(item)}</p>}</div>{item.price_variable ? <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">{td('variablePrice')}</span> : item.price > 0 && <span className="ml-4 shrink-0 text-sm font-semibold text-primary-600">{fmtKRW(item.price)}</span>}</div>)}</div></div>}
                 {(listing.address || listing.phone || extra.naver_map_url || extra.kakao_map_url || extra.google_map_url) && <div className="mt-8 rounded-xl border border-gray-100 p-5"><div className="mb-3 flex items-center gap-2"><span className="text-primary-500"><PinIcon className="h-5 w-5" /></span><h2 className="text-lg font-bold text-gray-900">{td('contactAndLocation')}</h2></div><div className="grid gap-1 sm:grid-cols-2"><InfoRow icon={<PinIcon />} label={td('address')} value={listing.address} /><InfoRow icon={<PhoneIcon />} label={td('phone')} value={listing.phone} /><InfoRow icon={<ClockIcon />} label={td('schedule')} value={listing.operating_hours} /></div><MapButtons />{extra.google_map_url && <div className="mt-4 overflow-hidden rounded-lg"><iframe src={`https://www.google.com/maps?q=${encodeURIComponent(listing.address || extra.meeting_point || '')}&output=embed`} width="100%" height="300" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></div>}</div>}
                 {extra.reservation_notices?.length > 0 && <div className="mt-8"><SectionHeader icon={<InfoCircleIcon className="h-5 w-5" />} title={td('reservationInfo')} /><div className="space-y-2">{extra.reservation_notices.map((n: string, i: number) => <div key={i} className="flex items-start gap-3 rounded-lg bg-blue-50 p-3"><span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-700">{i+1}</span><span className="text-sm text-gray-700">{n}</span></div>)}</div></div>}
                 {extra.cancellation_policy?.length > 0 && <div className="mt-8"><SectionHeader icon={<RefreshIcon className="h-5 w-5" />} title={td('cancellationPolicy')} /><div className="space-y-2">{extra.cancellation_policy.map((p: string, i: number) => <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3"><span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-400" /><span className="text-sm text-gray-700">{p}</span></div>)}</div></div>}

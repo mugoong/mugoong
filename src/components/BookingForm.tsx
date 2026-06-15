@@ -163,7 +163,8 @@ export default function BookingForm({ listing }: { listing: Listing }) {
   const bookingType: 'free' | 'deposit' | 'full_payment' =
     listing.price_display_type === 'from' ? 'free'
     : (listing.price_display_type === 'deposit' || listing.price_display_type === 'reserve') ? 'deposit'
-    : isRestaurant ? 'deposit'
+    : (isRestaurant && (extra.booking_deposit ?? 0) > 0) ? 'deposit'
+    : isRestaurant ? 'free'
     : extra.booking_type ?? 'free';
 
   /* ── form state ── */

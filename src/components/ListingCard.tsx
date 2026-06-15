@@ -13,13 +13,13 @@ function getBadgeClass(tag: string) {
     case 'BEST': return 'badge-best';
     case 'NEW':  return 'badge-new';
     default:
-      return 'inline-block rounded-full bg-gray-700/80 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm';
+      return 'inline-block rounded bg-black/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap backdrop-blur-sm';
   }
 }
 
 function lowestNonDrinkPrice(items: any[]): number | null {
   const priced = (items ?? []).filter(
-    (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink'
+    (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink' && !i.price_variable
   );
   if (!priced.length) return null;
   return Math.min(...priced.map((i: any) => i.price as number));
@@ -93,7 +93,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               {keywordTags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-gray-100 bg-gray-50 px-2 py-0.5 text-[10px] text-gray-500"
+                  className="rounded border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] text-gray-500 whitespace-nowrap"
                 >
                   {tag}
                 </span>

@@ -83,7 +83,7 @@ export default function ActivitiesFormFields({
   };
 
   /* ── menu items ── */
-  const updMenuItem = (i: number, f: keyof MenuItemJson, v: string | number) => {
+  const updMenuItem = (i: number, f: keyof MenuItemJson, v: string | number | boolean) => {
     const items = [...menuItems]; items[i] = { ...items[i], [f]: v }; setMenuItems(items);
   };
 
@@ -225,7 +225,13 @@ export default function ActivitiesFormFields({
                 <div className="flex items-start gap-3">
                   <div className="flex-1 grid gap-2 sm:grid-cols-3">
                     <input type="text" value={item.name} onChange={(e) => updMenuItem(i, 'name', e.target.value)} placeholder="Option name" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
-                    <input type="number" value={item.price} onChange={(e) => updMenuItem(i, 'price', Number(e.target.value))} placeholder="Price (₩)" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
+                    <div className="flex items-center gap-1 rounded-lg border border-gray-200 px-2 focus-within:border-primary-500">
+                      <input type="number" value={item.price_variable ? 0 : (item.price || 0)} onChange={(e) => updMenuItem(i, 'price', Number(e.target.value))} placeholder="₩" disabled={!!item.price_variable} className="w-0 flex-1 min-w-0 py-2 text-sm outline-none disabled:text-gray-400 bg-transparent" />
+                      <label className="flex items-center gap-0.5 whitespace-nowrap text-[10px] text-gray-400 cursor-pointer select-none">
+                        <input type="checkbox" checked={!!item.price_variable} onChange={e => { updMenuItem(i, 'price_variable', e.target.checked); if (e.target.checked) updMenuItem(i, 'price', 0); }} className="rounded" />
+                        변동
+                      </label>
+                    </div>
                     <input type="text" value={item.description ?? ''} onChange={(e) => updMenuItem(i, 'description', e.target.value)} placeholder="Details" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
                   </div>
                   <button type="button" onClick={() => setMenuItems(menuItems.filter((_, idx) => idx !== i))} className="rounded-lg p-2 text-red-400 hover:bg-red-50">✕</button>

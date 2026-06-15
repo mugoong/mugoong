@@ -85,7 +85,7 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
     if (items.length >= 10) return;
     setAllItems([...allItems, { category: cat as any, name: '', price: 0, description: '' }]);
   };
-  const update = (idx: number, field: string, value: string | number) => {
+  const update = (idx: number, field: string, value: string | number | boolean) => {
     const globalIdx = allItems.findIndex((item, i) => {
       const matching = allItems.slice(0, i + 1).filter(x => (x.category || 'main') === cat);
       return matching.length === idx + 1;
@@ -116,7 +116,23 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
         <div key={i} className="mb-3 rounded-xl border border-gray-100 bg-white p-3">
           <div className="mb-2 flex items-center gap-2">
             <input type="text" value={item.name} onChange={e => update(i, 'name', e.target.value)} placeholder="Dish name" className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
-            <input type="number" value={item.price} onChange={e => update(i, 'price', Number(e.target.value))} placeholder="₩" className="w-24 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
+            <input
+              type="number"
+              value={item.price || 0}
+              onChange={e => update(i, 'price', Number(e.target.value))}
+              placeholder="₩"
+              disabled={!!item.price_variable}
+              className="w-20 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none disabled:bg-gray-50 disabled:text-gray-400"
+            />
+            <label className="flex items-center gap-1 whitespace-nowrap text-xs text-gray-500 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!!item.price_variable}
+                onChange={e => { update(i, 'price_variable', e.target.checked); if (e.target.checked) update(i, 'price', 0); }}
+                className="rounded"
+              />
+              변동
+            </label>
             <button type="button" onClick={() => remove(i)} className="text-red-400 hover:text-red-600 text-lg">✕</button>
           </div>
           <div className="grid gap-2 sm:grid-cols-2">

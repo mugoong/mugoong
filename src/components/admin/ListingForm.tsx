@@ -243,11 +243,15 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.extra.price_display_type === 'deposit' && !(form.extra.booking_deposit > 0)) {
+    // Ensure price_display_type is always written when the category supports it
+    const effectiveExtra = cfg.showPrice && !form.extra.price_display_type
+      ? { ...form.extra, price_display_type: 'from' }
+      : form.extra;
+    if (effectiveExtra.price_display_type === 'deposit' && !(effectiveExtra.booking_deposit > 0)) {
       alert('Deposit From 모드에서는 Deposit Amount를 반드시 입력해야 합니다.');
       return;
     }
-    if (form.extra.price_display_type === 'reserve' && !(form.extra.reserve_fee > 0)) {
+    if (effectiveExtra.price_display_type === 'reserve' && !(effectiveExtra.reserve_fee > 0)) {
       alert('Reserve From 모드에서는 Reserve Amount를 반드시 입력해야 합니다.');
       return;
     }
@@ -275,7 +279,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         address: form.address,
         phone: form.phone,
         operating_hours: form.operating_hours,
-        notes: serializeNotes(form.notes, form.extra),
+        notes: serializeNotes(form.notes, effectiveExtra),
       };
       if (existing) {
         const { error } = await supabase.from('listings').update(payload).eq('id', existing.id);
