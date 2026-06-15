@@ -99,36 +99,63 @@ function ReviewCard({ review, td }: { review: any; td: (k: string) => string }) 
 /* ── Lightbox ── */
 function Lightbox({ images, idx, onClose, setIdx }: { images: string[]; idx: number; onClose: () => void; setIdx: (i: number) => void }) {
   const touchX = useRef<number | null>(null);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const n = images.length;
+
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowLeft' && idx > 0) setIdx(idx - 1);
-      if (e.key === 'ArrowRight' && idx < images.length - 1) setIdx(idx + 1);
+      if (e.key === 'ArrowRight' && idx < n - 1) setIdx(idx + 1);
     };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
-  }, [idx, images.length, onClose, setIdx]);
+  }, [idx, n, onClose, setIdx]);
+
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90" onClick={onClose}>
       <button className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); onClose(); }}>✕</button>
-      <div className="relative flex w-full max-w-5xl items-center px-14" onClick={(e) => e.stopPropagation()}
-        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+      <div
+        className="relative flex w-full max-w-5xl items-center px-14"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; setDragging(true); }}
+        onTouchMove={(e) => { if (touchX.current === null) return; setDragX(e.touches[0].clientX - touchX.current); }}
         onTouchEnd={(e) => {
           if (touchX.current === null) return;
           const d = touchX.current - e.changedTouches[0].clientX;
-          if (d > 50 && idx < images.length - 1) setIdx(idx + 1);
+          setDragging(false); setDragX(0);
+          if (d > 50 && idx < n - 1) setIdx(idx + 1);
           if (d < -50 && idx > 0) setIdx(idx - 1);
           touchX.current = null;
-        }}>
+        }}
+      >
         <button className="absolute left-2 z-10 rounded-full bg-white/10 p-3 text-2xl leading-none text-white hover:bg-white/30 disabled:opacity-20"
           onClick={(e) => { e.stopPropagation(); setIdx(Math.max(0, idx - 1)); }} disabled={idx === 0}>‹</button>
-        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
-          <Image src={images[idx]} alt="" fill className="object-contain" sizes="100vw" />
+
+        {/* Sliding track — % transform avoids measuring container width */}
+        <div className="w-full overflow-hidden rounded-xl">
+          <div
+            className="flex"
+            style={{
+              width: `${n * 100}%`,
+              transform: `translateX(calc(${(-idx / n) * 100}% + ${dragX}px))`,
+              transition: dragging ? 'none' : 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              willChange: 'transform',
+            }}
+          >
+            {images.map((src, i) => (
+              <div key={i} className="relative aspect-[16/9] flex-shrink-0" style={{ width: `${100 / n}%` }}>
+                <Image src={src} alt="" fill className="object-contain" sizes="100vw" priority={i === idx} />
+              </div>
+            ))}
+          </div>
         </div>
+
         <button className="absolute right-2 z-10 rounded-full bg-white/10 p-3 text-2xl leading-none text-white hover:bg-white/30 disabled:opacity-20"
-          onClick={(e) => { e.stopPropagation(); setIdx(Math.min(images.length - 1, idx + 1)); }} disabled={idx === images.length - 1}>›</button>
+          onClick={(e) => { e.stopPropagation(); setIdx(Math.min(n - 1, idx + 1)); }} disabled={idx === n - 1}>›</button>
       </div>
-      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/70">{idx + 1} / {images.length}</p>
+      <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/70">{idx + 1} / {n}</p>
     </div>
   );
 }
