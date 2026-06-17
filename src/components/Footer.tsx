@@ -57,13 +57,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-sm text-gray-400 transition-colors hover:text-primary-400">
+                <Link href="/terms" className="text-sm text-gray-400 transition-colors hover:text-primary-400">
                   {t('footer.termsOfService')}
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-sm text-gray-400 transition-colors hover:text-primary-400">
+                <Link href="/privacy" className="text-sm text-gray-400 transition-colors hover:text-primary-400">
                   {t('footer.privacyPolicy')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/refund-policy" className="text-sm text-gray-400 transition-colors hover:text-primary-400">
+                  Refund Policy
                 </Link>
               </li>
             </ul>
