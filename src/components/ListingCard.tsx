@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Listing } from '@/types';
@@ -13,14 +13,30 @@ function getBadgeClass(tag: string) {
     case 'BEST': return 'badge-best';
     case 'NEW':  return 'badge-new';
     default:
-      return 'inline-block rounded-full bg-gray-700/80 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm';
+      return 'inline-block rounded bg-black/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap backdrop-blur-sm';
   }
+}
+
+function lowestNonDrinkPrice(items: any[]): number | null {
+  const priced = (items ?? []).filter(
+    (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink' && !i.price_variable
+  );
+  if (!priced.length) return null;
+  return Math.min(...priced.map((i: any) => i.price as number));
 }
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   const t = useTranslations();
+  const locale = useLocale();
+  const displayTitle = listing.title_translations?.[locale] ?? listing.title;
 
   const isTips = listing.category === 'tips-and-trend';
+  const fromPrice = lowestNonDrinkPrice(listing.menu_items) ?? listing.price;
+  const displayPrice =
+    listing.price_display_type === 'deposit' ? (listing.booking_deposit ?? 0)
+    : listing.price_display_type === 'reserve' ? (listing.reserve_fee ?? 0)
+    : fromPrice;
+  const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
   const overlayTags = listing.tags.filter((tag) => BADGE_TAGS.has(tag.toUpperCase()));
   const keywordTags = listing.tags.filter((tag) => !BADGE_TAGS.has(tag.toUpperCase()));
 
@@ -59,7 +75,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
         <div>
           {/* Title */}
           <h3 className="mb-1 line-clamp-2 sm:line-clamp-1 text-sm font-semibold leading-tight text-gray-900 transition-colors group-hover:text-primary-600">
-            {listing.title}
+            {displayTitle}
           </h3>
 
           {/* Location */}
@@ -77,7 +93,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               {keywordTags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-gray-100 bg-gray-50 px-2 py-0.5 text-[10px] text-gray-500"
+                  className="rounded border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] text-gray-500 whitespace-nowrap"
                 >
                   {tag}
                 </span>
@@ -97,8 +113,10 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               <span className="text-[10px] text-gray-400">({listing.reviewCount})</span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-gray-400">From </span>
-              <span className="text-sm font-bold text-primary-600">${listing.price}</span>
+              <span className="text-[10px] text-gray-400">
+                {listing.price_display_type === 'deposit' ? 'Deposit From ' : listing.price_display_type === 'reserve' ? 'Reserve From ' : 'From '}
+              </span>
+              <span className="text-sm font-bold text-primary-600">{fmtKRW(displayPrice)}</span>
             </div>
           </div>
         ) : null}

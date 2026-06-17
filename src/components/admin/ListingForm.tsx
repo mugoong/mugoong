@@ -1,12 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+
 import { categories, cities } from '@/lib/categories';
 import { getCategoryFormConfig } from '@/lib/categoryFormConfig';
 import type { ListingRow, MenuItemJson } from '@/lib/supabase/types';
 import RestaurantFormFields from './RestaurantFormFields';
+import WellnessFormFields from './WellnessFormFields';
+import ActivitiesFormFields from './ActivitiesFormFields';
+import TipsFormFields from './TipsFormFields';
 
 type GalleryItem = { url: string; file?: File };
 
@@ -59,12 +63,17 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [draftBanner, setDraftBanner] = useState(false);
+  const [draftKey, setDraftKey] = useState<string | null>(null);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const draftReadyRef = useRef(false);
 
   const [form, setForm] = useState<FormData>({
     title: existing?.title ?? '',
     slug: existing?.slug ?? '',
     category: existing?.category ?? 'restaurants',
-    subcategory: existing?.subcategory ?? 'korean-food',
+    subcategory: existing?.subcategory ?? 'classic-korean',
     city: existing?.city ?? 'seoul',
     description: existing?.description ?? '',
     content: existing?.content ?? '',
@@ -82,6 +91,62 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
     notes: parsePlainNotes(existing?.notes ?? ''),
     extra: parseExtra(existing?.notes ?? ''),
   });
+
+  /* ── Draft: resolve per-user key on mount ── */
+  useEffect(() => {
+    if (existing) return;
+    createClient().auth.getUser().then(({ data }) => {
+      const uid = data.user?.id;
+      if (!uid) return;
+      const key = `mugoong_draft_${uid}`;
+      setDraftKey(key);
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.title) setDraftBanner(true);
+        }
+      } catch {}
+    });
+  }, [existing]);
+
+  /* ── Draft: auto-save on form change (debounced 800ms) ── */
+  useEffect(() => {
+    if (existing || !draftKey) return;
+    // Skip the first run triggered by draftKey becoming available — prevents overwriting existing draft
+    if (!draftReadyRef.current) {
+      draftReadyRef.current = true;
+      return;
+    }
+    if (!form.title) return; // Don't save empty forms
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      try {
+        const { gallery, ...rest } = form;
+        const saveable = { ...rest, gallery: gallery.map(g => ({ url: g.url })) };
+        localStorage.setItem(draftKey, JSON.stringify(saveable));
+      } catch {}
+    }, 800);
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current); };
+  }, [form, existing, draftKey]);
+
+  const loadDraft = () => {
+    if (!draftKey) return;
+    try {
+      const saved = localStorage.getItem(draftKey);
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      setForm(f => ({ ...f, ...parsed }));
+      setDraftBanner(false);
+      setDraftLoaded(true);
+      setTimeout(() => setDraftLoaded(false), 3000);
+    } catch {}
+  };
+
+  const clearDraft = () => {
+    if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
+    setDraftBanner(false);
+  };
 
   const cfg = getCategoryFormConfig(form.category);
   const selectedCategory = categories.find((c) => c.slug === form.category);
@@ -108,6 +173,9 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
   };
 
   const isRestaurant = form.category === 'restaurants';
+  const isWellness = form.category === 'wellness';
+  const isActivities = form.category === 'activities';
+  const isTips = form.category === 'tips-and-trend';
 
   const addMenuItem = () => {
     setForm({ ...form, menu_items: [...form.menu_items, { name: '', price: 0, description: '' }] });
@@ -125,13 +193,17 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const uploadImage = async (): Promise<string> => {
     if (!imageFile) return form.image_url;
-    const supabase = createClient();
-    const ext = imageFile.name.split('.').pop();
-    const fileName = `${form.slug}-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from('listings').upload(fileName, imageFile, { upsert: true });
-    if (error) throw error;
-    const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
-    return data.publicUrl;
+    try {
+      const supabase = createClient();
+      const ext = imageFile.name.split('.').pop();
+      const fileName = `${form.slug}-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from('listings').upload(fileName, imageFile, { upsert: true });
+      if (error) throw error;
+      const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
+      return data.publicUrl;
+    } catch {
+      return form.image_url;
+    }
   };
 
   const uploadGallery = async (): Promise<string[]> => {
@@ -141,12 +213,16 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         .filter((g) => g.url || g.file)
         .map(async (g) => {
           if (!g.file) return g.url;
-          const ext = g.file.name.split('.').pop();
-          const fileName = `${form.slug}-gallery-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-          const { error } = await supabase.storage.from('listings').upload(fileName, g.file, { upsert: true });
-          if (error) throw error;
-          const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
-          return data.publicUrl;
+          try {
+            const ext = g.file.name.split('.').pop();
+            const fileName = `${form.slug}-gallery-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+            const { error } = await supabase.storage.from('listings').upload(fileName, g.file, { upsert: true });
+            if (error) throw error;
+            const { data } = supabase.storage.from('listings').getPublicUrl(fileName);
+            return data.publicUrl;
+          } catch {
+            return g.url;
+          }
         })
     );
   };
@@ -167,6 +243,18 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Ensure price_display_type is always written when the category supports it
+    const effectiveExtra = cfg.showPrice && !form.extra.price_display_type
+      ? { ...form.extra, price_display_type: 'from' }
+      : form.extra;
+    if (effectiveExtra.price_display_type === 'deposit' && !(effectiveExtra.booking_deposit > 0)) {
+      alert('Deposit From 모드에서는 Deposit Amount를 반드시 입력해야 합니다.');
+      return;
+    }
+    if (effectiveExtra.price_display_type === 'reserve' && !(effectiveExtra.reserve_fee > 0)) {
+      alert('Reserve From 모드에서는 Reserve Amount를 반드시 입력해야 합니다.');
+      return;
+    }
     setSaving(true);
     try {
       const supabase = createClient();
@@ -191,7 +279,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         address: form.address,
         phone: form.phone,
         operating_hours: form.operating_hours,
-        notes: serializeNotes(form.notes, form.extra),
+        notes: serializeNotes(form.notes, effectiveExtra),
       };
       if (existing) {
         const { error } = await supabase.from('listings').update(payload).eq('id', existing.id);
@@ -200,6 +288,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         const { error } = await supabase.from('listings').insert(payload);
         if (error) throw error;
       }
+      if (draftKey) try { localStorage.removeItem(draftKey); } catch {}
       router.push('/admin/listings');
     } catch (err: any) {
       alert(`Error: ${err.message}`);
@@ -213,6 +302,24 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-4xl space-y-8">
+      {/* Draft banner */}
+      {draftBanner && !existing && (
+        <div className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-5 py-3">
+          <p className="text-sm text-amber-800">저장된 임시 초안이 있습니다. 이어서 작성하시겠어요?</p>
+          <div className="flex gap-2">
+            <button type="button" onClick={loadDraft} className="rounded-lg bg-amber-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-amber-600">불러오기</button>
+            <button type="button" onClick={clearDraft} className="rounded-lg border border-amber-300 px-4 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100">무시</button>
+          </div>
+        </div>
+      )}
+      {draftLoaded && (
+        <div className="rounded-xl border border-green-200 bg-green-50 px-5 py-3 text-sm text-green-800">
+          임시저장된 내용을 불러왔습니다.
+        </div>
+      )}
+      {!existing && (
+        <p className="text-right text-xs text-gray-400">✏️ 자동 임시저장 중</p>
+      )}
       {/* Category Selector Tabs */}
       <div className="flex flex-wrap gap-2">
         {categories.map((cat) => {
@@ -254,8 +361,37 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         <h2 className="mb-4 text-lg font-semibold text-gray-900">Basic Information</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Title *</label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Title * <span className="text-xs font-normal text-gray-400">(English — used as default)</span></label>
             <input type="text" value={form.title} onChange={(e) => handleTitleChange(e.target.value)} required className={inputCls} placeholder={cfg.titlePlaceholder} />
+          </div>
+          {/* Title translations per language */}
+          <div className="sm:col-span-2">
+            <label className="mb-2 block text-sm font-medium text-gray-700">Title Translations <span className="text-xs font-normal text-gray-400">(shown to users when they switch language)</span></label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {([
+                { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+                { code: 'de', flag: '🇩🇪', label: 'German' },
+                { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+                { code: 'fr', flag: '🇫🇷', label: 'French' },
+                { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+                { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+              ] as const).map(({ code, flag, label }) => (
+                <div key={code} className="flex items-center gap-2">
+                  <span className="w-20 shrink-0 text-sm text-gray-500">{flag} {label}</span>
+                  <input
+                    type="text"
+                    value={(form.extra.title_translations as Record<string, string> | undefined)?.[code] ?? ''}
+                    onChange={(e) => {
+                      const translations = { ...(form.extra.title_translations ?? {}), [code]: e.target.value };
+                      if (!e.target.value) delete translations[code];
+                      setForm({ ...form, extra: { ...form.extra, title_translations: translations } });
+                    }}
+                    className={inputCls}
+                    placeholder={`${label} title...`}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
           <div className="sm:col-span-2">
             <label className="mb-1.5 block text-sm font-medium text-gray-700">URL Slug</label>
@@ -280,10 +416,75 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
           {cfg.showPrice && (
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                {form.category === 'restaurants' ? 'Average Price Per Person (₩)' : form.category === 'wellness' ? 'Starting Price (₩)' : 'Price (₩)'} *
+                {form.category === 'restaurants' ? 'Average Price Per Person (₩)' : form.category === 'wellness' ? 'Starting Price (₩)' : 'Price (₩)'}
+                {form.extra.price_display_type !== 'deposit' && ' *'}
               </label>
-              <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} min="0" step="0.01" className={inputCls} />
+              <input
+                type="number"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                min="0"
+                step="0.01"
+                disabled={form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve'}
+                className={inputCls + ((form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve') ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
+              />
+              {(form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve') && (
+                <p className="mt-1 text-xs text-gray-400">이 모드에서는 아래 Deposit Amount 값이 리스트 가격으로 표시됩니다.</p>
+              )}
             </div>
+          )}
+          {cfg.showPrice && (
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Price Display in Listing</label>
+              <select
+                value={form.extra.price_display_type ?? 'from'}
+                onChange={(e) => setForm({ ...form, extra: { ...form.extra, price_display_type: e.target.value } })}
+                className={inputCls}
+              >
+                <option value="from">From ₩X,XXX (메뉴 최저가)</option>
+                <option value="deposit">Deposit From ₩X,XXX (현장 차감)</option>
+                <option value="reserve">Reserve From ₩X,XXX (예약 수수료, 별도)</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">리스트 카드에 표시될 가격 형식을 선택하세요.</p>
+            </div>
+          )}
+          {cfg.showPrice && (form.extra.price_display_type === 'deposit' || form.extra.price_display_type === 'reserve') && (
+            <>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Deposit Amount (₩){form.extra.price_display_type === 'deposit' && ' *'}
+                </label>
+                <input
+                  type="number"
+                  value={form.extra.booking_deposit ?? ''}
+                  onChange={(e) => setForm({ ...form, extra: { ...form.extra, booking_deposit: Number(e.target.value) } })}
+                  min="0"
+                  placeholder={form.extra.price_display_type === 'deposit' ? 'e.g. 30000' : '—'}
+                  disabled={form.extra.price_display_type !== 'deposit'}
+                  className={inputCls + (form.extra.price_display_type !== 'deposit' ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
+                />
+                {form.extra.price_display_type === 'deposit' && (
+                  <p className="mt-1 text-xs text-gray-400">현장 최종 결제 금액에서 차감됩니다.</p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Reserve Amount (₩){form.extra.price_display_type === 'reserve' && ' *'}
+                </label>
+                <input
+                  type="number"
+                  value={form.extra.reserve_fee ?? ''}
+                  onChange={(e) => setForm({ ...form, extra: { ...form.extra, reserve_fee: Number(e.target.value) } })}
+                  min="0"
+                  placeholder={form.extra.price_display_type === 'reserve' ? 'e.g. 10000' : '—'}
+                  disabled={form.extra.price_display_type !== 'reserve'}
+                  className={inputCls + (form.extra.price_display_type !== 'reserve' ? ' cursor-not-allowed bg-gray-100 text-gray-400' : '')}
+                />
+                {form.extra.price_display_type === 'reserve' && (
+                  <p className="mt-1 text-xs text-gray-400">최종 결제와 별도로 부과되는 예약 수수료입니다.</p>
+                )}
+              </div>
+            </>
           )}
         </div>
       </section>
@@ -295,13 +496,73 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         </h2>
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Short Description *</label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">Short Description * <span className="text-xs font-normal text-gray-400">(English — default)</span></label>
             <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className={inputCls} placeholder={cfg.descriptionPlaceholder} />
           </div>
+          {/* Description Translations */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">{cfg.contentLabel}</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">Description Translations <span className="text-xs font-normal text-gray-400">(shown when user switches language)</span></label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {([
+                { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+                { code: 'de', flag: '🇩🇪', label: 'German' },
+                { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+                { code: 'fr', flag: '🇫🇷', label: 'French' },
+                { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+                { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+              ] as const).map(({ code, flag, label }) => (
+                <div key={code} className="flex items-start gap-2">
+                  <span className="mt-3 w-20 shrink-0 text-sm text-gray-500">{flag} {label}</span>
+                  <textarea
+                    rows={2}
+                    value={(form.extra.description_translations as Record<string, string> | undefined)?.[code] ?? ''}
+                    onChange={(e) => {
+                      const t = { ...(form.extra.description_translations ?? {}), [code]: e.target.value };
+                      if (!e.target.value) delete t[code];
+                      setForm({ ...form, extra: { ...form.extra, description_translations: t } });
+                    }}
+                    className={inputCls}
+                    placeholder={`${label} description...`}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">{cfg.contentLabel} <span className="text-xs font-normal text-gray-400">(English — default)</span></label>
             <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={form.category === 'tips-and-trend' ? 16 : 8} className={inputCls} placeholder={cfg.contentPlaceholder} />
           </div>
+          {/* Content Translations */}
+          {form.category !== 'tips-and-trend' && (
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Content Translations <span className="text-xs font-normal text-gray-400">(shown when user switches language)</span></label>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {([
+                  { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+                  { code: 'de', flag: '🇩🇪', label: 'German' },
+                  { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+                  { code: 'fr', flag: '🇫🇷', label: 'French' },
+                  { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+                  { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+                ] as const).map(({ code, flag, label }) => (
+                  <div key={code} className="flex items-start gap-2">
+                    <span className="mt-3 w-20 shrink-0 text-sm text-gray-500">{flag} {label}</span>
+                    <textarea
+                      rows={4}
+                      value={(form.extra.content_translations as Record<string, string> | undefined)?.[code] ?? ''}
+                      onChange={(e) => {
+                        const t = { ...(form.extra.content_translations ?? {}), [code]: e.target.value };
+                        if (!e.target.value) delete t[code];
+                        setForm({ ...form, extra: { ...form.extra, content_translations: t } });
+                      }}
+                      className={inputCls}
+                      placeholder={`${label} content...`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -402,59 +663,45 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
         />
       )}
 
-      {/* ── Menu (non-restaurant) ── */}
-      {!isRestaurant && cfg.showMenuItems && (
-        <section className="rounded-xl border border-gray-200 bg-white p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">{cfg.menuLabel}</h2>
-            <button type="button" onClick={addMenuItem} className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">+ Add Item</button>
-          </div>
-          {form.menu_items.length === 0 ? (
-            <p className="text-sm text-gray-400">No items yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {form.menu_items.map((item, i) => (
-                <div key={i} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                  <div className="flex-1 grid gap-2 sm:grid-cols-3">
-                    <input type="text" value={item.name} onChange={(e) => updateMenuItem(i, 'name', e.target.value)} placeholder={cfg.menuItemLabels.name} className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
-                    <input type="number" value={item.price} onChange={(e) => updateMenuItem(i, 'price', Number(e.target.value))} placeholder={cfg.menuItemLabels.price} className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
-                    <input type="text" value={item.description ?? ''} onChange={(e) => updateMenuItem(i, 'description', e.target.value)} placeholder={cfg.menuItemLabels.desc} className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-500" />
-                  </div>
-                  <button type="button" onClick={() => removeMenuItem(i)} className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600">✕</button>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+      {/* ── Wellness-specific sections ── */}
+      {isWellness && (
+        <WellnessFormFields
+          subcategory={form.subcategory}
+          menuItems={form.menu_items}
+          setMenuItems={(items) => setForm({ ...form, menu_items: items })}
+          extra={form.extra}
+          setExtra={setExtra}
+          operatingHours={form.operating_hours}
+          setOperatingHours={(v) => setForm({ ...form, operating_hours: v })}
+          address={form.address}
+          setAddress={(v) => setForm({ ...form, address: v })}
+          phone={form.phone}
+          setPhone={(v) => setForm({ ...form, phone: v })}
+        />
       )}
 
-      {/* ── Location (non-restaurant) ── */}
-      {!isRestaurant && (cfg.showAddress || cfg.showPhone || cfg.showHours) && (
-        <section className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">📍 Location & Contact</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {cfg.showAddress && (<div className="sm:col-span-2"><label className="mb-1.5 block text-sm font-medium text-gray-700">Address</label><input type="text" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={inputCls} placeholder="Full address in English" /></div>)}
-            {cfg.showPhone && (<div><label className="mb-1.5 block text-sm font-medium text-gray-700">Phone</label><input type="text" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputCls} placeholder="+82-2-XXX-XXXX" /></div>)}
-            {cfg.showHours && (<div><label className="mb-1.5 block text-sm font-medium text-gray-700">Operating Hours</label><input type="text" value={form.operating_hours} onChange={(e) => setForm({ ...form, operating_hours: e.target.value })} className={inputCls} placeholder="Mon-Fri 10:00-22:00" /></div>)}
-          </div>
-        </section>
+      {/* ── Activities-specific sections ── */}
+      {isActivities && (
+        <ActivitiesFormFields
+          menuItems={form.menu_items}
+          setMenuItems={(items) => setForm({ ...form, menu_items: items })}
+          extra={form.extra}
+          setExtra={setExtra}
+          operatingHours={form.operating_hours}
+          setOperatingHours={(v) => setForm({ ...form, operating_hours: v })}
+          address={form.address}
+          setAddress={(v) => setForm({ ...form, address: v })}
+          phone={form.phone}
+          setPhone={(v) => setForm({ ...form, phone: v })}
+        />
       )}
 
-      {/* ── Extra Fields (non-restaurant) ── */}
-      {!isRestaurant && cfg.extraFields.length > 0 && (
-        <section className="rounded-xl border bg-white p-6" style={{ borderColor: cfg.color + '40' }}>
-          <h2 className="mb-4 text-lg font-semibold" style={{ color: cfg.color }}>{cfg.icon} {form.category === 'wellness' ? 'Wellness Details' : form.category === 'activities' ? 'Activity Details' : 'Article Details'}</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {cfg.extraFields.map((field) => (
-              <div key={field.key} className={field.type === 'boolean' ? '' : 'sm:col-span-1'}>
-                {field.type === 'text' && (<><label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label><input type="text" value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls} placeholder={field.placeholder} /></>)}
-                {field.type === 'number' && (<><label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label><input type="number" value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls} placeholder={field.placeholder} /></>)}
-                {field.type === 'select' && (<><label className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label><select value={(form.extra[field.key] as string) ?? ''} onChange={(e) => setExtra(field.key, e.target.value)} className={inputCls}><option value="">— Select —</option>{field.options?.map((opt) => <option key={opt} value={opt}>{opt}</option>)}</select></>)}
-                {field.type === 'boolean' && (<label className="flex items-center gap-3 cursor-pointer py-2"><input type="checkbox" checked={!!form.extra[field.key]} onChange={(e) => setExtra(field.key, e.target.checked)} className="h-5 w-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500" /><span className="text-sm font-medium text-gray-700">{field.label}</span></label>)}
-              </div>
-            ))}
-          </div>
-        </section>
+      {/* ── Tips & Trend-specific sections ── */}
+      {isTips && (
+        <TipsFormFields
+          extra={form.extra}
+          setExtra={setExtra}
+        />
       )}
 
       {/* ── Tags & Notes ── */}

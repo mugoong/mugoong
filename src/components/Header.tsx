@@ -202,9 +202,11 @@ export default function Header() {
                   )}
                 </div>
               ) : (
-                <Link href="/login" className="whitespace-nowrap rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black">
-                  Get Started
-                </Link>
+                <div className="flex items-center gap-1">
+                  <Link href="/login" className="whitespace-nowrap rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black">
+                    Sign In
+                  </Link>
+                </div>
               )}
             </div>
           </div>
@@ -302,9 +304,11 @@ export default function Header() {
                   </div>
                 </div>
               ) : (
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block w-full rounded-xl bg-gray-900 py-2.5 text-center text-sm font-semibold text-white hover:bg-black">
-                  Get Started
-                </Link>
+                <div className="flex gap-2">
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1 rounded-xl bg-gray-900 py-2.5 text-center text-sm font-semibold text-white hover:bg-black">
+                    Sign In / Sign Up
+                  </Link>
+                </div>
               )}
             </div>
 

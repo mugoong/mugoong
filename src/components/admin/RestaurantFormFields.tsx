@@ -1,8 +1,60 @@
 'use client';
 
+import { useState } from 'react';
 import type { MenuItemJson, ExternalReview } from '@/lib/supabase/types';
 
 const inputCls = 'w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100';
+
+const LANGS = [
+  { code: 'ko', flag: '🇰🇷', label: 'Korean' },
+  { code: 'de', flag: '🇩🇪', label: 'German' },
+  { code: 'es', flag: '🇪🇸', label: 'Spanish' },
+  { code: 'fr', flag: '🇫🇷', label: 'French' },
+  { code: 'ja', flag: '🇯🇵', label: 'Japanese' },
+  { code: 'zh', flag: '🇨🇳', label: 'Chinese' },
+] as const;
+
+function MenuItemTranslations({ item, onUpdate }: { item: MenuItemJson; onUpdate: (field: string, value: any) => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-1.5">
+      <button type="button" onClick={() => setOpen(!open)} className="text-xs text-blue-500 hover:text-blue-700">
+        🌐 Translations {open ? '▲' : '▼'}
+      </button>
+      {open && (
+        <div className="mt-2 rounded-lg border border-blue-100 bg-blue-50/40 p-2 space-y-1.5">
+          {LANGS.map(({ code, flag, label }) => (
+            <div key={code} className="grid grid-cols-[90px_1fr_1fr] items-center gap-1.5">
+              <span className="text-xs text-gray-500">{flag} {label}</span>
+              <input
+                type="text"
+                value={(item.name_translations as any)?.[code] ?? ''}
+                onChange={e => {
+                  const t = { ...(item.name_translations ?? {}), [code]: e.target.value };
+                  if (!e.target.value) delete (t as any)[code];
+                  onUpdate('name_translations', Object.keys(t).length ? t : undefined);
+                }}
+                className="rounded border border-gray-200 px-2 py-1 text-xs outline-none"
+                placeholder={`Name in ${label}`}
+              />
+              <input
+                type="text"
+                value={(item.description_translations as any)?.[code] ?? ''}
+                onChange={e => {
+                  const t = { ...(item.description_translations ?? {}), [code]: e.target.value };
+                  if (!e.target.value) delete (t as any)[code];
+                  onUpdate('description_translations', Object.keys(t).length ? t : undefined);
+                }}
+                className="rounded border border-gray-200 px-2 py-1 text-xs outline-none"
+                placeholder={`Desc in ${label}`}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 type Extra = Record<string, any>;
 
@@ -30,10 +82,10 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
   allItems: MenuItemJson[]; setAllItems: (items: MenuItemJson[]) => void;
 }) {
   const add = () => {
-    if (items.length >= 5) return;
+    if (items.length >= 10) return;
     setAllItems([...allItems, { category: cat as any, name: '', price: 0, description: '' }]);
   };
-  const update = (idx: number, field: string, value: string | number) => {
+  const update = (idx: number, field: string, value: string | number | boolean) => {
     const globalIdx = allItems.findIndex((item, i) => {
       const matching = allItems.slice(0, i + 1).filter(x => (x.category || 'main') === cat);
       return matching.length === idx + 1;
@@ -55,8 +107,8 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-gray-700">{emoji} {title} ({items.length}/5)</h4>
-        {items.length < 5 && (
+        <h4 className="text-sm font-semibold text-gray-700">{emoji} {title} ({items.length}/10)</h4>
+        {items.length < 10 && (
           <button type="button" onClick={add} className="text-xs text-primary-600 hover:underline">+ Add</button>
         )}
       </div>
@@ -64,13 +116,30 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
         <div key={i} className="mb-3 rounded-xl border border-gray-100 bg-white p-3">
           <div className="mb-2 flex items-center gap-2">
             <input type="text" value={item.name} onChange={e => update(i, 'name', e.target.value)} placeholder="Dish name" className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
-            <input type="number" value={item.price} onChange={e => update(i, 'price', Number(e.target.value))} placeholder="₩" className="w-24 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
+            <input
+              type="number"
+              value={item.price || 0}
+              onChange={e => update(i, 'price', Number(e.target.value))}
+              placeholder="₩"
+              disabled={!!item.price_variable}
+              className="w-20 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none disabled:bg-gray-50 disabled:text-gray-400"
+            />
+            <label className="flex items-center gap-1 whitespace-nowrap text-xs text-gray-500 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!!item.price_variable}
+                onChange={e => { update(i, 'price_variable', e.target.checked); if (e.target.checked) update(i, 'price', 0); }}
+                className="rounded"
+              />
+              변동
+            </label>
             <button type="button" onClick={() => remove(i)} className="text-red-400 hover:text-red-600 text-lg">✕</button>
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
             <input type="text" value={item.description || ''} onChange={e => update(i, 'description', e.target.value)} placeholder="Description (optional)" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
             <input type="text" value={item.image_url || ''} onChange={e => update(i, 'image_url', e.target.value)} placeholder="🖼️ Image URL (optional)" className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none" />
           </div>
+          <MenuItemTranslations item={item} onUpdate={(field, value) => update(i, field, value as any)} />
         </div>
       ))}
       {items.length === 0 && <p className="text-xs text-gray-400 mb-2">No items yet.</p>}
@@ -119,18 +188,6 @@ export default function RestaurantFormFields({ menuItems, setMenuItems, extra, s
 
   return (
     <>
-      {/* ── Booking Deposit ── */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">💰 Booking Deposit</h2>
-        <p className="mb-3 text-xs text-gray-500">This is the deposit amount charged when a customer books this restaurant. The remaining balance is paid at the restaurant.</p>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Deposit Amount (₩) *</label>
-            <input type="number" value={extra.booking_deposit || 0} onChange={e => setExtra('booking_deposit', Number(e.target.value))} min="0" className={inputCls} placeholder="e.g., 30000" />
-          </div>
-        </div>
-      </section>
-
       {/* ── Structured Menu ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="mb-4 text-lg font-semibold text-gray-900">🍽️ Menu</h2>
@@ -211,12 +268,12 @@ export default function RestaurantFormFields({ menuItems, setMenuItems, extra, s
 
       {/* ── Reservation Notices ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <ArraySection title="Reservation Info & Notices" emoji="📋" items={extra.reservation_notices || []} max={5} onChange={v => setExtra('reservation_notices', v)} />
+        <ArraySection title="Reservation Info & Notices" emoji="📋" items={extra.reservation_notices || []} max={10} onChange={v => setExtra('reservation_notices', v)} />
       </section>
 
       {/* ── Cancellation & Refund Policy ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <ArraySection title="Cancellation & Refund Policy" emoji="🔄" items={extra.cancellation_policy || []} max={5} onChange={v => setExtra('cancellation_policy', v)} />
+        <ArraySection title="Cancellation & Refund Policy" emoji="🔄" items={extra.cancellation_policy || []} max={10} onChange={v => setExtra('cancellation_policy', v)} />
       </section>
 
       {/* ── Important Notes ── */}

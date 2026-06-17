@@ -27,8 +27,14 @@ export interface Listing {
   subcategory: string;
   city: City;
   title: string;
+  title_translations?: Record<string, string>;
+  price_display_type?: 'from' | 'deposit' | 'reserve';
+  booking_deposit?: number;
+  reserve_fee?: number;
   description: string;
+  description_translations?: Record<string, string>;
   content: string;
+  content_translations?: Record<string, string>;
   image: string;
   price: number;
   currency: string;

@@ -145,6 +145,291 @@ const FC_KNOW = ['Allow 20–30 minutes for fresh frying', 'Delivery available v
 const BA_KNOW = ['ID verification required (21+)', 'Large groups (8+) require prior reservation'];
 const VG_KNOW = ['Temple food contains no garlic or onion — confirm preferences', 'All ingredients are seasonal and locally sourced'];
 const HL_KNOW = ['KMF halal-certified kitchen — no cross-contamination', 'Prayer direction indicator available on request'];
+const SM_KNOW = ['Bring cash — most street stalls don\'t accept cards', 'Peak hours 12:00–14:00 and 18:00–21:00 can get crowded'];
+const CD_KNOW = ['Most cafés have a 2-hour seating limit on weekends', 'Bingsu is seasonal — available May–September'];
+const FD_KNOW = ['Smart casual or formal attire required', 'Tasting menu reservations require a deposit'];
+const SF_KNOW = ['Freshness is best morning to early afternoon — arrive early', 'Whole fish is served bone-in — ask staff to de-bone on request'];
+const QB_KNOW = ['Most quick-bite spots don\'t take reservations — queue expected', 'Meals typically served in under 10 minutes'];
+
+const MSM = (p = 8000): MenuItemJson[] => [
+  { category: 'main', name: 'Tteokbokki (Rice Cake)', price: p, description: 'Spicy chewy rice cakes in gochujang sauce' },
+  { category: 'main', name: 'Bindaetteok (Mung Bean Pancake)', price: 6000, description: 'Crispy street-food classic' },
+  { category: 'main', name: 'Odeng Skewer (5pc)', price: 3000, description: 'Fish cake on skewers in warm broth' },
+  { category: 'drink', name: 'Makgeolli Cup', price: 2000, description: 'Plastic cup rice wine — street-market style' },
+];
+const MCD = (p = 9000): MenuItemJson[] => [
+  { category: 'main', name: 'Signature Coffee', price: p, description: 'Single-origin espresso or pour-over' },
+  { category: 'main', name: 'Bingsu (Shaved Ice)', price: 13000, description: 'Korean shaved ice with fresh toppings' },
+  { category: 'main', name: 'Tteok (Korean Rice Cake) Set', price: 8000, description: '4 assorted seasonal rice cakes' },
+  { category: 'side', name: 'Garlic Bread Toast', price: 6000, description: 'Korean-style thick-cut garlic toast' },
+];
+const MFD = (p = 90000): MenuItemJson[] => [
+  { category: 'main', name: "Chef's Tasting Menu (7 course)", price: p, description: 'Seasonal Korean fine dining — paired sauces & broth' },
+  { category: 'main', name: 'À la Carte Main Course', price: 45000, description: 'Signature meat or seafood, plated presentation' },
+  { category: 'side', name: 'Amuse-Bouche', price: 0, description: 'Complimentary — house specialty' },
+  { category: 'drink', name: 'Wine Pairing (per glass)', price: 22000, description: 'Sommelier-selected Korean and international wines' },
+];
+const MSF = (p = 30000): MenuItemJson[] => [
+  { category: 'main', name: 'Haemultang (Seafood Hot Pot)', price: p, description: 'Spicy stew with clams, squid, shrimp & vegetables' },
+  { category: 'main', name: 'Ganjang Gejang (Soy-Cured Crab)', price: 28000, description: '"Rice thief" — raw blue crab marinated in soy' },
+  { category: 'main', name: 'Grilled Hairtail Fish', price: 22000, description: 'Whole crispy-skinned hairtail, Korea\'s coastal classic' },
+  { category: 'drink', name: 'Soju (360ml)', price: 5000, description: 'Classic pairing with seafood in Korea' },
+];
+const MQB = (p = 6000): MenuItemJson[] => [
+  { category: 'main', name: 'Gimbap Roll', price: p, description: 'Seaweed rice roll — tuna, kimchi, or classic' },
+  { category: 'main', name: 'Kimbap Set Meal', price: 9000, description: 'Gimbap + ramyeon or soup' },
+  { category: 'main', name: 'Soondae (Blood Sausage)', price: 5000, description: 'Korean glass noodle sausage with dipping sauce' },
+  { category: 'side', name: 'Japchae (Glass Noodles)', price: 4000, description: 'Stir-fried sweet potato noodles' },
+];
+
+/* ─── Small photo helper (200px staff/profile images) ──────────── */
+const ps = (id: string) => `https://images.unsplash.com/photo-${id}?w=200&q=80`;
+
+/* ─── Staff pools ─────────────────────────────────────────────────── */
+const SDOC = [
+  { name: 'Dr. Kim Jiyeon', title: 'Chief Dermatologist · Board-certified, 15 yrs exp.', photo: ps('1612349317150-e413f6a5b16d'), bio: 'Specialises in laser treatments and anti-aging. Published researcher in Korean Dermatology Journal.' },
+  { name: 'Dr. Park Seunghyun', title: 'Dermatologist · Skin Microbiome Specialist', photo: ps('1560066984-138daaa70c8f'), bio: 'Expert in acne and pigmentation treatments. 10 years of clinical experience.' },
+  { name: 'Dr. Choi Hyejin', title: 'Aesthetic Dermatologist · Laser & Lifting Expert', photo: ps('1598440947619-2c35fc9aa908'), bio: 'Trained at Seoul National University Hospital. Specialises in V-line and rejuvenation procedures.' },
+  { name: 'Dr. Lee Sooyoung', title: 'Dermatologist · Anti-Aging Specialist', photo: ps('1519494026892-80bbd2d6fd0d'), bio: 'Overseas-trained specialist. Expert in fillers, Botox, and non-invasive skin lifting.' },
+];
+const SHAIR = [
+  { name: 'Jisoo Kwon', title: 'Head Designer · K-Pop Colour Specialist', photo: ps('1522337360788-8b13dee7a37e'), bio: 'Trained in Seoul and Paris. Specialises in bleach and creative colour techniques.' },
+  { name: 'Mirae Yoon', title: 'Senior Designer · Balayage & Ombré Expert', photo: ps('1540555700478-4be289fbecef'), bio: 'Balayage and ombré specialist with 8 years at top Seoul salons.' },
+  { name: 'Sora Han', title: 'Designer · Perm & Texture Specialist', photo: ps('1545579133-99bb5ad189be'), bio: 'Master of Korean digital perms and natural waves. Brings out texture beautifully.' },
+  { name: 'Minjun Lee', title: 'Designer · Cut & Style Artist', photo: ps('1544161515-4ab6ce6db874'), bio: 'Precision cuts and editorial styling. Works with models and content creators.' },
+];
+
+/* ─── Wellness service menu pools ────────────────────────────────── */
+const WTREAT = (): MenuItemJson[] => [
+  { name: 'Hydrafacial Premium', price: 180000, description: 'Deep cleanse + hydration + LED (60 min)' },
+  { name: 'IPL Photofacial', price: 220000, description: 'Light therapy for pigmentation & redness (45 min)' },
+  { name: 'Micro-needling', price: 280000, description: 'Collagen induction therapy (60 min)' },
+  { name: 'Laser Toning', price: 150000, description: 'Brightening & pore-tightening laser (30 min)' },
+  { name: 'PRP Skin Rejuvenation', price: 350000, description: 'Platelet-rich plasma facial (90 min)' },
+];
+const WHAIR = (): MenuItemJson[] => [
+  { name: 'Haircut & Blow-dry', price: 60000, description: 'Shampoo + precision cut + style (60 min)' },
+  { name: 'Full Colour (roots to tips)', price: 120000, description: 'Single process + care treatment (90 min)' },
+  { name: 'Balayage / Ombré', price: 180000, description: 'Hand-painted highlights, natural gradient (3+ hrs)' },
+  { name: 'Korean Digital Perm', price: 150000, description: 'Volume and wave without damage (3 hrs)' },
+  { name: 'Protein Treatment', price: 80000, description: 'Strengthen & restore shine (45 min)' },
+];
+const WMASSAGE = (): MenuItemJson[] => [
+  { name: 'Full Body Massage (60 min)', price: 55000, description: 'Relaxing full-body session using aromatherapy oils' },
+  { name: 'Deep Tissue (90 min)', price: 80000, description: 'Targeted muscle tension release, firm pressure' },
+  { name: 'Hot Stone Therapy (75 min)', price: 70000, description: 'Volcanic basalt stones + Swedish technique' },
+  { name: 'Foot & Leg Reflexology (45 min)', price: 35000, description: 'Pressure-point therapy for tired legs' },
+  { name: 'Couples Room (90 min)', price: 130000, description: 'Side-by-side massage in private room (per couple)' },
+];
+const WSAUNA = (): MenuItemJson[] => [
+  { name: 'Sikhye (Sweet Rice Drink)', price: 3000, description: 'Classic post-sauna digestive drink' },
+  { name: 'Ramen Set', price: 5000, description: 'Instant noodle — jjimjilbang staple' },
+  { name: 'Snack Set', price: 4000, description: 'Eggs + sikhye + crackers' },
+  { name: 'Body Scrub (Italy Towel)', price: 20000, description: '45-min full body exfoliation service' },
+];
+const SAUNA_FACILITIES_ALL = [
+  'Dry Sauna (80°C)', 'Steam Room (45°C)', 'Jade Room', 'Salt Room', 'Pine Wood Sauna',
+  'Cold Plunge Pool', 'Outdoor Jacuzzi', 'Relaxation Lounge', 'TV Sleeping Zone',
+  'Food Court', 'Fitness Area', 'Hanji Sleeping Room',
+];
+const SAUNA_PRICES = [12000, 15000, 18000, 20000, 25000, 28000];
+
+/* ─── Activity program menus ─────────────────────────────────────── */
+const ALOCALEXP = (): MenuItemJson[] => [
+  { name: 'Standard Tour (2.5 hrs)', price: 45000, description: 'Guided walk + cultural storytelling + photo stops' },
+  { name: 'Premium Tour (4 hrs)', price: 70000, description: 'Adds hanbok rental + traditional workshop' },
+  { name: 'Private Group (up to 4)', price: 120000, description: 'Exclusive guide, fully customisable route' },
+];
+const ACOOKING = (): MenuItemJson[] => [
+  { name: 'Standard Class (3 hrs)', price: 55000, description: 'Market intro + cook 3 dishes + eat together' },
+  { name: 'Premium Class (4.5 hrs)', price: 85000, description: 'Adds makgeolli brewing + tteok dessert' },
+  { name: 'Private Class (up to 4 pax)', price: 180000, description: 'Dedicated chef + custom menu selection' },
+];
+const ACULTURAL = (): MenuItemJson[] => [
+  { name: 'Half-Day Tour (3 hrs)', price: 50000, description: 'Guided heritage walk with expert commentary' },
+  { name: 'Full-Day Tour (6 hrs)', price: 85000, description: 'Adds lunch + hands-on traditional craft activity' },
+  { name: 'Private Tour', price: 150000, description: 'Historian guide, no group, private transport' },
+];
+const ASPORTS = (): MenuItemJson[] => [
+  { name: 'Beginner Session (2 hrs)', price: 65000, description: 'Equipment + safety briefing + instruction' },
+  { name: 'Intermediate Session (3 hrs)', price: 85000, description: 'Skills training + guided experience' },
+  { name: 'Full-Day Adventure', price: 130000, description: 'Complete day program with lunch included' },
+];
+
+/* ─── Activity detail pools ──────────────────────────────────────── */
+const AGE_TIERS = [
+  [{ label: 'Adult (13+)', price: 45000 }, { label: 'Youth (8–12)', price: 30000 }, { label: 'Child (4–7)', price: 20000 }, { label: 'Infant (0–3)', price: 0 }],
+  [{ label: 'Adult (13+)', price: 55000 }, { label: 'Child (4–12)', price: 35000 }, { label: 'Infant (0–3)', price: 0 }],
+  [{ label: 'Adult (13+)', price: 65000 }, { label: 'Youth (8–12)', price: 45000 }, { label: 'Child (4–7)', price: 30000 }],
+  [{ label: 'Adult (15+)', price: 85000 }, { label: 'Teen (10–14)', price: 65000 }, { label: 'Child (5–9)', price: 45000 }],
+];
+const MEETING_POINTS = [
+  'Exit 1, Gyeongbokgung Station (Line 3)', 'Exit 5, Insadong Station (Line 1)',
+  'Exit 3, Haeundae Station (Line 2)', 'Tourist Info Center, Jeju Airport Arrivals',
+  'Gamcheon Village Main Entrance', 'Seomyeon Station Exit 7 (Line 1)',
+];
+const WHAT_INCLUDED = [
+  ['English-speaking guide', 'Admission tickets', 'Traditional snack set', 'Rain poncho'],
+  ['Professional guide', 'All equipment & materials', 'Insurance coverage', 'Photo souvenir'],
+  ['Local expert guide', 'Round-trip transport from meeting point', 'Bottled water', 'Certificate of completion'],
+  ['Bilingual guide', 'Entrance fees', 'Traditional lunch', 'Cultural activity props'],
+];
+const WHAT_EXCLUDED = [
+  ['Personal travel insurance', 'Hotel pick-up', 'Tips (discretionary)'],
+  ['Personal expenses', 'Extra food & beverages', 'Parking fees'],
+  ['Gratuities', 'Optional souvenirs', 'Medical expenses'],
+];
+const WHAT_BRING = [
+  ['Comfortable walking shoes', 'Sunscreen & hat', 'Valid ID', 'Camera'],
+  ['Weather-appropriate clothing', 'Comfortable footwear', 'Small backpack', 'Snacks (optional)'],
+  ['Sunglasses', 'Cash for personal purchases', 'Water bottle', 'Phone fully charged'],
+];
+
+/* ─── Tips content pools ─────────────────────────────────────────── */
+const TIPS_TRANSPORT = [
+  { title: 'Get a T-money Card', content: 'Buy a T-money card at any convenience store (GS25, CU, 7-Eleven) for ₩2,500 + deposit. Works on all metro, buses, and even some taxis in Korea.' },
+  { title: 'Download Naver Map', content: 'Google Maps often lacks real-time Korean transit data. Naver Map is the local standard — tap the blue circle for your location and search in English.' },
+  { title: 'Avoid Peak Hours', content: 'Rush hour is 7:30–9:00 and 17:30–19:30. If possible, travel between 10:00–16:00 for a much more comfortable ride.' },
+  { title: 'Free Bus-Metro Transfers', content: 'Within Seoul, you get free transfers between metro and bus if you tap out of the metro and tap onto a bus within 30 minutes.' },
+];
+const TIPS_TRAVEL = [
+  { title: 'Best Time to Visit', content: 'Spring (April–May) for cherry blossoms and autumn (October–November) for foliage are peak seasons. Book accommodation well in advance.' },
+  { title: 'Use Naver Map, Not Google', content: 'Locals use Naver Map for accurate transit directions and up-to-date business hours. Download it before your trip.' },
+  { title: 'Eat Like a Local', content: 'Eating at local restaurants away from tourist streets saves 30–40%. Look for gimbap shops and bunsik eateries for great meals under ₩10,000.' },
+  { title: 'Must-Have App: KakaoTaxi', content: 'KakaoTaxi is the essential ride app. Set pickup via map even without Korean — drivers accept all app bookings.' },
+];
+const TIPS_FOOD = [
+  { title: 'Table Manners', content: 'Wait for the eldest at the table to eat first. Do not stick chopsticks upright in rice (a funeral custom). Refilling others\' drinks before your own is considered polite.' },
+  { title: 'Free Side Dishes', content: 'Banchan (side dishes) are always complimentary and freely refillable — just ask the server. You are only charged for the main dishes you order.' },
+  { title: 'Best Meal Timing', content: 'Koreans typically eat lunch 12:00–13:00 and dinner from 18:00–19:30. Arriving just before peak avoids queues at popular spots.' },
+  { title: 'Ordering Without Korean', content: 'Most restaurants have picture menus or food models outside. Point-and-order works everywhere. Many places now have QR code menus in English.' },
+];
+const TIPS_TREND = [
+  { title: 'Why It\'s Trending', content: 'Social media has put a spotlight on this experience — expect queues at weekends. Booking ahead online is strongly recommended.' },
+  { title: 'Best Photo Spots', content: 'Golden hour (1 hour before sunset) gives the best light. Many Instagram-worthy corners are less crowded early morning on weekdays.' },
+  { title: 'Local vs Tourist Price', content: 'Walk 5–10 minutes from the main tourist street to find authentic experiences at local prices — often 30–40% cheaper.' },
+  { title: 'Dress Code', content: 'Smart casual is appreciated at most venues. Avoid sportswear at traditional cultural spaces. Some temples require covered shoulders.' },
+];
+const TIPS_SMOKE = [
+  { title: 'Strict Fines', content: 'Korea strictly enforces no-smoking zones. Fines start from ₩50,000 and can reach ₩100,000 near tourist and cultural heritage sites.' },
+  { title: 'Designated Zones Only', content: 'Only smoke in clearly marked designated areas (지정 흡연구역). Look for the orange cigarette sign on grey bollards or designated booths.' },
+  { title: 'Find Zones on Naver Map', content: 'Search "흡연구역" (heub-yeon-gu-yeok) in Naver Map to find the nearest designated smoking zone near your location.' },
+  { title: 'Near Heritage Sites', content: 'Smoking within 10m of UNESCO World Heritage Sites, palaces, and temples is always prohibited and heavily fined.' },
+];
+
+/* ─── Wellness notes builder ─────────────────────────────────────── */
+function wn(sub: string, seed: number): string {
+  const bookingType = sub === 'skin-clinic' ? 'free' : sub === 'hair-salon' ? 'deposit' : 'full_payment';
+  const genders = ['All welcome', 'Women only', 'Mixed (separate floors)'];
+  const breakTimes = ['12:00–13:00', '13:00–14:00', '14:00–15:00'];
+  const holidaysList = ['Every Sunday', 'Every Monday', '1st & 3rd Sunday'];
+  const s = seed % 3;
+  const extra: Record<string, any> = {
+    booking_type: bookingType,
+    english_staff: s !== 1,
+    gender_policy: genders[s],
+    break_time: breakTimes[s],
+    holidays: holidaysList[s],
+    naver_map_url: '', kakao_map_url: '', google_map_url: '',
+    reservation_notices: [
+      'Please arrive 10 minutes before your appointment.',
+      'Consultation is included — no prior skin analysis required.',
+    ],
+    cancellation_policy: C48,
+    important_notes: [
+      'Sunscreen required after laser or light treatments.',
+      'Please bring a list of any current medications.',
+    ],
+    external_reviews: [RP[seed % RP.length], RP[(seed + 2) % RP.length]],
+  };
+  if (sub === 'skin-clinic') {
+    extra.staff = [SDOC[seed % SDOC.length], SDOC[(seed + 1) % SDOC.length]];
+  } else if (sub === 'hair-salon') {
+    extra.staff = [SHAIR[seed % SHAIR.length], SHAIR[(seed + 1) % SHAIR.length]];
+    extra.booking_deposit = [20000, 30000, 40000][s];
+    extra.reservation_notices = ['Deposit required to confirm your appointment.', 'Walk-ins subject to availability — booking recommended.'];
+  } else if (sub === 'sauna') {
+    extra.adult_price = SAUNA_PRICES[seed % SAUNA_PRICES.length];
+    extra.child_price = Math.round(extra.adult_price * 0.6);
+    extra.facilities = SAUNA_FACILITIES_ALL.filter((_, i) => (i + seed) % 3 !== 0);
+    extra.reservation_notices = ['Admission sold at the counter — no advance booking required.', 'Towel and gown rental available at the entrance.'];
+    extra.important_notes = ['No tattoos above 10cm in most facilities — check the notice board.', 'Children under 12 must be accompanied by an adult at all times.'];
+  } else {
+    extra.reservation_notices = ['Book in advance — sessions fill up fast, especially weekends.', 'Please arrive 5 minutes early to change and prepare.'];
+    extra.important_notes = ['Shower before and after your massage session.', 'Arrive well-hydrated for best results.'];
+  }
+  return JSON.stringify({ __plain: '', __extra: extra });
+}
+
+/* ─── Activities notes builder ──────────────────────────────────── */
+function an(sub: string, seed: number): string {
+  const durations = ['2.5 hours', '3 hours', '4 hours', '3–4 hours', '5–6 hours', 'Full day (7 hrs)'];
+  const groupSizes = ['Max 8', 'Max 10', 'Max 12', 'Max 6 (private feel)', 'Max 15'];
+  const difficulties = ['Easy', 'Easy to Moderate', 'Moderate', 'Moderate — some walking'];
+  const ageReqs = ['4+', '5+', '7+', '10+', 'No age limit'];
+  const startTimes = ['09:00', '09:30', '10:00', '10:30', '14:00'];
+  const endTimes = ['12:00', '13:00', '13:30', '17:30', '18:00'];
+  const meetingPoint = MEETING_POINTS[seed % MEETING_POINTS.length];
+  return JSON.stringify({ __plain: '', __extra: {
+    duration: durations[seed % durations.length],
+    group_size: groupSizes[seed % groupSizes.length],
+    difficulty: difficulties[seed % difficulties.length],
+    age_requirement: ageReqs[seed % ageReqs.length],
+    start_time: startTimes[seed % startTimes.length],
+    end_time: endTimes[seed % endTimes.length],
+    meeting_point: meetingPoint,
+    end_point: seed % 2 === 0 ? 'Same as meeting point' : 'City centre transport hub',
+    english_guide: seed % 4 !== 3,
+    pickup_available: seed % 3 === 0,
+    dropoff_available: seed % 3 === 0,
+    age_pricing: AGE_TIERS[seed % AGE_TIERS.length],
+    included: WHAT_INCLUDED[seed % WHAT_INCLUDED.length],
+    excluded: WHAT_EXCLUDED[seed % WHAT_EXCLUDED.length],
+    what_to_bring: WHAT_BRING[seed % WHAT_BRING.length],
+    naver_map_url: '', kakao_map_url: '',
+    google_map_url: `https://maps.google.com/?q=${encodeURIComponent(meetingPoint)}`,
+    reservation_notices: [
+      'Booking closes 24 hours before the activity start time.',
+      'Activities run in light rain — check the weather and dress accordingly.',
+    ],
+    cancellation_policy: C48,
+    important_notes: [
+      'The guide will contact you with final meeting point confirmation 24h before.',
+      'Group size is limited — reserve early to secure your spot.',
+    ],
+    external_reviews: [RP[seed % RP.length], RP[(seed + 3) % RP.length]],
+  }});
+}
+
+/* ─── Tips notes builder ─────────────────────────────────────────── */
+function tn(sub: string, seed: number): string {
+  const pool = sub === 'public-transportation' ? TIPS_TRANSPORT
+    : sub === 'smoking-spots' ? TIPS_SMOKE
+    : sub === 'trend-now' ? TIPS_TREND
+    : sub === 'travel-tips' ? TIPS_TRAVEL
+    : TIPS_FOOD;
+  const s = seed % pool.length;
+  return JSON.stringify({ __plain: '', __extra: {
+    tips: [pool[s], pool[(s + 1) % pool.length], pool[(s + 2) % pool.length]],
+    map_description: '', naver_map_url: '', kakao_map_url: '', google_map_url: '',
+    youtube_url: '', instagram_url: '', source_url: '', last_verified: '2026-05-01',
+  }});
+}
+
+/* ─── Menu getter per subcategory ────────────────────────────────── */
+function wm(sub: string): MenuItemJson[] {
+  if (sub === 'skin-clinic') return WTREAT();
+  if (sub === 'hair-salon') return WHAIR();
+  if (sub === 'massage') return WMASSAGE();
+  if (sub === 'sauna') return WSAUNA();
+  return [];
+}
+function am(sub: string): MenuItemJson[] {
+  if (sub === 'cooking-classes') return ACOOKING();
+  if (sub === 'traditional-cultural-tours') return ACULTURAL();
+  if (sub === 'sports') return ASPORTS();
+  return ALOCALEXP();
+}
 
 /* ─── External review pool ───────────────────────────────────────── */
 const RP = [
@@ -161,14 +446,15 @@ const RP = [
 ];
 const rv = (n: number) => [RP[n % RP.length]];
 
-export const sampleListings: Listing[] = [
+const rawSampleListings: Listing[] = [
 
   /* ════════════════════════════════════════════════════════════════
      🍽️  RESTAURANTS — full detail listings (existing)
   ════════════════════════════════════════════════════════════════ */
   {
-    id: '1', slug: 'gwangjang-market-food-tour', category: 'restaurants', subcategory: 'korean-food',
+    id: '1', slug: 'gwangjang-market-food-tour', category: 'restaurants', subcategory: 'classic-korean',
     city: 'seoul', title: 'Gwangjang Market Food Tour',
+    title_translations: { ko: '광장시장 푸드 투어', ja: '広蔵市場フードツアー', zh: '广藏市场美食之旅', de: 'Gwangjang-Markt Foodtour', es: 'Tour gastronómico por el Mercado Gwangjang', fr: 'Visite gastronomique du marché Gwangjang' },
     description: 'Experience the oldest traditional market in Seoul. Taste bindaetteok, mayak gimbap, and more authentic Korean street food from vendors who have been serving for decades.',
     content: 'Gwangjang Market has been Seoul\'s beating culinary heart since 1905.',
     image: I('1590301157890-4810ed352733'),
@@ -189,6 +475,7 @@ export const sampleListings: Listing[] = [
   {
     id: '2', slug: 'gangnam-korean-bbq', category: 'restaurants', subcategory: 'korean-bbq',
     city: 'seoul', title: 'Premium Hanwoo BBQ in Gangnam',
+    title_translations: { ko: '강남 프리미엄 한우 BBQ', ja: '江南プレミアム韓牛バーベキュー', zh: '江南顶级韩牛烤肉', de: 'Premium Hanwoo BBQ in Gangnam', es: 'BBQ Premium Hanwoo en Gangnam', fr: 'BBQ Premium Hanwoo à Gangnam' },
     description: 'Savor the finest Korean beef at a top-rated Gangnam BBQ restaurant. Premium 1++ grade Hanwoo with expert grilling service.',
     content: 'Not your average Korean BBQ — 1++ grade Hanwoo in the heart of Gangnam.',
     image: I('1544025162-d76694265947'),
@@ -207,6 +494,7 @@ export const sampleListings: Listing[] = [
   {
     id: '5', slug: 'gangnam-skin-clinic', category: 'wellness', subcategory: 'skin-clinic',
     city: 'seoul', title: 'Gangnam Premium Dermatology Clinic',
+    title_translations: { ko: '강남 프리미엄 피부과 클리닉', ja: '江南プレミアム皮膚科クリニック', zh: '江南顶级皮肤科诊所', de: 'Premium Dermatologie-Klinik Gangnam', es: 'Clínica Dermatológica Premium Gangnam', fr: 'Clinique Dermatologique Premium Gangnam' },
     description: 'World-class skin treatments at Korea\'s most renowned dermatology clinic. Consultation included with English-speaking dermatologists.',
     content: 'Korea\'s global capital of skincare. AI-powered skin analysis + board-certified dermatologist.',
     image: I('1629909613654-28e377c37b09'),
@@ -218,12 +506,22 @@ export const sampleListings: Listing[] = [
       { name: 'Glass Skin Package', price: 250000, description: 'Micro-needling + Growth Factor (90 min)' },
       { name: 'Hydrafacial Premium', price: 180000, description: 'Deep cleansing + hydration (60 min)' },
     ],
-    notes: JSON.stringify({ __plain: '', __extra: { english_staff: true, gender_policy: 'All welcome', duration: '60–120 minutes' } }),
+    notes: JSON.stringify({ __plain: '', __extra: {
+      booking_type: 'free', english_staff: true, gender_policy: 'All welcome',
+      break_time: '13:00–14:00', holidays: 'Every Sunday',
+      staff: [SDOC[0], SDOC[1]],
+      naver_map_url: '', kakao_map_url: '', google_map_url: 'https://maps.google.com/?q=412+Gangnam-daero+Gangnam+Seoul',
+      reservation_notices: ['First consultation is complimentary.', 'Please arrive 10 minutes early for skin analysis.'],
+      cancellation_policy: C48,
+      important_notes: ['Avoid sun exposure 48h before laser treatments.', 'Bring a list of current medications and skincare products.'],
+      external_reviews: [RP[0], RP[4]],
+    } }),
   },
 
   {
     id: '9', slug: 'korean-cooking-class', category: 'activities', subcategory: 'cooking-classes',
     city: 'seoul', title: 'Learn to Make Kimchi & Bibimbap',
+    title_translations: { ko: '김치 & 비빔밥 만들기 클래스', ja: 'キムチ＆ビビンバ料理教室', zh: '学做泡菜和拌饭', de: 'Kimchi & Bibimbap selber machen', es: 'Aprende a hacer Kimchi y Bibimbap', fr: 'Atelier Kimchi & Bibimbap' },
     description: 'Hands-on Korean cooking class in a traditional kitchen. Learn kimchi, bibimbap, and pancakes from a local chef.',
     content: 'Led by Chef Minji with 20 years of experience.',
     image: I('1583224994076-0a5a4e3384c7'),
@@ -235,78 +533,105 @@ export const sampleListings: Listing[] = [
       { name: 'Standard Class (3 hrs)', price: 55000, description: 'Market tour + 3 dishes + meal' },
       { name: 'Premium Class (4 hrs)', price: 85000, description: 'Adds tteokbokki + makgeolli' },
     ],
-    notes: JSON.stringify({ __plain: '', __extra: { duration: '3–4 hours', group_size: 'Max 8', difficulty: 'Easy', english_guide: true } }),
+    notes: JSON.stringify({ __plain: '', __extra: {
+      duration: '3–4 hours', group_size: 'Max 8', difficulty: 'Easy',
+      age_requirement: '5+', start_time: '10:00', end_time: '14:00',
+      meeting_point: 'Exit 6, Anguk Station (Line 3) — look for the orange Mugoong flag',
+      end_point: 'Same as meeting point',
+      english_guide: true, pickup_available: false, dropoff_available: false,
+      age_pricing: [{ label: 'Adult (13+)', price: 55000 }, { label: 'Child (5–12)', price: 40000 }],
+      included: ['English-speaking chef instructor', 'All ingredients & cooking equipment', 'Recipe card to take home', 'Full meal after class'],
+      excluded: ['Personal travel insurance', 'Transport to/from venue', 'Alcoholic beverages (available to purchase)'],
+      what_to_bring: ['Comfortable clothing you don\'t mind getting dirty', 'Camera', 'Empty stomach'],
+      naver_map_url: '', kakao_map_url: '', google_map_url: 'https://maps.google.com/?q=15+Insadong-gil+Jongno+Seoul',
+      reservation_notices: ['Booking closes 24 hours before the class.', 'Please notify us of any food allergies when booking.'],
+      cancellation_policy: C48,
+      important_notes: ['Class is conducted in English — no Korean required.', 'Classes run regardless of weather — rain or shine.'],
+      external_reviews: [RP[1], RP[6]],
+    } }),
   },
 
   {
     id: '13', slug: 'seoul-metro-guide', category: 'tips-and-trend', subcategory: 'public-transportation',
     city: 'seoul', title: 'How to Use the Seoul Metro Like a Local',
+    title_translations: { ko: '현지인처럼 서울 지하철 이용하기', ja: 'ソウル地下鉄を地元民のように使う', zh: '像首尔本地人一样乘地铁', de: 'Die Seouler U-Bahn wie ein Einheimischer', es: 'Usa el metro de Seúl como un local', fr: 'Le métro de Séoul comme un habitant' },
     description: 'Everything you need to know about navigating Seoul\'s subway — T-money cards, transfers, and pro tips.',
     content: '🎫 T-money Card: Buy at any convenience store ₩2,500\n📱 Apps: Naver Map, KakaoMetro\n🚇 Rush hour: 7:30–9:00 & 17:30–19:00',
     image: I('1517154421773-0529f29ea451'),
     gallery: [I('1555993539-1732b0258235'), I('1581262208435-41726149a759'), I('1544620347-c4fd4a3d5957'), I('1559825481-12a05cc00344'), I('1565043589221-1a6fd9ae45c7'), I('1554041839-bc64b14f30a5'), I('1530521954074-e64f6810b32d')],
     price: 0, currency: 'USD', rating: 0, reviewCount: 0, tags: ['Guide', 'Essential'], featured: false,
-    address: '', phone: '', operating_hours: '', menu_items: [], notes: '',
+    address: '', phone: '', operating_hours: '', menu_items: [],
+    notes: JSON.stringify({ __plain: '', __extra: {
+      tips: [
+        { title: 'Get a T-money Card First', content: 'Buy a T-money card at any convenience store (GS25, CU, 7-Eleven) for ₩2,500 + deposit. Works on all metro lines, buses, and even some taxis across Korea.' },
+        { title: 'Use Naver Map, Not Google', content: 'Naver Map shows real-time metro delays, exact exit numbers, and underground mall connections that Google Maps misses. Download it before you arrive.' },
+        { title: 'Avoid Rush Hour', content: 'Peak hours are 7:30–9:00 and 17:30–19:30. If you can, travel between 10:00 and 16:00 for a vastly more comfortable ride with available seats.' },
+        { title: 'Free Transfers', content: 'Transfer between metro and bus for free if you tap onto the bus within 30 minutes of tapping out of the metro. This works city-wide in Seoul.' },
+      ],
+      map_description: 'Seoul Metro has 23 lines and 300+ stations. Most tourist sites are within a 10-minute walk of a station.',
+      naver_map_url: '', kakao_map_url: '', google_map_url: '',
+      youtube_url: '', instagram_url: '', source_url: '', last_verified: '2026-05-01',
+    } }),
   },
 
   /* ════════════════════════════════════════════════════════════════
      🍽️  RESTAURANTS — Korean Food  (m 0–9, sg(0))
   ════════════════════════════════════════════════════════════════ */
-  qr('r-kf-se-2','insadong-traditional-korean-feast','seoul','restaurants','korean-food',
+  qr('r-kf-se-2','insadong-traditional-korean-feast','seoul','restaurants','classic-korean',
     'Insadong Traditional Korean Feast','Sit-down traditional Korean meal steps from the cultural street. Seasonal banchan, homemade jjigae, and hand-rolled gimbap.',
     m(0),sg(0),28,4.7,145,['HOT'],false,'Insadong-gil, Jongno-gu, Seoul',
     '+82-2-724-1234','Daily 11:00–22:00',MKF(22000),
     rn('Insadong Traditional Korean Feast Seoul',0,D0,'15:00–17:00','Every Tuesday',NWI,C24,KF_KNOW,rv(0))),
 
-  qr('r-kf-se-3','myeongdong-jjigae-noodle-house','seoul','restaurants','korean-food',
+  qr('r-kf-se-3','myeongdong-jjigae-noodle-house','seoul','restaurants','classic-korean',
     'Myeongdong Jjigae & Noodle House','Famous kimchi jjigae and kalguksu in the heart of shopping paradise. Standing room at peak hours — worth the wait.',
     m(1),sg(0),18,4.6,209,['Must-Try'],false,'Myeongdong-gil, Jung-gu, Seoul',
     '+82-2-776-5678','Daily 10:30–21:30',MKF(18000),
     rn('Myeongdong Jjigae Noodle House Seoul',0,D0,'15:00–16:30','Lunar New Year & Chuseok',NWI,C24,KF_KNOW,rv(1))),
 
-  qr('r-kf-bu-1','nampo-korean-kitchen','busan','restaurants','korean-food',
+  qr('r-kf-bu-1','nampo-korean-kitchen','busan','restaurants','classic-korean',
     'Nampo Authentic Korean Kitchen','Classic Korean dishes near the BIFF Square. The sundubu jjigae and doenjang soup are legendary among locals.',
     m(2),sg(0),22,4.7,178,['HOT','Local Favorite'],false,'Nampo-dong, Jung-gu, Busan',
     '+82-51-245-2345','Daily 11:00–21:30',MKF(20000),
     rn('Nampo Authentic Korean Kitchen Busan',0,D0,'15:00–17:00','1st & 3rd Monday',NWI,C24,KF_KNOW,rv(2))),
 
-  qr('r-kf-bu-2','haeundae-grandmas-cooking','busan','restaurants','korean-food',
+  qr('r-kf-bu-2','haeundae-grandmas-cooking','busan','restaurants','classic-korean',
     'Haeundae Grandma\'s Home Cooking','Hearty homestyle Korean set meals near Haeundae Beach. Grandma-style cooking with 10+ banchan every sitting.',
     m(3),sg(0),20,4.8,134,['Traditional'],false,'Haeundae-ro, Haeundae-gu, Busan',
     '+82-51-731-6789','Daily 11:30–21:00',MKF(19000),
     rn('Haeundae Grandma Home Cooking Busan',0,D0,'','Sundays & public holidays',NWI,C24,KF_KNOW,rv(3))),
 
-  qr('r-kf-je-1','jeju-black-pork-seafood','jeju','restaurants','korean-food',
+  qr('r-kf-je-1','jeju-black-pork-seafood','jeju','restaurants','classic-korean',
     'Jeju Black Pork & Seafood Restaurant','Only-in-Jeju flavors — grilled black pork belly, fresh haenyeo-caught abalone, and seasonal galchi braised fish.',
     m(4),sg(0),38,4.8,267,['BEST','Local Specialty'],true,'Doma-ro, Jeju-si, Jeju',
     '+82-64-722-3456','Daily 10:00–22:00',MKF(28000),
     rn('Jeju Black Pork Seafood Restaurant Jeju',0,D0,'','Chuseok & Seollal',NWI,C24,KF_KNOW,rv(4))),
 
-  qr('r-kf-je-2','seogwipo-haenyeo-kitchen','jeju','restaurants','korean-food',
+  qr('r-kf-je-2','seogwipo-haenyeo-kitchen','jeju','restaurants','classic-korean',
     'Seogwipo Haenyeo Kitchen','Cooked and served by actual haenyeo (female divers). The freshest seafood possible — caught that morning.',
     m(5),sg(0),45,4.9,198,['HOT','Unique'],false,'Seogwipo-si, Jeju',
     '+82-64-762-7890','Daily 10:00–21:00',MKF(30000),
     rn('Seogwipo Haenyeo Kitchen Jeju',0,D0,'14:00–16:00','Every Wednesday',NWI,C48,KF_KNOW,rv(5))),
 
-  qr('r-kf-gy-1','gyeongju-silla-royal-cuisine','gyeongju','restaurants','korean-food',
+  qr('r-kf-gy-1','gyeongju-silla-royal-cuisine','gyeongju','restaurants','classic-korean',
     'Gyeongju Silla Royal Cuisine','Reconstructed royal court dishes from the Silla Kingdom era. A cultural and culinary experience in one.',
     m(6),sg(0),42,4.8,112,['Traditional','Cultural'],false,'Hwangnam-dong, Gyeongju',
     '+82-54-773-4567','Tue–Sun 11:00–20:00',MKF(25000),
     rn('Gyeongju Silla Royal Cuisine',0,D0,'','Closed Mondays',NRV,C48,KF_KNOW,rv(6))),
 
-  qr('r-kf-gy-2','hwangnam-traditional-table','gyeongju','restaurants','korean-food',
+  qr('r-kf-gy-2','hwangnam-traditional-table','gyeongju','restaurants','classic-korean',
     'Hwangnam Traditional Korean Table','Family-run restaurant next to the royal tumuli park. Homemade soy sauce and doenjang made in-house.',
     m(7),sg(0),25,4.6,88,['Traditional'],false,'Hwangnam-dong, Gyeongju',
     '+82-54-772-8901','Daily 11:00–20:30',MKF(18000),
     rn('Hwangnam Traditional Korean Table Gyeongju',0,D0,'15:00–17:00','Every Thursday',NWI,C24,KF_KNOW,rv(7))),
 
-  qr('r-kf-jo-1','jeonju-bibimbap-restaurant','jeonju','restaurants','korean-food',
+  qr('r-kf-jo-1','jeonju-bibimbap-restaurant','jeonju','restaurants','classic-korean',
     'Jeonju Bibimbap Masterclass Restaurant','The city that invented bibimbap. Stone pot (dolsot) version with 30 premium toppings and seasonal namul.',
     m(8),sg(0),20,4.9,445,['BEST','Must-Try'],true,'Pungnam-ro, Wansan-gu, Jeonju',
     '+82-63-284-5678','Daily 10:30–21:30',MKF(17000),
     rn('Jeonju Bibimbap Masterclass Restaurant Jeonju',0,D0,'','Closed 2nd Monday',NWI,C24,KF_KNOW,rv(8))),
 
-  qr('r-kf-jo-2','hanok-village-heritage-dining','jeonju','restaurants','korean-food',
+  qr('r-kf-jo-2','hanok-village-heritage-dining','jeonju','restaurants','classic-korean',
     'Hanok Village Korean Heritage Dining','Dine inside a restored 100-year-old hanok. The slow-cooked pork gukbap and barley rice are standouts.',
     m(9),sg(0),18,4.7,176,['Traditional'],false,'Gyo-dong, Wansan-gu, Jeonju',
     '+82-63-287-9012','Daily 11:00–21:00',MKF(16000),
@@ -435,187 +760,492 @@ export const sampleListings: Listing[] = [
     rn('Hanok Alley Crispy Wings Jeonju',0,D0,'','Every Tuesday',NWI,C24,FC_KNOW,rv(9))),
 
   /* ─── Bars  (m 30–39, sg(3)) ─── */
-  qr('r-ba-se-1','itaewon-craft-beer-district','seoul','restaurants','bars',
+  qr('r-ba-se-1','itaewon-craft-beer-district','seoul','restaurants','bars-nightlife',
     'Itaewon Craft Beer District','Seoul\'s most international bar strip. 40+ craft beers on tap, English-speaking staff, live music weekends.',
     m(30),sg(3),35,4.7,298,['International','Craft Beer'],false,'Itaewon-ro, Yongsan-gu, Seoul',
     '+82-2-794-1234','Daily 17:00–02:00',MBA(15000),
     rn('Itaewon Craft Beer District Seoul',0,D0,'','Open 365 days',BA_KNOW,C24,BA_KNOW,rv(0))),
 
-  qr('r-ba-se-2','hongdae-underground-bar','seoul','restaurants','bars',
+  qr('r-ba-se-2','hongdae-underground-bar','seoul','restaurants','bars-nightlife',
     'Hongdae Underground Bar','Basement cocktail bar with indie DJ nights. House cocktails made with Korean spirits — soju negroni is a must.',
     m(31),sg(3),30,4.6,212,['Trendy','Cocktails'],false,'Hongdae, Mapo-gu, Seoul',
     '+82-2-334-5678','Daily 18:00–03:00',MBA(14000),
     rn('Hongdae Underground Bar Seoul',0,D0,'','Open 365 days',BA_KNOW,C24,BA_KNOW,rv(1))),
 
-  qr('r-ba-bu-1','haeundae-rooftop-bar','busan','restaurants','bars',
+  qr('r-ba-bu-1','haeundae-rooftop-bar','busan','restaurants','bars-nightlife',
     'Haeundae Rooftop Bar','Panoramic rooftop bar overlooking Haeundae Beach. Signature cocktails with Jeju citrus base.',
     m(32),sg(3),40,4.8,187,['Scenic','Rooftop'],false,'Haeundae-ro, Haeundae-gu, Busan',
     '+82-51-731-2345','Daily 17:00–01:00',MBA(16000),
     rn('Haeundae Rooftop Bar Busan',0,D0,'','Open 365 days',BA_KNOW,C24,BA_KNOW,rv(2))),
 
-  qr('r-ba-bu-2','nampo-craft-brewery','busan','restaurants','bars',
+  qr('r-ba-bu-2','nampo-craft-brewery','busan','restaurants','bars-nightlife',
     'Nampo Craft Brewery','Busan\'s pioneering craft brewery. Flagship ales brewed on-site, massive industrial interior.',
     m(33),sg(3),28,4.7,156,['Craft Beer','Brewery'],false,'Nampo-dong, Jung-gu, Busan',
     '+82-51-242-6789','Daily 15:00–00:00',MBA(12000),
     rn('Nampo Craft Brewery Busan',0,D0,'','Every Monday',BA_KNOW,C24,BA_KNOW,rv(3))),
 
-  qr('r-ba-je-1','jeju-hallasan-makgeolli-bar','jeju','restaurants','bars',
+  qr('r-ba-je-1','jeju-hallasan-makgeolli-bar','jeju','restaurants','bars-nightlife',
     'Jeju Hallasan Makgeolli Bar','Traditional makgeolli bar with volcanic island versions. 20 types of local rice wine paired with pajeon.',
     m(34),sg(3),22,4.7,134,['Traditional','Local Specialty'],false,'Jeju-si, Jeju',
     '+82-64-721-3456','Daily 16:00–00:00',MBA(10000),
     rn('Jeju Hallasan Makgeolli Bar Jeju',0,D0,'','Open every day',BA_KNOW,C24,BA_KNOW,rv(4))),
 
-  qr('r-ba-je-2','seogwipo-sunset-cocktail','jeju','restaurants','bars',
+  qr('r-ba-je-2','seogwipo-sunset-cocktail','jeju','restaurants','bars-nightlife',
     'Seogwipo Sunset Cocktail Lounge','Cliffside cocktail lounge. The sunset hour sees every seat taken — arrive 30 min early.',
     m(35),sg(3),45,4.9,245,['Scenic','Cocktails'],false,'Seogwipo-si, Jeju',
     '+82-64-762-7890','Daily 15:00–23:00',MBA(18000),
     rn('Seogwipo Sunset Cocktail Lounge Jeju',0,D0,'','Open every day',BA_KNOW,C24,BA_KNOW,rv(5))),
 
-  qr('r-ba-gy-1','gyeongju-makgeolli-house','gyeongju','restaurants','bars',
+  qr('r-ba-gy-1','gyeongju-makgeolli-house','gyeongju','restaurants','bars-nightlife',
     'Gyeongju Heritage Makgeolli House','Traditional liquor bar in a restored hanok. Gyeongju bread (hwangnam ppang) + local makgeolli pairing.',
     m(36),sg(3),18,4.6,76,['Traditional'],false,'Hwangnam-dong, Gyeongju',
     '+82-54-773-4567','Daily 14:00–22:00',MBA(9000),
     rn('Gyeongju Heritage Makgeolli House Gyeongju',0,D0,'','Every Thursday',BA_KNOW,C24,BA_KNOW,rv(6))),
 
-  qr('r-ba-gy-2','bomun-night-bar','gyeongju','restaurants','bars',
+  qr('r-ba-gy-2','bomun-night-bar','gyeongju','restaurants','bars-nightlife',
     'Bomun Night Bar & Lounge','Lakeside lounge bar with live jazz on weekends. Imported wines and craft soju cocktails.',
     m(37),sg(3),35,4.7,65,['Jazz','Lakeside'],false,'Bomun-ro, Gyeongju',
     '+82-54-748-8901','Daily 17:00–00:00',MBA(14000),
     rn('Bomun Night Bar Lounge Gyeongju',0,D0,'','Every Monday',BA_KNOW,C24,BA_KNOW,rv(7))),
 
-  qr('r-ba-jo-1','jeonju-craft-liquor-bar','jeonju','restaurants','bars',
+  qr('r-ba-jo-1','jeonju-craft-liquor-bar','jeonju','restaurants','bars-nightlife',
     'Jeonju Traditional Craft Liquor Bar','Craft bar specialising in traditional Korean spirits — maesil (plum wine), bokbunja (berry wine), and makgeolli.',
     m(38),sg(3),20,4.7,98,['Traditional','Local Specialty'],false,'Samcheon-dong, Wansan-gu, Jeonju',
     '+82-63-284-5678','Daily 16:00–23:00',MBA(10000),
     rn('Jeonju Traditional Craft Liquor Bar Jeonju',0,D0,'','Every Tuesday',BA_KNOW,C24,BA_KNOW,rv(8))),
 
-  qr('r-ba-jo-2','hanok-dongdongju-house','jeonju','restaurants','bars',
+  qr('r-ba-jo-2','hanok-dongdongju-house','jeonju','restaurants','bars-nightlife',
     'Hanok Village Dongdongju House','Tiny courtyard bar pouring freshly brewed dongdongju rice wine with house-made makgeolli snacks.',
     m(39),sg(3),15,4.8,143,['Traditional','Hidden Gem'],false,'Gyo-dong, Wansan-gu, Jeonju',
     '+82-63-232-9012','Daily 15:00–22:30',MBA(9000),
     rn('Hanok Village Dongdongju House Jeonju',0,D0,'','Open every day',BA_KNOW,C24,BA_KNOW,rv(9))),
 
   /* ─── Vegetarian  (m 40–49, sg(4)) ─── */
-  qr('r-vg-se-1','insadong-temple-food','seoul','restaurants','vegetarian',
+  qr('r-vg-se-1','insadong-temple-food','seoul','restaurants','vegetarian-vegan',
     'Insadong Temple Food Restaurant','Buddhist temple cuisine — no garlic, no onion, all umami. A meditative dining experience near Jogyesa temple.',
     m(40),sg(4),32,4.8,178,['Vegan-Friendly','Buddhist'],false,'Insadong-gil, Jongno-gu, Seoul',
     '+82-2-733-1234','Daily 11:00–21:00',MVG(20000),
     rn('Insadong Temple Food Restaurant Seoul',0,DV,'15:00–17:00','Sundays',NRV,C48,VG_KNOW,rv(0))),
 
-  qr('r-vg-se-2','mapo-vegan-korean','seoul','restaurants','vegetarian',
+  qr('r-vg-se-2','mapo-vegan-korean','seoul','restaurants','vegetarian-vegan',
     'Mapo Vegan Korean Kitchen','Modern Korean vegan — jackfruit bulgogi, tofu kimchi jjigae, and oat milk sikhye dessert.',
     m(41),sg(4),25,4.6,134,['Vegan-Friendly','Modern'],false,'Mapo-daero, Mapo-gu, Seoul',
     '+82-2-717-5678','Mon–Sat 11:30–21:00',MVG(18000),
     rn('Mapo Vegan Korean Kitchen Seoul',0,DV,'','Closed Sundays',NWI,C24,VG_KNOW,rv(1))),
 
-  qr('r-vg-bu-1','haeundae-vegan-cafe','busan','restaurants','vegetarian',
+  qr('r-vg-bu-1','haeundae-vegan-cafe','busan','restaurants','vegetarian-vegan',
     'Haeundae Health & Vegan Café','Beachside vegan café. Acai bowls, Korean-style grain rice plates, and fresh cold-pressed juices.',
     m(42),sg(4),22,4.6,89,['Healthy','Organic'],false,'Haeundae-ro, Haeundae-gu, Busan',
     '+82-51-731-2345','Daily 09:00–20:00',MVG(16000),
     rn('Haeundae Health Vegan Cafe Busan',0,DV,'','Open every day',NWI,C24,VG_KNOW,rv(2))),
 
-  qr('r-vg-bu-2','busan-buddhist-kitchen','busan','restaurants','vegetarian',
+  qr('r-vg-bu-2','busan-buddhist-kitchen','busan','restaurants','vegetarian-vegan',
     'Busan Vegetarian Buddhist Kitchen','Authentic temple food by a Buddhist monk near Beomeosa temple. The mushroom dubu jorim is heavenly.',
     m(43),sg(4),28,4.8,112,['Buddhist','Traditional'],false,'Beomeosa-ro, Geumjeong-gu, Busan',
     '+82-51-508-6789','Tue–Sun 11:00–19:30',MVG(20000),
     rn('Busan Vegetarian Buddhist Kitchen Busan',0,DV,'14:00–16:30','Closed Mondays & Buddhist holidays',NRV,C48,VG_KNOW,rv(3))),
 
-  qr('r-vg-je-1','jeju-organic-farm-table','jeju','restaurants','vegetarian',
+  qr('r-vg-je-1','jeju-organic-farm-table','jeju','restaurants','vegetarian-vegan',
     'Jeju Organic Farm Table','On-farm restaurant — vegetables harvested that morning. Menu changes daily with whatever the soil gives.',
     m(44),sg(4),35,4.9,167,['Organic','Farm-to-Table'],false,'Aewol-eup, Jeju-si, Jeju',
     '+82-64-799-3456','Wed–Mon 11:00–18:00',MVG(22000),
     rn('Jeju Organic Farm Table Jeju',0,DV,'','Closed Tuesdays',NRV,C48,VG_KNOW,rv(4))),
 
-  qr('r-vg-je-2','seogwipo-plant-kitchen','jeju','restaurants','vegetarian',
+  qr('r-vg-je-2','seogwipo-plant-kitchen','jeju','restaurants','vegetarian-vegan',
     'Seogwipo Plant-Based Kitchen','Jeju\'s best plant-based restaurant. The black bean tangsuyuk (sweet & sour) will convert any meat-lover.',
     m(45),sg(4),28,4.7,98,['Vegan-Friendly'],false,'Seogwipo-si, Jeju',
     '+82-64-762-7890','Daily 11:00–21:00',MVG(18000),
     rn('Seogwipo Plant Based Kitchen Jeju',0,DV,'15:00–17:00','Open every day',NWI,C24,VG_KNOW,rv(5))),
 
-  qr('r-vg-gy-1','gyeongju-temple-vegetarian','gyeongju','restaurants','vegetarian',
+  qr('r-vg-gy-1','gyeongju-temple-vegetarian','gyeongju','restaurants','vegetarian-vegan',
     'Gyeongju Temple Vegetarian Dining','Set inside a working monastery near Bulguksa. Monks prepare seasonal temple food — reservations essential.',
     m(46),sg(4),35,4.9,134,['Buddhist','Unique'],false,'Bulguksa-ro, Gyeongju',
     '+82-54-746-4567','Tue–Sat 11:30–15:00',MVG(25000),
     rn('Gyeongju Temple Vegetarian Dining Gyeongju',0,DV,'','Closed Sun & Mon — reservation only',NRV,C48,VG_KNOW,rv(6))),
 
-  qr('r-vg-gy-2','silla-plant-kitchen','gyeongju','restaurants','vegetarian',
+  qr('r-vg-gy-2','silla-plant-kitchen','gyeongju','restaurants','vegetarian-vegan',
     'Silla Heritage Plant Kitchen','Modern plant-based café near the Silla museum. Great lotus root chips and buckwheat cold noodles.',
     m(47),sg(4),22,4.6,67,['Modern','Healthy'],false,'Iljeong-ro, Gyeongju',
     '+82-54-771-8901','Tue–Sun 10:00–19:00',MVG(15000),
     rn('Silla Heritage Plant Kitchen Gyeongju',0,DV,'','Closed Mondays',NWI,C24,VG_KNOW,rv(7))),
 
-  qr('r-vg-jo-1','jeonju-fermented-vegan','jeonju','restaurants','vegetarian',
+  qr('r-vg-jo-1','jeonju-fermented-vegan','jeonju','restaurants','vegetarian-vegan',
     'Jeonju Fermented Food & Vegan Table','Jeonju\'s love of fermentation shines here — doenjang, kimchi, and ganjang-marinated vegetables.',
     m(48),sg(4),20,4.7,112,['Fermented','Traditional'],false,'Pungnam-ro, Wansan-gu, Jeonju',
     '+82-63-284-5678','Daily 11:00–20:30',MVG(16000),
     rn('Jeonju Fermented Food Vegan Table Jeonju',0,DV,'15:00–17:00','Every Wednesday',NWI,C24,VG_KNOW,rv(8))),
 
-  qr('r-vg-jo-2','hanok-vegetarian-bibimbap','jeonju','restaurants','vegetarian',
+  qr('r-vg-jo-2','hanok-vegetarian-bibimbap','jeonju','restaurants','vegetarian-vegan',
     'Hanok Village Vegetarian Bibimbap','Bibimbap with 12 seasonal vegetables and house gochujang — no meat, full flavour. Famous Instagram spot.',
     m(49),sg(4),18,4.8,234,['BEST','Instagram-Worthy'],false,'Gyo-dong, Wansan-gu, Jeonju',
     '+82-63-232-9012','Daily 10:30–21:00',MVG(14000),
     rn('Hanok Village Vegetarian Bibimbap Jeonju',0,DV,'','Open every day',NWI,C24,VG_KNOW,rv(9))),
 
   /* ─── Halal  (m 50–59, sg(5)) ─── */
-  qr('r-hl-se-1','itaewon-halal-korean-fusion','seoul','restaurants','halal',
+  qr('r-hl-se-1','itaewon-halal-korean-fusion','seoul','restaurants','halal-muslim-friendly',
     'Itaewon Halal Korean Fusion','Halal-certified Korean BBQ and tteokbokki in the heart of Itaewon\'s Muslim Quarter. English menus.',
     m(50),sg(5),30,4.7,234,['Halal Certified','Muslim-Friendly'],false,'Itaewon Halal Food Street, Yongsan-gu, Seoul',
     '+82-2-797-1234','Daily 11:00–22:00',MHL(16000),
     rn('Itaewon Halal Korean Fusion Seoul',0,DH,'','Open 365 days',NWI,C24,HL_KNOW,rv(0))),
 
-  qr('r-hl-se-2','seoul-muslim-restaurant','seoul','restaurants','halal',
+  qr('r-hl-se-2','seoul-muslim-restaurant','seoul','restaurants','halal-muslim-friendly',
     'Seoul Muslim-Friendly Restaurant','KTO-certified halal restaurant near Seoul Central Mosque. Galbi, bulgogi, and bibimbap — all halal.',
     m(51),sg(5),28,4.6,178,['Halal Certified'],false,'Usadan-ro, Yongsan-gu, Seoul',
     '+82-2-793-5678','Daily 11:30–21:30',MHL(15000),
     rn('Seoul Muslim Friendly Restaurant Seoul',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(1))),
 
-  qr('r-hl-bu-1','busan-halal-kitchen','busan','restaurants','halal',
+  qr('r-hl-bu-1','busan-halal-kitchen','busan','restaurants','halal-muslim-friendly',
     'Busan Halal Street Kitchen','Busan\'s most popular halal spot. Korean fried chicken and curry rice certified by KMF.',
     m(52),sg(5),22,4.5,98,['Halal Certified'],false,'Seomyeon, Busanjin-gu, Busan',
     '+82-51-819-2345','Daily 11:00–21:00',MHL(13000),
     rn('Busan Halal Street Kitchen Busan',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(2))),
 
-  qr('r-hl-bu-2','haeundae-muslim-dining','busan','restaurants','halal',
+  qr('r-hl-bu-2','haeundae-muslim-dining','busan','restaurants','halal-muslim-friendly',
     'Haeundae Muslim Dining','Beachside halal restaurant with panoramic views. Seafood-focused with halal certification.',
     m(53),sg(5),35,4.6,112,['Halal Certified','Seafood'],false,'Haeundae-ro, Haeundae-gu, Busan',
     '+82-51-744-6789','Daily 11:00–22:00',MHL(18000),
     rn('Haeundae Muslim Dining Busan',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(3))),
 
-  qr('r-hl-je-1','jeju-halal-seafood','jeju','restaurants','halal',
+  qr('r-hl-je-1','jeju-halal-seafood','jeju','restaurants','halal-muslim-friendly',
     'Jeju Halal Seafood Restaurant','Fresh Jeju seafood — abalone, hairtail, grilled fish — all halal-prepared. Rare find on the island.',
     m(54),sg(5),40,4.7,87,['Halal Certified','Seafood'],false,'Jeju-si, Jeju',
     '+82-64-721-3456','Daily 11:00–21:30',MHL(20000),
     rn('Jeju Halal Seafood Restaurant Jeju',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(4))),
 
-  qr('r-hl-je-2','seogwipo-muslim-cafe','jeju','restaurants','halal',
+  qr('r-hl-je-2','seogwipo-muslim-cafe','jeju','restaurants','halal-muslim-friendly',
     'Seogwipo Muslim-Friendly Café','Halal snacks, coffee, and Korean fusion bites with ocean views. Prayer room available.',
     m(55),sg(5),20,4.5,54,['Halal Certified','Prayer Room'],false,'Seogwipo-si, Jeju',
     '+82-64-762-7890','Daily 09:00–20:00',MHL(10000),
     rn('Seogwipo Muslim Friendly Cafe Jeju',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(5))),
 
-  qr('r-hl-gy-1','gyeongju-halal-experience','gyeongju','restaurants','halal',
+  qr('r-hl-gy-1','gyeongju-halal-experience','gyeongju','restaurants','halal-muslim-friendly',
     'Gyeongju Halal Korean Experience','Traditional Korean cuisine with halal certification near Gyeongju historic sites.',
     m(56),sg(5),25,4.5,43,['Halal Certified'],false,'Hwangnam-dong, Gyeongju',
     '+82-54-772-4567','Daily 11:00–20:30',MHL(14000),
     rn('Gyeongju Halal Korean Experience Gyeongju',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(6))),
 
-  qr('r-hl-gy-2','bomun-halal-tea-house','gyeongju','restaurants','halal',
+  qr('r-hl-gy-2','bomun-halal-tea-house','gyeongju','restaurants','halal-muslim-friendly',
     'Bomun Halal Dining & Tea House','Quiet lakeside halal dining with traditional Korean tea ceremony option.',
     m(57),sg(5),30,4.6,38,['Halal Certified','Tea Ceremony'],false,'Bomun-ro, Gyeongju',
     '+82-54-748-8901','Daily 10:00–20:00',MHL(16000),
     rn('Bomun Halal Dining Tea House Gyeongju',0,DH,'','Every Wednesday',NWI,C24,HL_KNOW,rv(7))),
 
-  qr('r-hl-jo-1','jeonju-halal-kitchen','jeonju','restaurants','halal',
+  qr('r-hl-jo-1','jeonju-halal-kitchen','jeonju','restaurants','halal-muslim-friendly',
     'Jeonju Halal Traditional Kitchen','Jeonju\'s first halal-certified restaurant serving the famous bibimbap with halal ingredients.',
     m(58),sg(5),20,4.6,67,['Halal Certified','Bibimbap'],false,'Pungnam-ro, Wansan-gu, Jeonju',
     '+82-63-284-5678','Daily 11:00–21:00',MHL(13000),
     rn('Jeonju Halal Traditional Kitchen Jeonju',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(8))),
 
-  qr('r-hl-jo-2','hanok-halal-bibimbap','jeonju','restaurants','halal',
+  qr('r-hl-jo-2','hanok-halal-bibimbap','jeonju','restaurants','halal-muslim-friendly',
     'Hanok Halal Bibimbap Restaurant','Halal bibimbap and doenjang soup in a traditional hanok setting. Muslim travellers highly recommended.',
     m(59),sg(5),18,4.7,89,['Halal Certified','Must-Try'],false,'Gyo-dong, Wansan-gu, Jeonju',
     '+82-63-232-9012','Daily 10:30–21:00',MHL(13000),
     rn('Hanok Halal Bibimbap Restaurant Jeonju',0,DH,'','Open every day',NWI,C24,HL_KNOW,rv(9))),
+
+  /* ─── Street Food & Markets ─── */
+  qr('r-sm-se-1','gwangjang-market-bindaetteok','seoul','restaurants','street-food-markets',
+    'Gwangjang Market Bindaetteok Stall','One of the oldest street food stalls in Korea\'s original market. Crispy mung bean pancakes fried fresh every hour. Cash only.',
+    m(2),sg(0),8,4.9,312,['HOT','Cash Only'],true,'Gwangjang Market, Jongno-gu, Seoul',
+    '+82-2-2267-0291','Mon–Sat 09:00–22:00',MSM(8000),
+    rn('Gwangjang Market Bindaetteok Seoul',0,D0,'','Closed Sundays & public holidays',NWI,C24,SM_KNOW,rv(0))),
+
+  qr('r-sm-se-2','dongdaemun-tteokbokki-alley','seoul','restaurants','street-food-markets',
+    'Dongdaemun Tteokbokki Street','Night market alley famous for spicy tteokbokki and fish cake skewers. Open until 2am — perfect late-night street food crawl.',
+    m(3),sg(0),6,4.7,198,['Night Market','Late Night'],false,'Dongdaemun, Jung-gu, Seoul',
+    '+82-10-9876-0011','Daily 15:00–02:00',MSM(6000),
+    rn('Dongdaemun Tteokbokki Street Seoul',0,D0,'','Open every day',NWI,C24,SM_KNOW,rv(1))),
+
+  qr('r-sm-bu-1','gukje-market-food-street','busan','restaurants','street-food-markets',
+    'Gukje Market Food Street','Busan\'s biggest traditional market with dedicated food alleys. Famous for soondae, hotteok, and spicy eomuk.',
+    m(4),sg(0),5,4.7,234,['HOT','Traditional Market'],false,'Gukje Market, Jung-gu, Busan',
+    '+82-51-245-4649','Daily 09:00–21:00',MSM(7000),
+    rn('Gukje Market Food Street Busan',0,D0,'','Open every day',NWI,C24,SM_KNOW,rv(2))),
+
+  qr('r-sm-bu-2','busan-bupyeong-night-market','busan','restaurants','street-food-markets',
+    'Bupyeong Kkangtong Night Market','Busan\'s liveliest night market under the expressway. Korean BBQ skewers, pajeon, and live music after dark.',
+    m(5),sg(0),7,4.8,189,['Night Market','Live Music'],true,'Bupyeong-dong, Jung-gu, Busan',
+    '+82-51-245-1234','Fri–Sun 18:00–24:00',MSM(9000),
+    rn('Bupyeong Night Market Busan',0,D0,'','Weekends only',NWI,C24,SM_KNOW,rv(3))),
+
+  qr('r-sm-je-1','jeju-dongmun-traditional-market','jeju','restaurants','street-food-markets',
+    'Jeju Dongmun Traditional Market','Jeju\'s oldest covered market. Try black pork gimbap, hallabong soft-serve, and fresh raw fish from haenyeo stalls.',
+    m(6),sg(0),10,4.8,267,['BEST','Local Favourite'],true,'Dongmun-ro, Jeju-si, Jeju',
+    '+82-64-752-3001','Daily 07:00–21:00',MSM(8000),
+    rn('Jeju Dongmun Market Jeju',0,D0,'','Closed 1st & 3rd Tuesdays',NWI,C24,SM_KNOW,rv(4))),
+
+  qr('r-sm-je-2','seogwipo-maeil-olle-market','jeju','restaurants','street-food-markets',
+    'Seogwipo Maeil Olle Market','Jeju\'s most popular weekly market. Mandarin tteok, abalone juk, and local makgeolli in a festive outdoor setting.',
+    m(7),sg(0),12,4.7,143,['Market Day','Local Food'],false,'Seogwipo-si, Jeju',
+    '+82-64-762-1234','Sat 08:00–13:00',MSM(10000),
+    rn('Seogwipo Maeil Olle Market Jeju',0,D0,'','Saturday mornings only',NWI,C24,SM_KNOW,rv(5))),
+
+  qr('r-sm-gy-1','gyeongju-jungang-market-food','gyeongju','restaurants','street-food-markets',
+    'Gyeongju Jungang Market Street Food','Historic market near ancient ruins. Famous for ssambap rice sets and freshly fried jeon pancakes.',
+    m(8),sg(0),8,4.6,98,['Historical','Traditional'],false,'Jungang-ro, Gyeongju',
+    '+82-54-772-1234','Mon–Sat 09:00–20:00',MSM(7000),
+    rn('Gyeongju Jungang Market Gyeongju',0,D0,'','Closed Sundays',NWI,C24,SM_KNOW,rv(6))),
+
+  qr('r-sm-gy-2','hwangnam-bread-and-snacks','gyeongju','restaurants','street-food-markets',
+    'Hwangnam Street Snacks & Bakery','Hwangnam-bbang (red bean pastry) is Gyeongju\'s most iconic snack. Buy a box warm from the oven.',
+    m(9),sg(0),5,4.8,178,['Must-Buy','Iconic Snack'],false,'Hwangnam-dong, Gyeongju',
+    '+82-54-773-4422','Daily 09:00–21:00',MSM(5000),
+    rn('Hwangnam Street Snacks Gyeongju',0,D0,'','Open every day',NWI,C24,SM_KNOW,rv(7))),
+
+  qr('r-sm-jo-1','jeonju-nambu-traditional-market','jeonju','restaurants','street-food-markets',
+    'Jeonju Nambu Traditional Market','Jeonju\'s food market is legendary. Bean sprout gukbap, kongnamul bibimbap, and hotteok stuffed with vegetables.',
+    m(0),sg(0),9,4.8,223,['HOT','Must-Try'],true,'Nambu Market, Wansan-gu, Jeonju',
+    '+82-63-284-1234','Daily 08:00–21:00',MSM(8000),
+    rn('Jeonju Nambu Market Jeonju',0,D0,'','Open every day',NWI,C24,SM_KNOW,rv(8))),
+
+  qr('r-sm-jo-2','jeonju-hanok-village-street-stalls','jeonju','restaurants','street-food-markets',
+    'Jeonju Hanok Village Street Stalls','Street food paradise in the hanok village. Chocolate makgeolli, rainbow tteokbokki, giant hotteok — perfect food crawl.',
+    m(1),sg(0),10,4.7,334,['Instagram-Worthy','Food Walk'],false,'Gyo-dong, Wansan-gu, Jeonju',
+    '+82-63-232-1234','Daily 10:00–22:00',MSM(7000),
+    rn('Jeonju Hanok Village Street Stalls Jeonju',0,D0,'','Open every day',NWI,C24,SM_KNOW,rv(9))),
+
+  /* ─── Cafes & Desserts ─── */
+  qr('r-cd-se-1','seongsu-specialty-coffee-lab','seoul','restaurants','cafes-desserts',
+    'Seongsu-dong Specialty Coffee Lab','Seoul\'s hippest neighbourhood. Third-wave specialty coffee, banana milk soft-serve, and open-plan industrial interior.',
+    m(20),sg(2),12,4.8,312,['HOT','Trendy'],true,'Seongsu-dong, Seongdong-gu, Seoul',
+    '+82-2-465-1234','Daily 10:00–21:00',MCD(9000),
+    rn('Seongsu Specialty Coffee Lab Seoul',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(0))),
+
+  qr('r-cd-se-2','insadong-bingsu-dessert-house','seoul','restaurants','cafes-desserts',
+    'Insadong Bingsu & Korean Dessert House','Famous for king-size pat bingsu piled with red bean, mochi, and condensed milk. Queue early on summer weekends.',
+    m(21),sg(2),13,4.8,456,['BEST','Seasonal'],false,'Insadong-gil, Jongno-gu, Seoul',
+    '+82-2-735-1234','Daily 10:00–22:00',MCD(13000),
+    rn('Insadong Bingsu House Seoul',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(1))),
+
+  qr('r-cd-bu-1','haeundae-ocean-cafe','busan','restaurants','cafes-desserts',
+    'Haeundae Beachfront Café','Glass-walled café overlooking Haeundae Beach. Korean iced lattes, croffles, and bingsu with the sea as your backdrop.',
+    m(22),sg(2),11,4.8,267,['Scenic','Instagram-Worthy'],true,'Haeundae-ro, Haeundae-gu, Busan',
+    '+82-51-741-1234','Daily 09:00–22:00',MCD(11000),
+    rn('Haeundae Ocean Cafe Busan',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(2))),
+
+  qr('r-cd-bu-2','nampo-hotteok-dessert-cafe','busan','restaurants','cafes-desserts',
+    'Nampo-dong Hotteok & Dessert Café','Busan\'s original hotteok dough filled with syrup and seeds. Modern café format with coffee and Korean snack combos.',
+    m(23),sg(2),8,4.7,178,['Traditional','Local Favourite'],false,'Nampo-dong, Jung-gu, Busan',
+    '+82-51-246-1234','Daily 10:00–21:00',MCD(8000),
+    rn('Nampo Hotteok Dessert Cafe Busan',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(3))),
+
+  qr('r-cd-je-1','jeju-hallabong-citrus-cafe','jeju','restaurants','cafes-desserts',
+    'Jeju Hallabong Citrus Dessert Café','Jeju-exclusive hallabong mandarin in everything — tea, cheesecake, tarts, and soft-serve. Cannot get this anywhere else.',
+    m(24),sg(2),12,4.9,389,['BEST','Unique','Local Specialty'],true,'Jeju-si, Jeju',
+    '+82-64-721-1234','Daily 09:00–21:00',MCD(12000),
+    rn('Jeju Hallabong Dessert Cafe Jeju',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(4))),
+
+  qr('r-cd-je-2','seogwipo-cliff-edge-cafe','jeju','restaurants','cafes-desserts',
+    'Seogwipo Cliff-Edge Café & Bakery','Perched above the southern cliffs of Jeju. Watch waterfalls and ocean waves while sipping hand-drip coffee.',
+    m(25),sg(2),14,4.8,234,['Scenic','Peaceful'],false,'Seogwipo-si, Jeju',
+    '+82-64-763-1234','Daily 10:00–20:00',MCD(10000),
+    rn('Seogwipo Cliff Cafe Jeju',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(5))),
+
+  qr('r-cd-gy-1','gyeongju-hanok-tearoom','gyeongju','restaurants','cafes-desserts',
+    'Gyeongju Heritage Hanok Tearoom','Sip traditional Korean teas and eat ssuk tteok (mugwort rice cakes) inside a 200-year-old hanok. Time-travel included.',
+    m(26),sg(2),9,4.8,167,['Traditional','Cultural'],false,'Hwangnam-dong, Gyeongju',
+    '+82-54-774-1234','Tue–Sun 10:00–18:00',MCD(9000),
+    rn('Gyeongju Heritage Hanok Tearoom Gyeongju',0,D0,'','Closed Mondays',NWI,C24,CD_KNOW,rv(6))),
+
+  qr('r-cd-gy-2','bomun-lake-dessert-house','gyeongju','restaurants','cafes-desserts',
+    'Bomun Lake Dessert & Coffee House','Lakeside café in the Bomun resort area. Pumpkin latte, Gyeongju chestnut tart, and handmade mochi.',
+    m(27),sg(2),10,4.7,112,['Scenic','Cosy'],false,'Bomun-ro, Gyeongju',
+    '+82-54-748-1234','Daily 10:00–20:00',MCD(10000),
+    rn('Bomun Lake Dessert House Gyeongju',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(7))),
+
+  qr('r-cd-jo-1','jeonju-omija-tea-cafe','jeonju','restaurants','cafes-desserts',
+    'Jeonju Omija Tea & Dessert Café','Omija (five-flavour berry) drinks and traditional Korean desserts in a restored hanok building.',
+    m(28),sg(2),8,4.8,198,['Traditional','Hanok-Style'],false,'Gyo-dong, Wansan-gu, Jeonju',
+    '+82-63-231-1234','Daily 10:00–20:00',MCD(8000),
+    rn('Jeonju Omija Tea Cafe Jeonju',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(8))),
+
+  qr('r-cd-jo-2','jeonju-chocolate-makgeolli-bar','jeonju','restaurants','cafes-desserts',
+    'Jeonju Chocolate Makgeolli Dessert Bar','Jeonju\'s viral chocolate makgeolli in a cosy café. Pairs perfectly with honey tteok and red bean bingsu.',
+    m(29),sg(2),10,4.8,289,['HOT','Viral','Instagram-Worthy'],true,'Pungnam-ro, Wansan-gu, Jeonju',
+    '+82-63-284-9999','Daily 10:00–22:00',MCD(11000),
+    rn('Jeonju Chocolate Makgeolli Cafe Jeonju',0,D0,'','Open every day',NWI,C24,CD_KNOW,rv(9))),
+
+  /* ─── Fine Dining ─── */
+  qr('r-fd-se-1','gangnam-modern-korean-fine-dining','seoul','restaurants','fine-dining',
+    'Gangnam Modern Korean Fine Dining','Michelin-level Korean tasting menu. 7 courses of seasonal temple-inspired cuisine, wine pairing available. Book 3 weeks ahead.',
+    m(10),sg(1),95,4.9,189,['BEST','Michelin','Premium'],true,'Cheongdam-dong, Gangnam-gu, Seoul',
+    '+82-2-549-1234','Tue–Sun 18:00–22:00',MFD(110000),
+    rn('Gangnam Modern Korean Fine Dining Seoul',50000,D0,'','Closed Mondays',NRV,C48,FD_KNOW,rv(0))),
+
+  qr('r-fd-se-2','bukchon-hanok-omakase','seoul','restaurants','fine-dining',
+    'Bukchon Hanok Omakase Table','Private dining rooms inside a 100-year-old hanok. Korean omakase with seasonal ingredients sourced from local farmers.',
+    m(11),sg(1),85,4.8,134,['Unique','Private Room'],false,'Bukchon-ro, Jongno-gu, Seoul',
+    '+82-2-722-1234','Tue–Sat 18:00–22:00',MFD(95000),
+    rn('Bukchon Hanok Omakase Seoul',50000,D0,'','Closed Sun & Mon',NRV,C48,FD_KNOW,rv(1))),
+
+  qr('r-fd-bu-1','haeundae-ocean-fine-dining','busan','restaurants','fine-dining',
+    'Haeundae Ocean Fine Dining','Rooftop fine dining above the beach — fresh Busan seafood elevated to haute cuisine. Paired Korean natural wine selection.',
+    m(12),sg(1),120,4.9,167,['BEST','Rooftop','Seafood'],true,'Haeundae-ro, Haeundae-gu, Busan',
+    '+82-51-743-1234','Wed–Mon 18:00–22:00',MFD(120000),
+    rn('Haeundae Ocean Fine Dining Busan',60000,D0,'','Closed Tuesdays',NRV,C48,FD_KNOW,rv(2))),
+
+  qr('r-fd-bu-2','busan-modern-korean-table','busan','restaurants','fine-dining',
+    'Busan Modern Korean Table','Progressive Korean cuisine — traditional fermented flavours reinterpreted with modern technique. 8-course dinner only.',
+    m(13),sg(1),80,4.7,98,['Modern','Seasonal'],false,'Seomyeon, Busanjin-gu, Busan',
+    '+82-51-819-1234','Thu–Tue 18:30–22:00',MFD(90000),
+    rn('Busan Modern Korean Table Busan',40000,D0,'','Closed Wednesdays',NRV,C48,FD_KNOW,rv(3))),
+
+  qr('r-fd-je-1','jeju-island-tasting-menu','jeju','restaurants','fine-dining',
+    'Jeju Island Seasonal Tasting Menu','Every course uses Jeju-exclusive ingredients — black pork, abalone, citrus, and volcanic mineral water. Unmissable.',
+    m(14),sg(1),100,4.9,145,['BEST','Jeju Exclusive','Seasonal'],true,'Jeju-si, Jeju',
+    '+82-64-724-1234','Wed–Mon 18:00–21:30',MFD(130000),
+    rn('Jeju Island Seasonal Tasting Menu Jeju',60000,D0,'','Closed Tuesdays',NRV,C48,FD_KNOW,rv(4))),
+
+  qr('r-fd-je-2','seogwipo-garden-fine-dining','jeju','restaurants','fine-dining',
+    'Seogwipo Garden Fine Dining','Open-air fine dining in a private citrus garden. 6-course dinner with ocean views and candle-lit table settings.',
+    m(15),sg(1),90,4.8,89,['Garden Setting','Romantic'],false,'Seogwipo-si, Jeju',
+    '+82-64-762-5678','Fri–Wed 18:00–21:00',MFD(100000),
+    rn('Seogwipo Garden Fine Dining Jeju',50000,D0,'','Closed Thursdays',NRV,C48,FD_KNOW,rv(5))),
+
+  qr('r-fd-gy-1','gyeongju-silla-royal-banquet','gyeongju','restaurants','fine-dining',
+    'Gyeongju Silla Royal Banquet Table','Recreation of Silla dynasty royal cuisine. 9 courses with gold lacquer tableware and traditional court music.',
+    m(16),sg(1),70,4.8,112,['BEST','Cultural','Unique'],true,'Hwangnam-dong, Gyeongju',
+    '+82-54-771-1234','Tue–Sun 18:00–21:00',MFD(85000),
+    rn('Gyeongju Silla Royal Banquet Gyeongju',40000,D0,'','Closed Mondays',NRV,C48,FD_KNOW,rv(6))),
+
+  qr('r-fd-gy-2','bomun-lakeside-fine-dinner','gyeongju','restaurants','fine-dining',
+    'Bomun Lakeside Fine Dining','5-course dinner with Bomun Lake views. Korean-French fusion with Gyeongju seasonal vegetables and locally-aged kimchi.',
+    m(17),sg(1),75,4.7,76,['Scenic','Fusion'],false,'Bomun-ro, Gyeongju',
+    '+82-54-748-5678','Wed–Mon 18:00–21:30',MFD(80000),
+    rn('Bomun Lakeside Fine Dining Gyeongju',40000,D0,'','Closed Tuesdays',NRV,C48,FD_KNOW,rv(7))),
+
+  qr('r-fd-jo-1','jeonju-slow-food-table','jeonju','restaurants','fine-dining',
+    'Jeonju Slow Food Fine Dining Table','Jeonju\'s premier tasting table. Courses built on fermented foundations — doenjang-aged sauces, 3-year-old kimchi.',
+    m(18),sg(1),65,4.8,98,['Fermented','Slow Food','Artisan'],false,'Pungnam-ro, Wansan-gu, Jeonju',
+    '+82-63-288-1234','Tue–Sun 18:00–21:00',MFD(75000),
+    rn('Jeonju Slow Food Table Jeonju',35000,D0,'','Closed Mondays',NRV,C48,FD_KNOW,rv(8))),
+
+  qr('r-fd-jo-2','jeonju-modern-hanjeongsik','jeonju','restaurants','fine-dining',
+    'Jeonju Modern Hanjeongsik Restaurant','The most ambitious hanjeongsik in Korea. 12-course full Korean set meal with natural wine and artisan sool pairings.',
+    m(19),sg(1),75,4.9,134,['BEST','12-Course','Hanjeongsik'],true,'Gyo-dong, Wansan-gu, Jeonju',
+    '+82-63-232-5678','Wed–Mon 18:00–21:30',MFD(85000),
+    rn('Jeonju Modern Hanjeongsik Jeonju',40000,D0,'','Closed Tuesdays',NRV,C48,FD_KNOW,rv(9))),
+
+  /* ─── Seafood ─── */
+  qr('r-sf-se-1','noryangjin-fish-market-dining','seoul','restaurants','seafood',
+    'Noryangjin Fish Market Experience','Buy your catch direct from Seoul\'s largest fish market and have it cooked upstairs. Freshest sashimi in the city.',
+    m(30),sg(4),25,4.7,312,['HOT','Authentic','Fresh'],true,'Noryangjin Fisheries Wholesale Market, Dongjak-gu, Seoul',
+    '+82-2-814-2211','Daily 00:00–24:00',MSF(25000),
+    rn('Noryangjin Fish Market Seoul',0,D0,'','Open 24 hours',NWI,C24,SF_KNOW,rv(0))),
+
+  qr('r-sf-se-2','mapo-haemultang-restaurant','seoul','restaurants','seafood',
+    'Mapo Haemultang Seafood Hot Pot','Mapo\'s most-loved seafood restaurant. Pot full of clams, squid, shrimp, and snapper in fiery gochugaru broth.',
+    m(31),sg(4),28,4.7,178,['Spicy','Hearty'],false,'Mapo-daero, Mapo-gu, Seoul',
+    '+82-2-325-1234','Daily 11:00–22:00',MSF(28000),
+    rn('Mapo Haemultang Restaurant Seoul',0,D0,'15:00–17:00','Open every day',NWI,C24,SF_KNOW,rv(1))),
+
+  qr('r-sf-bu-1','jagalchi-sashimi-restaurant','busan','restaurants','seafood',
+    'Jagalchi Market Sashimi Restaurant','Upstairs from Korea\'s most famous fish market. Point at what you want from the tank — grilled or raw. Ocean-fresh guaranteed.',
+    m(32),sg(4),35,4.8,445,['BEST','Must-Try'],true,'Jagalchi Market, Jung-gu, Busan',
+    '+82-51-713-1234','Daily 08:00–22:00',MSF(35000),
+    rn('Jagalchi Market Sashimi Busan',0,D0,'','Open every day',NWI,C24,SF_KNOW,rv(2))),
+
+  qr('r-sf-bu-2','haeundae-ganjang-gejang-house','busan','restaurants','seafood',
+    'Haeundae Ganjang Gejang House','Busan\'s best spot for "rice thief" soy-cured raw crab. Set meals with multiple gejang preparations marinated days in advance.',
+    m(33),sg(4),45,4.9,234,['BEST','Raw Crab','Must-Try'],true,'Haeundae-ro, Haeundae-gu, Busan',
+    '+82-51-744-1234','Tue–Sun 11:30–21:00',MSF(40000),
+    rn('Haeundae Ganjang Gejang House Busan',0,D0,'','Closed Mondays',NRV,C48,SF_KNOW,rv(3))),
+
+  qr('r-sf-je-1','jeju-abalone-seafood-house','jeju','restaurants','seafood',
+    'Jeju Abalone & Seafood House','Served by haenyeo divers themselves. Fresh abalone juk (porridge) and sashimi — a Jeju experience you cannot replicate.',
+    m(34),sg(4),40,4.9,289,['BEST','Haenyeo','Unique'],true,'Jeju-si, Jeju',
+    '+82-64-721-1111','Daily 09:00–19:00',MSF(38000),
+    rn('Jeju Abalone Seafood House Jeju',0,D0,'','Open every day — supply dependent',NWI,C24,SF_KNOW,rv(4))),
+
+  qr('r-sf-je-2','seogwipo-hairtail-charcoal','jeju','restaurants','seafood',
+    'Seogwipo Hairtail Fish Restaurant','Grilled hairtail (galchi) is Jeju\'s most beloved seafood. This restaurant serves it whole and crispy over charcoal.',
+    m(35),sg(4),25,4.7,167,['Local Specialty','Charcoal'],false,'Seogwipo-si, Jeju',
+    '+82-64-762-2222','Daily 11:00–21:00',MSF(25000),
+    rn('Seogwipo Hairtail Fish Jeju',0,D0,'15:00–16:00','Open every day',NWI,C24,SF_KNOW,rv(5))),
+
+  qr('r-sf-gy-1','gyeongju-nakji-octopus','gyeongju','restaurants','seafood',
+    'Gyeongju Nakji & Seafood Restaurant','Famous for live octopus (sannakji) and grilled eel. Ingredients arrive from the Pohang coast each morning.',
+    m(36),sg(4),22,4.6,98,['Live Seafood','Fresh Daily'],false,'Hwangnam-dong, Gyeongju',
+    '+82-54-775-1234','Tue–Sun 11:00–21:00',MSF(22000),
+    rn('Gyeongju Nakji Seafood Gyeongju',0,D0,'','Closed Mondays',NWI,C24,SF_KNOW,rv(6))),
+
+  qr('r-sf-gy-2','bomun-lakeside-grilled-fish','gyeongju','restaurants','seafood',
+    'Bomun Lakeside Grilled Fish House','Fresh-caught fish grilled simply over wood fire near Bomun Lake. No frills, pure freshness — a local favourite.',
+    m(37),sg(4),18,4.6,67,['Simple','Local Favourite'],false,'Bomun-ro, Gyeongju',
+    '+82-54-748-2222','Daily 11:00–20:30',MSF(18000),
+    rn('Bomun Grilled Fish House Gyeongju',0,D0,'','Open every day',NWI,C24,SF_KNOW,rv(7))),
+
+  qr('r-sf-jo-1','jeonju-freshwater-fish-restaurant','jeonju','restaurants','seafood',
+    'Jeonju Freshwater Fish & Doganitang','Inland Jeonju specialises in freshwater fish. Try doganitang (beef knee soup) alongside grilled river carp.',
+    m(38),sg(4),15,4.6,89,['Local Specialty','Traditional'],false,'Pungnam-ro, Wansan-gu, Jeonju',
+    '+82-63-287-1234','Daily 10:30–20:00',MSF(15000),
+    rn('Jeonju Freshwater Fish Jeonju',0,D0,'','Open every day',NWI,C24,SF_KNOW,rv(8))),
+
+  qr('r-sf-jo-2','jeonju-carp-river-fish-grill','jeonju','restaurants','seafood',
+    'Jeonju Carp & River Fish Grill','Traditional Jeonju-style pan-fried river fish with gomguk rice soup. A simple, slow, deeply Korean meal.',
+    m(39),sg(4),12,4.5,54,['Traditional','River Fish'],false,'Deokjin-dong, Deokjin-gu, Jeonju',
+    '+82-63-275-1234','Tue–Sun 11:00–19:00',MSF(12000),
+    rn('Jeonju Carp River Fish Jeonju',0,D0,'','Closed Mondays',NWI,C24,SF_KNOW,rv(9))),
+
+  /* ─── Quick Bites ─── */
+  qr('r-qb-se-1','myeongdong-gimbap-heaven','seoul','restaurants','quick-bites',
+    'Myeongdong Gimbap Heaven','The original fast Korean meal — gimbap rolls fresh every 20 minutes. Tuna, kimchi, and classic bulgogi rolls to eat on the go.',
+    m(40),sg(3),5,4.7,267,['HOT','Fast','Value'],false,'Myeongdong-gil, Jung-gu, Seoul',
+    '+82-2-318-1234','Daily 07:00–22:00',MQB(5500),
+    rn('Myeongdong Gimbap Heaven Seoul',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(0))),
+
+  qr('r-qb-se-2','hongdae-soondae-pojangmacha','seoul','restaurants','quick-bites',
+    'Hongdae Soondae & Odeng Pojangmacha','Outdoor tent stall near Hongik University. Soondae (blood sausage), odeng, and tteokbokki — Korea\'s favourite pub snacks.',
+    m(41),sg(3),4,4.6,189,['Night Out','Casual'],false,'Hongdae, Mapo-gu, Seoul',
+    '+82-10-1111-2222','Daily 17:00–02:00',MQB(4000),
+    rn('Hongdae Soondae Pojangmacha Seoul',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(1))),
+
+  qr('r-qb-bu-1','busan-eomuk-fish-cake-stall','busan','restaurants','quick-bites',
+    'Busan Fish Cake (Eomuk) Stall','Busan eomuk is different — thicker, chewier, bouncier. Street vendor near Seomyeon station. Eat straight off the skewer.',
+    m(42),sg(3),3,4.7,312,['HOT','Street Food','Authentic'],true,'Seomyeon, Busanjin-gu, Busan',
+    '+82-51-816-1234','Daily 10:00–22:00',MQB(3000),
+    rn('Busan Eomuk Skewer Stall Busan',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(2))),
+
+  qr('r-qb-bu-2','busan-milmyeon-quick-lunch','busan','restaurants','quick-bites',
+    'Busan Milmyeon Quick Lunch','Milmyeon (Busan cold wheat noodles) in 5 minutes flat. A local lunch staple — noodles in cold beef broth.',
+    m(43),sg(3),6,4.7,156,['Local Specialty','Quick Lunch'],false,'Seomyeon, Busanjin-gu, Busan',
+    '+82-51-817-1234','Daily 10:00–21:00',MQB(7000),
+    rn('Busan Milmyeon Quick Lunch Busan',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(3))),
+
+  qr('r-qb-je-1','jeju-black-pork-gimbap','jeju','restaurants','quick-bites',
+    'Jeju Black Pork Gimbap Roll','Gimbap stuffed with Jeju\'s prized black pork and kimchi. A Jeju-exclusive quick bite you can\'t get anywhere else.',
+    m(44),sg(3),6,4.8,178,['Jeju Exclusive','Must-Try'],false,'Jeju-si, Jeju',
+    '+82-64-721-3333','Daily 08:00–20:00',MQB(6000),
+    rn('Jeju Black Pork Gimbap Jeju',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(4))),
+
+  qr('r-qb-je-2','seogwipo-hallabong-hotteok','jeju','restaurants','quick-bites',
+    'Seogwipo Hallabong Hotteok Stand','Sweet pancake filled with hallabong mandarin jam — a Jeju street food original. Queue at the stall near the waterfall.',
+    m(45),sg(3),4,4.8,234,['Viral','Sweet','Jeju Exclusive'],true,'Seogwipo-si, Jeju',
+    '+82-64-762-3333','Daily 09:00–18:00',MQB(4000),
+    rn('Seogwipo Mandarin Hotteok Jeju',0,D0,'','Open every day — sells out early',NWI,C24,QB_KNOW,rv(5))),
+
+  qr('r-qb-gy-1','gyeongju-hwangnam-bbang-bakery','gyeongju','restaurants','quick-bites',
+    'Gyeongju Hwangnam Bbang Bakery','The iconic red-bean pastry of Gyeongju. Baked fresh every 30 minutes, sold warm. The quintessential Gyeongju quick bite.',
+    m(46),sg(3),3,4.9,445,['BEST','Iconic'],true,'Hwangnam-dong, Gyeongju',
+    '+82-54-773-1234','Daily 08:00–21:00',MQB(3500),
+    rn('Gyeongju Hwangnam Bbang Gyeongju',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(6))),
+
+  qr('r-qb-gy-2','gyeongju-chapsal-donut','gyeongju','restaurants','quick-bites',
+    'Gyeongju Chapsal Rice Donuts','Rice-flour donuts fried to order near the Cheonmachong tomb park. Light, chewy, dusted in cinnamon sugar.',
+    m(47),sg(3),5,4.6,98,['Sweet','Fried'],false,'Hwangnam-dong, Gyeongju',
+    '+82-54-772-9999','Daily 09:00–20:00',MQB(4500),
+    rn('Gyeongju Chapsal Donut Gyeongju',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(7))),
+
+  qr('r-qb-jo-1','jeonju-kongnamul-gukbap','jeonju','restaurants','quick-bites',
+    'Jeonju Kongnamul Gukbap (Quick Bowl)','The morning staple of Jeonju — bean sprout rice soup with raw egg. Fast, cheap, and deeply restorative.',
+    m(48),sg(3),5,4.7,312,['HOT','Morning Meal','Local'],true,'Wansan-gu, Jeonju',
+    '+82-63-284-4444','Daily 06:00–15:00',MQB(5000),
+    rn('Jeonju Kongnamul Gukbap Jeonju',0,D0,'','Open every day — closes early',NWI,C24,QB_KNOW,rv(8))),
+
+  qr('r-qb-jo-2','jeonju-hotteok-street','jeonju','restaurants','quick-bites',
+    'Jeonju Hanok Village Hotteok Street','Multiple hotteok vendors in the hanok village each with their own twist — red bean, vegetable, and sweet potato versions.',
+    m(49),sg(3),4,4.7,223,['Street Food','Variety'],false,'Gyo-dong, Wansan-gu, Jeonju',
+    '+82-63-232-5555','Daily 10:00–21:00',MQB(4000),
+    rn('Jeonju Hotteok Street Jeonju',0,D0,'','Open every day',NWI,C24,QB_KNOW,rv(9))),
 
   /* ════════════════════════════════════════════════════════════════
      ✨  WELLNESS — Skin Clinic  (m 60–69, sg(6))
@@ -767,3 +1397,12 @@ export const sampleListings: Listing[] = [
   q('t-pt-jo-1','jeonju-ktx-terminal-guide','jeonju','tips-and-trend','public-transportation','Jeonju KTX & Bus Terminal Guide','All transport options from Seoul to Jeonju — KTX to Jeonju Station, express buses, costs.',m(178),sg(17),0,0,0,['KTX','Guide']),
   q('t-pt-jo-2','jeonju-hanok-village-transport','jeonju','tips-and-trend','public-transportation','Getting Around Jeonju Hanok Village','Walking is best, but here\'s the bus and taxi guide for Jeonju city including the hanok village.',m(179),sg(17),0,0,0,['Walking','Guide']),
 ];
+
+export const sampleListings: Listing[] = rawSampleListings.map((l, i) => {
+  if (l.notes !== '' && l.notes != null) return l;
+  const seed = i;
+  if (l.category === 'wellness') return { ...l, notes: wn(l.subcategory ?? '', seed), menu_items: wm(l.subcategory ?? '') };
+  if (l.category === 'activities') return { ...l, notes: an(l.subcategory ?? '', seed), menu_items: am(l.subcategory ?? '') };
+  if (l.category === 'tips-and-trend') return { ...l, notes: tn(l.subcategory ?? '', seed) };
+  return l;
+});

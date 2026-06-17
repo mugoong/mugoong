@@ -54,9 +54,9 @@ export default async function HomePage({ params }: { params: { locale: string } 
               { label: 'Skin Clinic', Icon: SkinClinicIcon, color: 'text-rose-400', href: '/wellness/skin-clinic' },
               { label: 'Activities', Icon: ActivitiesIcon, color: 'text-amber-700', href: '/activities' },
               { label: 'Massages', Icon: MassageIcon, color: 'text-slate-600', href: '/wellness/massage' },
-              { label: 'Vegetarian', Icon: VegetarianIcon, color: 'text-emerald-600', href: '/restaurants/vegetarian' },
+              { label: 'Vegetarian', Icon: VegetarianIcon, color: 'text-emerald-600', href: '/restaurants/vegetarian-vegan' },
               { label: 'Traditional', Icon: TraditionalIcon, color: 'text-indigo-500', href: '/activities/traditional-cultural-tours' },
-              { label: 'Bars', Icon: BarsIcon, color: 'text-amber-500', href: '/restaurants/bars' },
+              { label: 'Bars', Icon: BarsIcon, color: 'text-amber-500', href: '/restaurants/bars-nightlife' },
               { label: 'Transport', Icon: TransportIcon, color: 'text-blue-500', href: '/tips-and-trend/public-transportation' },
             ].map((sub) => (
               <Link

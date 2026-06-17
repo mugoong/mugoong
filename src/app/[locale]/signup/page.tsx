@@ -107,12 +107,14 @@ export default function SignupPage() {
   const [interests, setInterests] = useState<string[]>([]);
 
   useEffect(() => {
-    if (initialStep >= 2) {
-      const supabase = createClient();
-      supabase.auth.getUser().then(({ data: { user } }) => {
-        if (!user) router.push(`/${locale}/signup`);
-      });
+    if (initialStep < 2) {
+      router.replace(`/${locale}/login?tab=signup`);
+      return;
     }
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.push(`/${locale}/login?tab=signup`);
+    });
   }, [initialStep, locale, router]);
 
   const handleGoogleSignup = async () => {
