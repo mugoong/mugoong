@@ -27,18 +27,22 @@ export default function middleware(request: NextRequest) {
   );
 
   if (!hasLocalePrefix && pathname === '/') {
-    // Try to detect locale from Vercel's geo headers or Accept-Language
+    // Try to detect locale from Vercel's geo headers
     const country = request.headers.get('x-vercel-ip-country') ?? '';
     const detectedLocale = countryToLocale[country.toUpperCase()];
+    const response = intlMiddleware(request);
 
     if (detectedLocale) {
-      // Set cookie so next-intl picks it up
-      const response = intlMiddleware(request);
       response.cookies.set('NEXT_LOCALE', detectedLocale, {
         maxAge: 365 * 24 * 60 * 60,
       });
-      return response;
+    } else {
+      // Default to English for all other countries (including KR)
+      response.cookies.set('NEXT_LOCALE', 'en', {
+        maxAge: 365 * 24 * 60 * 60,
+      });
     }
+    return response;
   }
 
   return intlMiddleware(request);
