@@ -1,10 +1,10 @@
 import createMiddleware from 'next-intl/middleware';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { routing } from './i18n/routing';
 import type { Locale } from './i18n/routing';
 
-// Supported locales and their matching browser language codes
-// Korean (ko) is intentionally absent — Korean browsers get English
+// Browser language code → supported locale
+// 'ko' (Korean) is intentionally absent: Korean browser → English
 const browserLangToLocale: Record<string, Locale> = {
   ja: 'ja',
   zh: 'zh',
@@ -23,10 +23,10 @@ function detectLocaleFromBrowser(acceptLanguage: string): Locale {
     .sort((a, b) => b.q - a.q);
 
   for (const { lang } of langs) {
-    const primary = lang.split('-')[0]; // 'zh-TW' → 'zh'
+    const primary = lang.split('-')[0]; // e.g. 'zh-TW' → 'zh'
     if (browserLangToLocale[primary]) return browserLangToLocale[primary];
     if (primary === 'en') return 'en';
-    // 'ko' and all other unmapped languages → fall through to English
+    // 'ko' and all unmapped languages fall through to English
   }
   return 'en';
 }
@@ -36,7 +36,8 @@ const intlMiddleware = createMiddleware(routing);
 export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // If URL explicitly has a locale prefix (e.g. /ja/...) the user navigated here directly
+  // If the URL already has an explicit locale prefix (e.g. /ja/..., /zh/...)
+  // the user navigated here deliberately — respect it as-is
   const hasLocalePrefix = routing.locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
@@ -45,16 +46,21 @@ export default function middleware(request: NextRequest) {
     return intlMiddleware(request);
   }
 
-  // For all other visits: detect locale from browser Accept-Language header
+  // For all other URLs: always detect from the current browser's Accept-Language.
+  // Cookies are NOT checked — browser language always wins.
   const acceptLanguage = request.headers.get('accept-language') ?? '';
   const detectedLocale = detectLocaleFromBrowser(acceptLanguage);
 
-  const response = intlMiddleware(request);
-  response.cookies.set('NEXT_LOCALE', detectedLocale, {
-    maxAge: 60 * 60 * 24 * 30, // 30 days
-    path: '/',
-  });
-  return response;
+  if (detectedLocale !== 'en') {
+    // Internally rewrite to the locale-prefixed path so next-intl serves the
+    // correct language. The browser URL stays unchanged (no visible redirect).
+    const url = request.nextUrl.clone();
+    url.pathname = `/${detectedLocale}${pathname === '/' ? '' : pathname}`;
+    return NextResponse.rewrite(url);
+  }
+
+  // English (includes Korean, and any unmapped language): serve as-is
+  return intlMiddleware(request);
 }
 
 export const config = {
