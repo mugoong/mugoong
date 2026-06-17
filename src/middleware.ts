@@ -3,49 +3,58 @@ import { NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
 import type { Locale } from './i18n/routing';
 
-// Map country codes to locales
-const countryToLocale: Record<string, Locale> = {
-  // Japanese
-  JP: 'ja',
-  // Chinese
-  CN: 'zh', TW: 'zh', HK: 'zh', MO: 'zh', SG: 'zh',
-  // French
-  FR: 'fr', BE: 'fr', CH: 'fr', CA: 'fr', LU: 'fr',
-  // German
-  DE: 'de', AT: 'de',
-  // Spanish
-  ES: 'es', MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es',
+// Supported locales and their matching browser language codes
+// Korean (ko) is intentionally absent — Korean browsers get English
+const browserLangToLocale: Record<string, Locale> = {
+  ja: 'ja',
+  zh: 'zh',
+  fr: 'fr',
+  de: 'de',
+  es: 'es',
 };
+
+function detectLocaleFromBrowser(acceptLanguage: string): Locale {
+  const langs = acceptLanguage
+    .split(',')
+    .map((part) => {
+      const [lang, q] = part.trim().split(';q=');
+      return { lang: lang.trim().toLowerCase(), q: q ? parseFloat(q) : 1.0 };
+    })
+    .sort((a, b) => b.q - a.q);
+
+  for (const { lang } of langs) {
+    const primary = lang.split('-')[0]; // 'zh-TW' → 'zh'
+    if (browserLangToLocale[primary]) return browserLangToLocale[primary];
+    if (primary === 'en') return 'en';
+    // 'ko' and all other unmapped languages → fall through to English
+  }
+  return 'en';
+}
 
 const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(request: NextRequest) {
-  // Skip locale detection if user already has a locale in the URL
   const pathname = request.nextUrl.pathname;
+
+  // If URL explicitly has a locale prefix (e.g. /ja/...) the user navigated here directly
   const hasLocalePrefix = routing.locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (!hasLocalePrefix && pathname === '/') {
-    // Try to detect locale from Vercel's geo headers
-    const country = request.headers.get('x-vercel-ip-country') ?? '';
-    const detectedLocale = countryToLocale[country.toUpperCase()];
-    const response = intlMiddleware(request);
-
-    if (detectedLocale) {
-      response.cookies.set('NEXT_LOCALE', detectedLocale, {
-        maxAge: 365 * 24 * 60 * 60,
-      });
-    } else {
-      // Default to English for all other countries (including KR)
-      response.cookies.set('NEXT_LOCALE', 'en', {
-        maxAge: 365 * 24 * 60 * 60,
-      });
-    }
-    return response;
+  if (hasLocalePrefix) {
+    return intlMiddleware(request);
   }
 
-  return intlMiddleware(request);
+  // For all other visits: detect locale from browser Accept-Language header
+  const acceptLanguage = request.headers.get('accept-language') ?? '';
+  const detectedLocale = detectLocaleFromBrowser(acceptLanguage);
+
+  const response = intlMiddleware(request);
+  response.cookies.set('NEXT_LOCALE', detectedLocale, {
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+    path: '/',
+  });
+  return response;
 }
 
 export const config = {
