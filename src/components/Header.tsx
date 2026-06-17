@@ -175,11 +175,12 @@ export default function Header() {
 
               {/* Auth */}
               {user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => { setUserMenuOpen(!userMenuOpen); setCityMenuOpen(false); setLangMenuOpen(false); }}
-                    className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50"
-                  >
+                <div
+                  className="relative"
+                  onMouseEnter={() => { setUserMenuOpen(true); setCityMenuOpen(false); setLangMenuOpen(false); }}
+                  onMouseLeave={() => setUserMenuOpen(false)}
+                >
+                  <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50">
                     <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-500 text-xs font-bold text-white">
                       {(user.email ?? '?')[0].toUpperCase()}
                     </div>
@@ -201,14 +202,9 @@ export default function Header() {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-1">
-                  <Link href="/login" className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900">
-                    Sign In
-                  </Link>
-                  <Link href="/signup" className="whitespace-nowrap rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black">
-                    Sign Up
-                  </Link>
-                </div>
+                <Link href="/login" className="whitespace-nowrap rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black">
+                  Get Started
+                </Link>
               )}
             </div>
           </div>
@@ -243,8 +239,8 @@ export default function Header() {
               {(user.email ?? '?')[0].toUpperCase()}
             </Link>
           ) : (
-            <Link href="/login" className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-              Sign In
+            <Link href="/login" className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black">
+              Get Started
             </Link>
           )}
         </div>
@@ -306,14 +302,9 @@ export default function Header() {
                   </div>
                 </div>
               ) : (
-                <div className="flex gap-2">
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    Sign In
-                  </Link>
-                  <Link href="/signup" onClick={() => setMobileMenuOpen(false)} className="flex-1 rounded-xl bg-gray-900 py-2.5 text-center text-sm font-semibold text-white hover:bg-black">
-                    Sign Up
-                  </Link>
-                </div>
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block w-full rounded-xl bg-gray-900 py-2.5 text-center text-sm font-semibold text-white hover:bg-black">
+                  Get Started
+                </Link>
               )}
             </div>
 
