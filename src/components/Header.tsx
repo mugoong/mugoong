@@ -241,8 +241,8 @@ export default function Header() {
               {(user.email ?? '?')[0].toUpperCase()}
             </Link>
           ) : (
-            <Link href="/login" className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black">
-              Get Started
+            <Link href="/login" className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+              Sign In
             </Link>
           )}
         </div>
