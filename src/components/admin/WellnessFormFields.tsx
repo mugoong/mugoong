@@ -286,7 +286,7 @@ export default function WellnessFormFields({
                     <div className="flex items-center gap-1 rounded-lg border border-gray-200 px-2 focus-within:border-primary-500">
                       <input type="number" value={item.price_variable ? 0 : (item.price || 0)} onChange={(e) => updMenuItem(i, 'price', Number(e.target.value))} placeholder="₩" disabled={!!item.price_variable} className="w-0 flex-1 min-w-0 py-2 text-sm outline-none disabled:text-gray-400 bg-transparent" />
                       <label className="flex items-center gap-0.5 whitespace-nowrap text-[10px] text-gray-400 cursor-pointer select-none">
-                        <input type="checkbox" checked={!!item.price_variable} onChange={e => { updMenuItem(i, 'price_variable', e.target.checked); if (e.target.checked) updMenuItem(i, 'price', 0); }} className="rounded" />
+                        <input type="checkbox" checked={!!item.price_variable} onChange={e => { const c = e.target.checked; const items = [...menuItems]; items[i] = { ...items[i], price_variable: c, ...(c ? { price: 0 } : {}) }; setMenuItems(items); }} className="rounded" />
                         변동
                       </label>
                     </div>

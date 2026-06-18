@@ -416,7 +416,7 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
           {cfg.showPrice && (
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                {form.category === 'restaurants' ? 'Average Price Per Person (₩)' : form.category === 'wellness' ? 'Starting Price (₩)' : 'Price (₩)'}
+                Displayed Price on Listing (₩)
                 {form.extra.price_display_type !== 'deposit' && ' *'}
               </label>
               <input

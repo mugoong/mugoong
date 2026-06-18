@@ -85,14 +85,23 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
     if (items.length >= 10) return;
     setAllItems([...allItems, { category: cat as any, name: '', price: 0, description: '' }]);
   };
-  const update = (idx: number, field: string, value: string | number | boolean) => {
-    const globalIdx = allItems.findIndex((item, i) => {
+  const findGlobalIdx = (idx: number) =>
+    allItems.findIndex((_, i) => {
       const matching = allItems.slice(0, i + 1).filter(x => (x.category || 'main') === cat);
       return matching.length === idx + 1;
     });
+  const update = (idx: number, field: string, value: string | number | boolean) => {
+    const globalIdx = findGlobalIdx(idx);
     if (globalIdx === -1) return;
     const updated = [...allItems];
     updated[globalIdx] = { ...updated[globalIdx], [field]: value };
+    setAllItems(updated);
+  };
+  const updateFields = (idx: number, fields: Partial<MenuItemJson>) => {
+    const globalIdx = findGlobalIdx(idx);
+    if (globalIdx === -1) return;
+    const updated = [...allItems];
+    updated[globalIdx] = { ...updated[globalIdx], ...fields };
     setAllItems(updated);
   };
   const remove = (idx: number) => {
@@ -128,7 +137,7 @@ function MenuSection({ title, cat, emoji, items, setItems, allItems, setAllItems
               <input
                 type="checkbox"
                 checked={!!item.price_variable}
-                onChange={e => { update(i, 'price_variable', e.target.checked); if (e.target.checked) update(i, 'price', 0); }}
+                onChange={e => { const c = e.target.checked; updateFields(i, { price_variable: c, ...(c ? { price: 0 } : {}) }); }}
                 className="rounded"
               />
               변동

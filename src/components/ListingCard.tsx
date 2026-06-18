@@ -17,21 +17,13 @@ function getBadgeClass(tag: string) {
   }
 }
 
-function lowestNonDrinkPrice(items: any[]): number | null {
-  const priced = (items ?? []).filter(
-    (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink' && !i.price_variable
-  );
-  if (!priced.length) return null;
-  return Math.min(...priced.map((i: any) => i.price as number));
-}
-
 export default function ListingCard({ listing }: { listing: Listing }) {
   const t = useTranslations();
   const locale = useLocale();
   const displayTitle = listing.title_translations?.[locale] ?? listing.title;
 
   const isTips = listing.category === 'tips-and-trend';
-  const fromPrice = lowestNonDrinkPrice(listing.menu_items) ?? listing.price;
+  const fromPrice = listing.price;
   const displayPrice =
     listing.price_display_type === 'deposit' ? (listing.booking_deposit ?? 0)
     : listing.price_display_type === 'reserve' ? (listing.reserve_fee ?? 0)

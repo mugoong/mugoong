@@ -284,18 +284,11 @@ export default function ListingDetail({
     : extra.booking_type ?? 'free';
   const hasReviews = extra.external_reviews?.length > 0;
 
-  function lowestNonDrinkPrice(items: any[]): number | null {
-    const priced = (items ?? []).filter(
-      (i: any) => typeof i.price === 'number' && i.price > 0 && i.category?.toLowerCase() !== 'drink' && !i.price_variable
-    );
-    if (!priced.length) return null;
-    return Math.min(...priced.map((i: any) => i.price as number));
-  }
   const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
   const headerPrice =
     listing.price_display_type === 'deposit' ? (listing.booking_deposit ?? listing.price)
     : listing.price_display_type === 'reserve' ? (listing.reserve_fee ?? listing.price)
-    : (lowestNonDrinkPrice(menuItems) ?? listing.price);
+    : listing.price;
   const headerPriceLabel = listing.price_display_type === 'deposit'
     ? 'Deposit From'
     : listing.price_display_type === 'reserve'
