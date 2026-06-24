@@ -52,7 +52,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-sm text-gray-400 transition-colors hover:text-primary-400">
+                <Link href="/faq" className="text-sm text-gray-400 transition-colors hover:text-primary-400">
                   {t('footer.faq')}
                 </Link>
               </li>
