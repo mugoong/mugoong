@@ -243,6 +243,15 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Map URL validation: at least 2 of 3 required (restaurant, wellness, activities)
+    if (!isTips) {
+      const mapCount = [form.extra.google_map_url, form.extra.naver_map_url, form.extra.kakao_map_url]
+        .filter((url) => typeof url === 'string' && url.trim() !== '').length;
+      if (mapCount < 2) {
+        alert('구글맵, 네이버맵, 카카오맵 중 최소 2개 이상 입력해야 저장할 수 있습니다.');
+        return;
+      }
+    }
     // Ensure price_display_type is always written when the category supports it
     const effectiveExtra = cfg.showPrice && !form.extra.price_display_type
       ? { ...form.extra, price_display_type: 'from' }
@@ -441,9 +450,9 @@ export default function ListingForm({ existing }: { existing?: ListingRow }) {
                 onChange={(e) => setForm({ ...form, extra: { ...form.extra, price_display_type: e.target.value } })}
                 className={inputCls}
               >
-                <option value="from">From ₩X,XXX (메뉴 최저가)</option>
-                <option value="deposit">Deposit From ₩X,XXX (현장 차감)</option>
-                <option value="reserve">Reserve From ₩X,XXX (예약 수수료, 별도)</option>
+                <option value="from">From ₩X,XXX (메뉴 최저가, 업체 커미션 받을 경우)</option>
+                <option value="deposit">Deposit From ₩X,XXX (현장차감, 예약시 선결제 필요한 경우)</option>
+                <option value="reserve">Reserve From ₩X,XXX (무궁이 예약대행 수수료 수취할 경우)</option>
               </select>
               <p className="mt-1 text-xs text-gray-400">리스트 카드에 표시될 가격 형식을 선택하세요.</p>
             </div>

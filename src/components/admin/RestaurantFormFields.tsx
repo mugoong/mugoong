@@ -231,7 +231,8 @@ export default function RestaurantFormFields({ menuItems, setMenuItems, extra, s
 
       {/* ── Location & Maps ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">📍 Location & Maps</h2>
+        <h2 className="mb-1 text-lg font-semibold text-gray-900">📍 Location & Maps</h2>
+        <p className="mb-4 text-xs text-red-500">구글맵 · 네이버맵 · 카카오맵 중 최소 2개 이상 입력 필수</p>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <label className="mb-1.5 block text-sm font-medium text-gray-700">Address *</label>

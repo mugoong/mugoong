@@ -264,7 +264,8 @@ export default function ActivitiesFormFields({
 
       {/* ── Map Links ── */}
       <section className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">🗺️ Map Links</h2>
+        <h2 className="mb-1 text-lg font-semibold text-gray-900">🗺️ Map Links</h2>
+        <p className="mb-4 text-xs text-red-500">구글맵 · 네이버맵 · 카카오맵 중 최소 2개 이상 입력 필수</p>
         <div className="space-y-3">
           {[
             { key: 'naver_map_url', label: 'Naver Map URL', ph: 'https://naver.me/...' },
