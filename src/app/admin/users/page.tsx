@@ -47,6 +47,7 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState('');
   const [nationalityFilter, setNationalityFilter] = useState('');
   const [interestFilter, setInterestFilter] = useState('');
+  const [adminOnly, setAdminOnly] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [sortBy, setSortBy] = useState<'created_at' | 'name'>('created_at');
 
@@ -75,6 +76,7 @@ export default function AdminUsersPage() {
       }
       if (nationalityFilter && u.nationality !== nationalityFilter) return false;
       if (interestFilter && !u.interests.includes(interestFilter)) return false;
+      if (adminOnly && !adminEmails.has(u.email.toLowerCase())) return false;
       return true;
     })
     .sort((a, b) => {
@@ -160,6 +162,16 @@ export default function AdminUsersPage() {
           <option value="created_at">Newest first</option>
           <option value="name">Name A–Z</option>
         </select>
+        <button
+          onClick={() => setAdminOnly((v) => !v)}
+          className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
+            adminOnly
+              ? 'bg-amber-500 text-white shadow-sm'
+              : 'border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 hover:border-amber-300 hover:text-amber-700'
+          }`}
+        >
+          {adminOnly ? '★ Admins Only' : '☆ Admins Only'}
+        </button>
       </div>
 
       {/* Table */}
