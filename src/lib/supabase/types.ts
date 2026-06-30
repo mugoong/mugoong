@@ -115,6 +115,7 @@ export type ReviewRow = {
   listing_title: string;
   user_id: string;
   reviewer_name: string;
+  nationality: string;
   booking_id: string | null;
   booking_date: string;
   rating: number;
