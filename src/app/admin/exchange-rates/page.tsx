@@ -87,7 +87,7 @@ export default function ExchangeRatesPage() {
                   <th className="px-6 py-3 text-left font-semibold text-gray-700">Code</th>
                   <th className="px-6 py-3 text-right font-semibold text-gray-700">Mid-Market</th>
                   <th className="px-6 py-3 text-right font-semibold text-gray-700">MUGOONG Rate (−3%)</th>
-                  <th className="px-6 py-3 text-right font-semibold text-gray-700">₩100,000 =</th>
+                  <th className="px-6 py-3 text-right font-semibold text-gray-700">₩1,000 =</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -96,12 +96,12 @@ export default function ExchangeRatesPage() {
                   <td className="px-6 py-4 font-mono font-bold text-primary-700">KRW</td>
                   <td className="px-6 py-4 text-right text-gray-400">—</td>
                   <td className="px-6 py-4 text-right text-gray-400">—</td>
-                  <td className="px-6 py-4 text-right font-semibold text-primary-700">₩100,000</td>
+                  <td className="px-6 py-4 text-right font-semibold text-primary-700">₩1,000</td>
                 </tr>
                 {CURRENCIES.map(({ code, name, symbol, decimals }) => {
                   const mugoongRate = data?.rates[code] ?? 0;
                   const midRate = MID_APPROX[code] ?? mugoongRate / 0.97;
-                  const converted = 100000 * mugoongRate;
+                  const converted = 1000 * mugoongRate;
                   const example = converted.toLocaleString('en-US', {
                     minimumFractionDigits: decimals,
                     maximumFractionDigits: decimals,
@@ -138,7 +138,7 @@ export default function ExchangeRatesPage() {
               <p>1. Live mid-market rates fetched from open.er-api.com, cached server-side for 24 hours.</p>
               <p>2. 3% spread applied: <span className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs">MUGOONG Rate = Mid-Market × 0.97</span></p>
               <p>3. Users select currency in the header — all KRW prices convert using the MUGOONG rate.</p>
-              <p>4. Foreign prices show a <span className="font-mono">~</span> prefix (approximate). All charges are in KRW.</p>
+              <p>4. Foreign prices show a <span className="font-mono">~</span> prefix (approximate, based on ₩1,000). All charges are in KRW.</p>
             </div>
           </div>
         </>

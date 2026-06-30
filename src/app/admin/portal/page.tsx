@@ -63,7 +63,7 @@ const sections: PortalSection[] = [
     items: [
       { label: 'Supabase Dashboard', url: 'https://supabase.com/dashboard', description: 'Database, Auth users, RLS policies, Storage', external: true, badge: 'DB' },
       { label: 'Vercel Dashboard', url: 'https://vercel.com/dashboard', description: 'Deployment logs, environment variables, domains', external: true, badge: 'Deploy' },
-      { label: 'Gmail (booking emails)', url: 'https://mail.google.com', description: 'Booking notifications sent via nodemailer/Gmail', external: true, badge: 'Email' },
+      { label: 'Gmail (booking emails)', url: 'https://mail.google.com/mail/u/dakota@mugoong.com/', description: 'Booking notifications sent to dakota@mugoong.com via nodemailer', external: true, badge: 'Email' },
     ],
   },
 ];
