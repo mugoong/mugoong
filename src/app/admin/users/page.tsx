@@ -42,6 +42,7 @@ const INTEREST_LABELS: Record<string, string> = {
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserProfile[]>([]);
+  const [adminEmails, setAdminEmails] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [nationalityFilter, setNationalityFilter] = useState('');
@@ -55,11 +56,12 @@ export default function AdminUsersPage() {
 
   const fetchUsers = async () => {
     const supabase = createClient();
-    const { data } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
-    setUsers(data ?? []);
+    const [{ data: profiles }, { data: admins }] = await Promise.all([
+      supabase.from('user_profiles').select('*').order('created_at', { ascending: false }),
+      supabase.from('admin_users').select('email'),
+    ]);
+    setUsers(profiles ?? []);
+    setAdminEmails(new Set((admins ?? []).map((a) => a.email.toLowerCase())));
     setLoading(false);
   };
 
@@ -191,15 +193,23 @@ export default function AdminUsersPage() {
                 const initials = user.name
                   ? user.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
                   : user.email[0].toUpperCase();
+                const isAdmin = adminEmails.has(user.email.toLowerCase());
                 return (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={user.id} className={`transition-colors ${isAdmin ? 'bg-amber-50 hover:bg-amber-100' : 'hover:bg-gray-50'}`}>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary-500 text-sm font-bold text-white">
+                        <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${isAdmin ? 'bg-amber-500' : 'bg-primary-500'}`}>
                           {initials}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{user.name || <span className="italic text-gray-400">No name</span>}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-gray-900">{user.name || <span className="italic text-gray-400">No name</span>}</p>
+                            {isAdmin && (
+                              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
+                                Admin
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-gray-400">{user.email}</p>
                         </div>
                       </div>
@@ -256,13 +266,18 @@ export default function AdminUsersPage() {
           <div className="w-full max-w-lg rounded-2xl bg-white p-7 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-5 flex items-start justify-between">
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-500 text-xl font-bold text-white">
+                <div className={`flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold text-white ${adminEmails.has(selectedUser.email.toLowerCase()) ? 'bg-amber-500' : 'bg-primary-500'}`}>
                   {selectedUser.name
                     ? selectedUser.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
                     : selectedUser.email[0].toUpperCase()}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900">{selectedUser.name || 'No name'}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-gray-900">{selectedUser.name || 'No name'}</h3>
+                    {adminEmails.has(selectedUser.email.toLowerCase()) && (
+                      <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">Admin</span>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-500">{selectedUser.email}</p>
                 </div>
               </div>

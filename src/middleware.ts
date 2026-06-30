@@ -1,6 +1,7 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { routing } from './i18n/routing';
 import type { Locale } from './i18n/routing';
 
@@ -75,6 +76,21 @@ export default async function middleware(request: NextRequest) {
       const loginUrl = new URL('/admin/login', request.url);
       loginUrl.searchParams.set('redirectTo', pathname);
       return NextResponse.redirect(loginUrl);
+    }
+
+    // Server-side admin check — regular members get blocked here
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (serviceKey) {
+      const adminDb = createSupabaseClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey);
+      const { data: adminRecord } = await adminDb
+        .from('admin_users')
+        .select('id')
+        .eq('email', user.email!)
+        .maybeSingle();
+
+      if (!adminRecord) {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
     }
 
     return response;
