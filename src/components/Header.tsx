@@ -8,6 +8,7 @@ import { locales, localeNames, type Locale } from '@/i18n/routing';
 import { categories, cities } from '@/lib/categories';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
+import { useCurrency, CURRENCY_INFO, CURRENCY_CODES, type CurrencyCode } from '@/context/CurrencyContext';
 
 export default function Header() {
   const t = useTranslations();
@@ -20,6 +21,13 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { currency, setCurrency } = useCurrency();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -113,7 +121,7 @@ export default function Header() {
               {/* City selector */}
               <div
                 className="relative"
-                onMouseEnter={() => { setCityMenuOpen(true); setLangMenuOpen(false); }}
+                onMouseEnter={() => { setCityMenuOpen(true); setLangMenuOpen(false); setCurrencyMenuOpen(false); }}
                 onMouseLeave={() => setCityMenuOpen(false)}
               >
                 <button className="flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50">
@@ -143,7 +151,7 @@ export default function Header() {
               {/* Language selector */}
               <div
                 className="relative"
-                onMouseEnter={() => { setLangMenuOpen(true); setCityMenuOpen(false); }}
+                onMouseEnter={() => { setLangMenuOpen(true); setCityMenuOpen(false); setCurrencyMenuOpen(false); }}
                 onMouseLeave={() => setLangMenuOpen(false)}
               >
                 <button className="flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50">
@@ -169,6 +177,39 @@ export default function Header() {
                   </div>
                 )}
               </div>
+
+              {/* Currency selector */}
+              {mounted && (
+                <div
+                  className="relative"
+                  onMouseEnter={() => { setCurrencyMenuOpen(true); setLangMenuOpen(false); setCityMenuOpen(false); }}
+                  onMouseLeave={() => setCurrencyMenuOpen(false)}
+                >
+                  <button className="flex items-center gap-1 whitespace-nowrap rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:border-gray-300">
+                    <svg className="h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{currency}</span>
+                    <svg className="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {currencyMenuOpen && (
+                    <div className="absolute right-0 top-full z-50 min-w-[210px] rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
+                      {CURRENCY_CODES.map((code) => (
+                        <button
+                          key={code}
+                          onClick={() => { setCurrency(code as CurrencyCode); setCurrencyMenuOpen(false); }}
+                          className={`flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-left text-sm transition-colors hover:bg-primary-50 hover:text-primary-600 ${code === currency ? 'font-medium text-primary-600' : 'text-gray-600'}`}
+                        >
+                          <span className="font-mono font-semibold">{code}</span>
+                          <span className="text-xs text-gray-400">{CURRENCY_INFO[code as CurrencyCode].name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Divider */}
               <div className="mx-1 h-5 w-px bg-gray-200" />
@@ -327,6 +368,24 @@ export default function Header() {
                 ))}
               </div>
             </div>
+
+            {/* Currency */}
+            {mounted && (
+              <div className="mt-4 border-t border-gray-100 pt-4">
+                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Currency</p>
+                <div className="flex flex-wrap gap-2">
+                  {CURRENCY_CODES.map((code) => (
+                    <button
+                      key={code}
+                      onClick={() => { setCurrency(code as CurrencyCode); setMobileMenuOpen(false); }}
+                      className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${code === currency ? 'bg-primary-500 text-white' : 'border border-gray-200 text-gray-600 hover:border-primary-500'}`}
+                    >
+                      {code}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
         </div>

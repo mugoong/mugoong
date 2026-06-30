@@ -1,5 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 import { routing } from './i18n/routing';
 import type { Locale } from './i18n/routing';
 
@@ -33,9 +34,53 @@ function detectLocaleFromBrowser(acceptLanguage: string): Locale {
 
 const intlMiddleware = createMiddleware(routing);
 
-export default function middleware(request: NextRequest) {
+// Admin paths that don't require authentication
+const ADMIN_PUBLIC_PATHS = ['/admin/login'];
+
+export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // ── Admin protection ──────────────────────────────────────────────────
+  if (pathname.startsWith('/admin')) {
+    // Allow the login page through unconditionally
+    if (ADMIN_PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
+      return NextResponse.next();
+    }
+
+    // For all other /admin/* paths: verify a valid Supabase session exists.
+    // The actual admin_users table check happens inside AdminShell (client-side).
+    const response = NextResponse.next({ request });
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              request.cookies.set(name, value);
+              response.cookies.set(name, value, options);
+            });
+          },
+        },
+      }
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      const loginUrl = new URL('/admin/login', request.url);
+      loginUrl.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    return response;
+  }
+
+  // ── Intl middleware (customer-facing pages) ───────────────────────────
   // If the URL already has an explicit locale prefix (e.g. /ja/..., /zh/...)
   // the user navigated here deliberately — respect it as-is
   const hasLocalePrefix = routing.locales.some(
@@ -64,5 +109,12 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/(en|ko|ja|zh|fr|de|es)/:path*', '/((?!api|_next|_vercel|admin|ops|.*\\..*).*)'],
+  matcher: [
+    // Admin pages — now handled by this middleware
+    '/admin',
+    '/admin/:path*',
+    // Customer-facing pages (intl)
+    '/',
+    '/(en|ko|ja|zh|fr|de|es)/:path*',
+    '/((?!api|_next|_vercel|admin|ops|.*\\..*).*)'],
 };

@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Listing } from '@/types';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const BADGE_TAGS = new Set(['HOT', 'BEST', 'NEW', 'PREMIUM', 'ONLY']);
 
@@ -20,6 +21,7 @@ function getBadgeClass(tag: string) {
 export default function ListingCard({ listing }: { listing: Listing }) {
   const t = useTranslations();
   const locale = useLocale();
+  const { formatPrice } = useCurrency();
   const displayTitle = listing.title_translations?.[locale] ?? listing.title;
 
   const isTips = listing.category === 'tips-and-trend';
@@ -28,7 +30,6 @@ export default function ListingCard({ listing }: { listing: Listing }) {
     listing.price_display_type === 'deposit' ? (listing.booking_deposit ?? 0)
     : listing.price_display_type === 'reserve' ? (listing.reserve_fee ?? 0)
     : fromPrice;
-  const fmtKRW = (n: number) => `₩${n.toLocaleString('ko-KR')}`;
   const overlayTags = listing.tags.filter((tag) => BADGE_TAGS.has(tag.toUpperCase()));
   const keywordTags = listing.tags.filter((tag) => !BADGE_TAGS.has(tag.toUpperCase()));
 
@@ -108,7 +109,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
               <span className="text-[10px] text-gray-400">
                 {listing.price_display_type === 'deposit' ? 'Deposit From ' : listing.price_display_type === 'reserve' ? 'Reserve From ' : 'From '}
               </span>
-              <span className="text-sm font-bold text-primary-600">{fmtKRW(displayPrice)}</span>
+              <span className="text-sm font-bold text-primary-600">{formatPrice(displayPrice)}</span>
             </div>
           </div>
         ) : null}

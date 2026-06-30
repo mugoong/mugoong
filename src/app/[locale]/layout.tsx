@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { CurrencyProvider } from '@/context/CurrencyContext';
 import '../globals.css';
 
 type Props = {
@@ -83,9 +84,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       </head>
       <body className="flex min-h-full flex-col bg-white text-[#111111] font-sans">
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <CurrencyProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </CurrencyProvider>
         </NextIntlClientProvider>
       </body>
     </html>

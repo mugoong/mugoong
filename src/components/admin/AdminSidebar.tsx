@@ -10,6 +10,8 @@ const navItems = [
   { href: '/admin/listings', label: 'Listings', icon: '📝' },
   { href: '/admin/bookings', label: 'Bookings', icon: '📅' },
   { href: '/admin/users', label: 'Members', icon: '👥' },
+  { href: '/admin/exchange-rates', label: 'Exchange Rates', icon: '💱' },
+  { href: '/admin/portal', label: 'Site Portal', icon: '🗺️' },
 ];
 
 export default function AdminSidebar() {
