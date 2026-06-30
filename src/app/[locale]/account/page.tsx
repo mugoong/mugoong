@@ -131,6 +131,7 @@ export default function AccountPage() {
     let query = supabase
       .from('bookings')
       .select('id, booking_number, listing_title, booking_date, booking_time, guests, total_price, currency, status, created_at')
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
     if (statusFilter) query = query.eq('status', statusFilter);
