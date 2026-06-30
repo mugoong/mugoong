@@ -57,12 +57,12 @@ export default function AdminUsersPage() {
 
   const fetchUsers = async () => {
     const supabase = createClient();
-    const [{ data: profiles }, { data: admins }] = await Promise.all([
+    const [{ data: profiles }, adminRes] = await Promise.all([
       supabase.from('user_profiles').select('*').order('created_at', { ascending: false }),
-      supabase.from('admin_users').select('email'),
+      fetch('/api/admin/admin-emails').then((r) => r.json()),
     ]);
     setUsers(profiles ?? []);
-    setAdminEmails(new Set((admins ?? []).map((a) => a.email.toLowerCase())));
+    setAdminEmails(new Set<string>(adminRes.emails ?? []));
     setLoading(false);
   };
 
