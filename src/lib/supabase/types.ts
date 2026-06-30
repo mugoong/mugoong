@@ -50,8 +50,10 @@ export type Database = {
           status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
           notes: string;
           admin_notes: string;
+          booking_number: string | null;
+          user_id: string | null;
         };
-        Insert: Omit<Database['public']['Tables']['bookings']['Row'], 'id' | 'created_at' | 'updated_at'>;
+        Insert: Omit<Database['public']['Tables']['bookings']['Row'], 'id' | 'created_at' | 'updated_at' | 'booking_number'>;
         Update: Partial<Database['public']['Tables']['bookings']['Insert']>;
       };
       admin_users: {
@@ -87,6 +89,18 @@ export type ExternalReview = {
   text: string;
   translation_en?: string;  // English translation for non-English reviews
   date: string;
+};
+
+export type UserProfileRow = {
+  id: string;
+  created_at: string;
+  email: string;
+  name: string;
+  nationality: string;
+  phone: string;
+  birthday: string | null;
+  interests: string[];
+  profile_complete: boolean;
 };
 
 export type ListingRow = Database['public']['Tables']['listings']['Row'];

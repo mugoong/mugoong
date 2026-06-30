@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
     let savedBooking: any = null;
     try {
       const supabase = await createServerSupabaseClient();
+      const { data: { user: sessionUser } } = await supabase.auth.getUser();
       const bookingNotes = JSON.stringify({
         customer_notes: notes ?? '',
         booking_type: booking_type ?? 'free',
@@ -80,6 +81,7 @@ export async function POST(request: NextRequest) {
         status: 'pending',
         notes: bookingNotes,
         admin_notes: '',
+        user_id: sessionUser?.id ?? null,
       }).select().single();
       if (error) console.error('[DB] Booking insert failed:', error.message);
       else savedBooking = data;
