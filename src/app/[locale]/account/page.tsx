@@ -151,12 +151,6 @@ export default function AccountPage() {
     setEditLoading(false);
   };
 
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push(`/${locale}`);
-  };
-
   if (loading) {
     return (
       <div className="flex min-h-[80vh] items-center justify-center">
@@ -176,22 +170,14 @@ export default function AccountPage() {
       {/* Profile header */}
       <div className="border-b border-gray-200 bg-white">
         <div className="container-main">
-          <div className="flex items-center justify-between py-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-500 text-lg font-bold text-white">
-                {initials}
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">{profile.name}</h1>
-                <p className="text-sm text-gray-500">{user.email}</p>
-              </div>
+          <div className="flex items-center gap-4 py-6">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-500 text-lg font-bold text-white">
+              {initials}
             </div>
-            <button
-              onClick={handleSignOut}
-              className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
-            >
-              Sign Out
-            </button>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">{profile.name}</h1>
+              <p className="text-sm text-gray-500">{user.email}</p>
+            </div>
           </div>
 
           {/* Tab nav */}

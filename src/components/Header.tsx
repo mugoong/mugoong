@@ -53,6 +53,7 @@ export default function Header() {
     await supabase.auth.signOut();
     setUser(null);
     setUserMenuOpen(false);
+    router.push('/');
   };
 
   const switchLocale = (newLocale: Locale) => {
