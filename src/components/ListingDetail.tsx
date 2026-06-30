@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import type { Listing, CategoryConfig, SubCategory } from '@/types';
 import BookingForm from './BookingForm';
+import ReviewsSection from './ReviewsSection';
 import { useCurrency } from '@/context/CurrencyContext';
 import {
   PinIcon, PhoneIcon, ClockIcon, CoffeeIcon, ClosedIcon, PersonIcon,
@@ -74,15 +75,46 @@ function Stars({ rating }: { rating: number }) {
     </div>
   );
 }
+const SOURCE_BADGE: Record<string, { bg: string; text: string; dot: string }> = {
+  google:      { bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-500' },
+  naver:       { bg: 'bg-green-50',   text: 'text-green-700',   dot: 'bg-green-500' },
+  kakao:       { bg: 'bg-yellow-50',  text: 'text-yellow-700',  dot: 'bg-yellow-500' },
+  tripadvisor: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+};
+
 function ReviewCard({ review, td }: { review: any; td: (k: string) => string }) {
   const [showTr, setShowTr] = useState(false);
   const hasTr = review.translation_en?.trim().length > 0;
+  const sourceKey = (review.source ?? '').toLowerCase().split(' ')[0];
+  const badge = SOURCE_BADGE[sourceKey] ?? { bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400' };
+  const sourceName = review.source || 'External';
   return (
     <div className="rounded-xl border border-gray-100 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2"><Stars rating={review.rating} /><span className="font-medium text-gray-800">{review.reviewer}</span></div>
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">{review.source}</span>
+          <Stars rating={review.rating} />
+          <span className="font-medium text-gray-800">{review.reviewer}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {review.url ? (
+            <a
+              href={review.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium transition hover:underline ${badge.bg} ${badge.text}`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} />
+              {sourceName}
+              <svg className="h-3 w-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          ) : (
+            <span className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${badge.bg} ${badge.text}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} />
+              {sourceName}
+            </span>
+          )}
           {review.date && <span className="text-xs text-gray-400">{review.date}</span>}
         </div>
       </div>
@@ -611,13 +643,29 @@ export default function ListingDetail({
               </>
             )}
 
-            {/* ── Reviews ── */}
+            {/* ── External Reviews ── */}
             {hasReviews && (
               <div ref={reviewsRef} className="mt-10 scroll-mt-8 border-t border-gray-100 pt-8">
                 <SectionHeader icon={<StarIconOutline className="h-5 w-5" />} title={`${td('reviews')} (${extra.external_reviews.length})`} />
                 <div className="space-y-3">
                   {extra.external_reviews.map((review: any, i: number) => <ReviewCard key={i} review={review} td={td} />)}
                 </div>
+                <p className="mt-3 text-right text-xs text-gray-400">
+                  Reviews quoted from external sources for reference. © Original authors.
+                </p>
+              </div>
+            )}
+
+            {/* ── MUGOONG Native Reviews ── */}
+            {!isTips && listing.id && (
+              <div className="mt-10 scroll-mt-8 border-t border-gray-100 pt-8">
+                <h2 className="mb-6 flex items-center gap-3 text-xl font-bold text-gray-900">
+                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+                    <StarIconOutline className="h-5 w-5" />
+                  </span>
+                  MUGOONG Reviews
+                </h2>
+                <ReviewsSection listingId={listing.id} listingTitle={listing.title} locale={locale} />
               </div>
             )}
 

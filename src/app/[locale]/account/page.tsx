@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Link } from '@/i18n/navigation';
 import { useLocale } from 'next-intl';
 import type { User } from '@supabase/supabase-js';
-import type { UserProfileRow, BookingRow } from '@/lib/supabase/types';
+import type { UserProfileRow, BookingRow, ReviewRow } from '@/lib/supabase/types';
 
 const INTEREST_LABELS: Record<string, { label: string; emoji: string }> = {
   'korean-food': { label: 'Korean Food', emoji: '🍜' },
@@ -61,10 +61,19 @@ export default function AccountPage() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfileRow | null>(null);
   const [bookings, setBookings] = useState<BookingRow[]>([]);
-  const [tab, setTab] = useState<'profile' | 'bookings'>('profile');
+  const [tab, setTab] = useState<'profile' | 'bookings' | 'reviews'>('profile');
   const [loading, setLoading] = useState(true);
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
+
+  const [reviews, setReviews] = useState<ReviewRow[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+  const [editRating, setEditRating] = useState(5);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [reviewSaving, setReviewSaving] = useState(false);
+  const [reviewError, setReviewError] = useState('');
 
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState('');
@@ -109,6 +118,12 @@ export default function AccountPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, tab, statusFilter]);
 
+  useEffect(() => {
+    if (!user || tab !== 'reviews') return;
+    loadReviews();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, tab]);
+
   const loadBookings = async () => {
     if (!user) return;
     setBookingsLoading(true);
@@ -123,6 +138,14 @@ export default function AccountPage() {
     const { data } = await query;
     setBookings((data ?? []) as BookingRow[]);
     setBookingsLoading(false);
+  };
+
+  const loadReviews = async () => {
+    setReviewsLoading(true);
+    const res = await fetch('/api/reviews?user=me');
+    const data = await res.json();
+    setReviews(Array.isArray(data) ? data : []);
+    setReviewsLoading(false);
   };
 
   const handleSaveProfile = async () => {
@@ -182,7 +205,7 @@ export default function AccountPage() {
 
           {/* Tab nav */}
           <div className="flex">
-            {(['profile', 'bookings'] as const).map((t) => (
+            {(['profile', 'bookings', 'reviews'] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -192,7 +215,7 @@ export default function AccountPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {t === 'profile' ? 'Profile' : 'My Bookings'}
+                {t === 'profile' ? 'Profile' : t === 'bookings' ? 'My Bookings' : 'My Reviews'}
               </button>
             ))}
           </div>
@@ -436,6 +459,175 @@ export default function AccountPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ─── MY REVIEWS TAB ─── */}
+        {tab === 'reviews' && (
+          <div className="mx-auto max-w-2xl">
+            {reviewsLoading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600" />
+              </div>
+            ) : reviews.length === 0 ? (
+              <div className="rounded-2xl border border-gray-200 bg-white py-16 text-center">
+                <p className="text-4xl">⭐</p>
+                <h3 className="mt-4 text-lg font-semibold text-gray-700">No reviews yet</h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  After your booking you can leave a review within 2 weeks.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {reviews.map((review) => {
+                  const editable = (() => {
+                    const deadline = new Date(review.booking_date + 'T00:00:00');
+                    deadline.setDate(deadline.getDate() + 14);
+                    return new Date() <= deadline;
+                  })();
+                  const isEditing = editingReviewId === review.id;
+
+                  const startEdit = () => {
+                    setEditingReviewId(review.id);
+                    setEditRating(review.rating);
+                    setEditTitle(review.title);
+                    setEditContent(review.content);
+                    setReviewError('');
+                  };
+
+                  const cancelEdit = () => {
+                    setEditingReviewId(null);
+                    setReviewError('');
+                  };
+
+                  const saveEdit = async () => {
+                    if (editContent.trim().length < 10) { setReviewError('At least 10 characters required.'); return; }
+                    setReviewSaving(true);
+                    setReviewError('');
+                    const res = await fetch(`/api/reviews/${review.id}`, {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ rating: editRating, title: editTitle, content: editContent }),
+                    });
+                    const json = await res.json();
+                    if (!res.ok) { setReviewError(json.error || 'Failed to save'); setReviewSaving(false); return; }
+                    setReviews(prev => prev.map(r => r.id === review.id ? json : r));
+                    setEditingReviewId(null);
+                    setReviewSaving(false);
+                  };
+
+                  const deleteReview = async () => {
+                    if (!confirm('Delete this review?')) return;
+                    const res = await fetch(`/api/reviews/${review.id}`, { method: 'DELETE' });
+                    if (res.ok) setReviews(prev => prev.filter(r => r.id !== review.id));
+                  };
+
+                  return (
+                    <div key={review.id} className="rounded-2xl border border-gray-200 bg-white p-5">
+                      <div className="mb-3 flex items-start justify-between gap-2">
+                        <div>
+                          <p className="font-semibold text-gray-900">{review.listing_title}</p>
+                          <p className="text-xs text-gray-400">
+                            Booked:{' '}
+                            {new Date(review.booking_date + 'T00:00:00').toLocaleDateString('en-GB', {
+                              day: 'numeric', month: 'short', year: 'numeric',
+                            })}
+                            {editable ? (
+                              <span className="ml-2 rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
+                                Editable
+                              </span>
+                            ) : (
+                              <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-400">
+                                Edit window closed
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                        {editable && !isEditing && (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={startEdit}
+                              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={deleteReview}
+                              className="rounded-lg border border-red-100 px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {isEditing ? (
+                        <div className="space-y-3">
+                          {reviewError && (
+                            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{reviewError}</p>
+                          )}
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <button key={n} type="button" onClick={() => setEditRating(n)}>
+                                <svg className={`h-7 w-7 ${n <= editRating ? 'text-yellow-400' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              </button>
+                            ))}
+                          </div>
+                          <input
+                            type="text"
+                            value={editTitle}
+                            onChange={e => setEditTitle(e.target.value)}
+                            placeholder="Title (optional)"
+                            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-400"
+                          />
+                          <textarea
+                            value={editContent}
+                            onChange={e => setEditContent(e.target.value)}
+                            rows={4}
+                            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-primary-400"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              onClick={cancelEdit}
+                              className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={saveEdit}
+                              disabled={reviewSaving}
+                              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-black disabled:opacity-50"
+                            >
+                              {reviewSaving ? 'Saving…' : 'Save'}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-1.5">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <svg key={n} className={`h-4 w-4 ${n <= review.rating ? 'text-yellow-400' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          {review.title && <p className="mt-2 font-semibold text-gray-800">{review.title}</p>}
+                          <p className="mt-1.5 text-sm leading-relaxed text-gray-600">{review.content}</p>
+                          <p className="mt-2 text-xs text-gray-400">
+                            Written:{' '}
+                            {new Date(review.created_at).toLocaleDateString('en-GB', {
+                              day: 'numeric', month: 'short', year: 'numeric',
+                            })}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

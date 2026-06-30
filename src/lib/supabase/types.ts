@@ -106,3 +106,18 @@ export type UserProfileRow = {
 export type ListingRow = Database['public']['Tables']['listings']['Row'];
 export type BookingRow = Database['public']['Tables']['bookings']['Row'];
 export type AdminUserRow = Database['public']['Tables']['admin_users']['Row'];
+
+export type ReviewRow = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  listing_id: string;
+  listing_title: string;
+  user_id: string;
+  reviewer_name: string;
+  booking_id: string | null;
+  booking_date: string;
+  rating: number;
+  title: string;
+  content: string;
+};
