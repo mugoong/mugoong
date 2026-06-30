@@ -31,7 +31,7 @@ const sections: PortalSection[] = [
       { label: 'Wellness', url: `${SITE_URL}/en/wellness`, description: 'Sauna, massage, skin clinic, hair salon', external: true },
       { label: 'Activities', url: `${SITE_URL}/en/activities`, description: 'Tours, experiences, adventures', external: true },
       { label: 'Tips & Trends', url: `${SITE_URL}/en/tips-and-trend`, description: 'Local life guides and travel tips', external: true },
-      { label: 'Login', url: `${SITE_URL}/en/login`, description: 'Member login — email + Google + Apple OAuth', external: true },
+      { label: 'Login', url: `${SITE_URL}/en/login`, description: 'Member login — email + Google OAuth', external: true },
       { label: 'Sign Up', url: `${SITE_URL}/en/signup`, description: 'Email verification signup with profile step', external: true },
       { label: 'My Account', url: `${SITE_URL}/en/account`, description: 'Member profile + booking history with MGN numbers', external: true },
     ],
