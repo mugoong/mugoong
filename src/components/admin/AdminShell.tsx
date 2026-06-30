@@ -12,12 +12,24 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) {
         router.push('/admin/login');
-      } else {
-        setAuthenticated(true);
+        setLoading(false);
+        return;
       }
+      const { data: adminRecord } = await supabase
+        .from('admin_users')
+        .select('role')
+        .eq('email', session.user.email)
+        .single();
+      if (!adminRecord) {
+        await supabase.auth.signOut();
+        router.push('/admin/login');
+        setLoading(false);
+        return;
+      }
+      setAuthenticated(true);
       setLoading(false);
     });
   }, [router]);

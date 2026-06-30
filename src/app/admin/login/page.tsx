@@ -23,10 +23,23 @@ export default function AdminLoginPage() {
       }
 
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data: authData, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
         setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      const { data: adminRecord } = await supabase
+        .from('admin_users')
+        .select('role')
+        .eq('email', authData.user?.email)
+        .single();
+
+      if (!adminRecord) {
+        await supabase.auth.signOut();
+        setError('Access denied. This account does not have admin privileges.');
         setLoading(false);
         return;
       }
